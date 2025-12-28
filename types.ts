@@ -9,6 +9,8 @@ export type BaseMaterial =
   | 'Ironsilk'
   | 'Ironwool'
   | 'Bloodsilk'
+  | 'Leptoid Scales'
+  | 'Horned Scales'
   | 'Keeled Scales'
   | 'Plate Scales'
   | 'Placoid Scales'
