@@ -22,6 +22,8 @@ const materialNames: Record<number, BaseMaterial | SupportMaterial> = {
   90: 'Keeled Scales',
   104: 'Pansar Scales',
   108: 'Plate Scales',
+  77: 'Guard Fur',
+  80: 'Horned Scales',
 };
 
 function getField(fields: string[], index: number): string {

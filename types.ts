@@ -17,7 +17,12 @@ export type BaseMaterial =
   | 'Pansar Scales'
   | 'Arthropod Carapace';
 
-export type SupportMaterial = 'Ironfur' | 'Ironsilk' | 'Ironwool' | 'Bloodsilk';
+export type SupportMaterial =
+  | 'Ironfur'
+  | 'Ironsilk'
+  | 'Ironwool'
+  | 'Bloodsilk'
+  | 'Guard Fur';
 
 export type MaterialUsage = {
   base: number;
