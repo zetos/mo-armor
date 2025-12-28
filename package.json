@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "start": "bun index",
-    "test": "bun test"
+    "test": "bun test",
+    "parse-sample": "bun parseSample.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
