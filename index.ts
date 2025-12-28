@@ -292,4 +292,112 @@ const samples: setStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Plate Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setWeight: 8.18,
+    setDura: 2159,
+    setMaterialUsage: {
+      base: 279,
+      padding: 404,
+    },
+    setDefense: {
+      blunt: 47.12,
+      pierce: 39.76,
+      slash: 43.64,
+    },
+    pieceWeight: {
+      helm: 0.82,
+      torso: 2.62,
+      rightArm: 1.15,
+      leftArm: 1.15,
+      legs: 2.45,
+    },
+    pieceDurability: {
+      helm: 431.8,
+      torso: 539.75,
+      rightArm: 323.85,
+      leftArm: 323.85,
+      legs: 539.75,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 28,
+        padding: 40,
+      },
+      torso: {
+        base: 84,
+        padding: 122,
+      },
+      rightArm: {
+        base: 39,
+        padding: 56,
+      },
+      leftArm: {
+        base: 39,
+        padding: 56,
+      },
+      legs: {
+        base: 89,
+        padding: 130,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setWeight: 5.9,
+    setDura: 1860,
+    setMaterialUsage: {
+      base: 254,
+      padding: 538,
+    },
+    setDefense: {
+      blunt: 36.27,
+      pierce: 45.2,
+      slash: 38.8,
+    },
+    pieceWeight: {
+      helm: 0.71,
+      torso: 1.89,
+      rightArm: 0.77,
+      leftArm: 0.77,
+      legs: 1.77,
+    },
+    pieceDurability: {
+      helm: 372,
+      torso: 465,
+      rightArm: 279,
+      leftArm: 279,
+      legs: 465,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 31,
+        padding: 64,
+      },
+      torso: {
+        base: 81,
+        padding: 172,
+      },
+      rightArm: {
+        base: 33,
+        padding: 70,
+      },
+      leftArm: {
+        base: 33,
+        padding: 70,
+      },
+      legs: {
+        base: 76,
+        padding: 162,
+      },
+    },
+  },
 ];
