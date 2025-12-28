@@ -18,7 +18,7 @@ export type ArmorStyleConfig = {
 };
 
 export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
-  'Risar Berseker': {
+  'Risar Berserker': {
     baseMaterialUsage: {
       helm: 69,
       torso: 188,

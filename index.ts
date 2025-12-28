@@ -4,7 +4,7 @@ export * from './types';
 
 export const samples: SetStats[] = [
   {
-    armorStyle: 'Risar Berseker',
+    armorStyle: 'Risar Berserker',
     base: 'Arthropod Carapace',
     padding: 'Ironfur',
     baseDensity: 100,

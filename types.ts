@@ -1,6 +1,6 @@
 export type ArmorStyle =
   | 'Ranger Armor'
-  | 'Risar Berseker'
+  | 'Risar Berserker'
   | 'Kallardian Norse'
   | 'Khurite Splinted';
 
@@ -53,7 +53,7 @@ export type SetStats = {
 
 export type CalculateSetStatusInput<
   B extends BaseMaterial,
-  S extends SupportMaterial,
+  S extends SupportMaterial
 > = {
   armorStyle: ArmorStyle;
   base: B;
