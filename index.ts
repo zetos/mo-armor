@@ -1,81 +1,8 @@
-type armorStyle =
-  | 'Ranger Armor'
-  | 'Risar Berseker'
-  | 'Kallardian Norse'
-  | 'Khurite Splinted';
+import type { SetStats } from './types';
+export { calculateSetStatus } from './calculateSetStatus';
+export * from './types';
 
-type baseMaterial =
-  | 'Ironfur'
-  | 'Ironsilk'
-  | 'Ironwool'
-  | 'Bloodsilk'
-  | 'Keeled Scales'
-  | 'Plate Scales'
-  | 'Placoid Scales'
-  | 'Pansar Scales'
-  | 'Arthropod Carapace';
-
-type supportMaterial = 'Ironfur' | 'Ironsilk' | 'Ironwool' | 'Bloodsilk';
-
-type materialUsage = {
-  base: number;
-  padding: number;
-};
-
-type setStats = {
-  armorStyle: armorStyle;
-  base: baseMaterial;
-  padding: supportMaterial;
-  baseDensity: number;
-  paddingDensity: number;
-  setWeight: number;
-  setDura: number;
-  setMaterialUsage: materialUsage;
-  setDefense: {
-    blunt: number;
-    pierce: number;
-    slash: number;
-  };
-  pieceWeight: {
-    helm: number;
-    torso: number;
-    rightArm: number;
-    leftArm: number;
-    legs: number;
-  };
-  pieceDurability: {
-    helm: number;
-    torso: number;
-    rightArm: number;
-    leftArm: number;
-    legs: number;
-  };
-  pieceMaterialUsage: {
-    helm: materialUsage;
-    torso: materialUsage;
-    rightArm: materialUsage;
-    leftArm: materialUsage;
-    legs: materialUsage;
-  };
-};
-
-function calculateSetStatus<B extends baseMaterial, S extends supportMaterial>({
-  armorStyle,
-  base,
-  padding,
-  baseDensity = 100,
-  paddingDensity = 100,
-}: {
-  armorStyle: armorStyle;
-  base: B;
-  padding: S;
-  baseDensity: number;
-  paddingDensity: number;
-}): setStats {
-  throw new Error('Not implemented.');
-}
-
-const samples: setStats[] = [
+export const samples: SetStats[] = [
   {
     armorStyle: 'Risar Berseker',
     base: 'Arthropod Carapace',
@@ -127,60 +54,6 @@ const samples: setStats[] = [
       legs: {
         base: 177,
         padding: 126,
-      },
-    },
-  },
-  {
-    armorStyle: 'Risar Berseker',
-    base: 'Arthropod Carapace',
-    padding: 'Ironfur',
-    baseDensity: 100,
-    paddingDensity: 50,
-    setWeight: 9.25,
-    setDura: 2454.2,
-    setMaterialUsage: {
-      base: 572,
-      padding: 269,
-    },
-    setDefense: {
-      blunt: 41.05,
-      pierce: 35.63,
-      slash: 38.78,
-    },
-    pieceWeight: {
-      helm: 1.11,
-      torso: 2.96,
-      rightArm: 1.2,
-      leftArm: 1.2,
-      legs: 2.78,
-    },
-    pieceDurability: {
-      helm: 490.84,
-      torso: 613.55,
-      rightArm: 368.13,
-      leftArm: 368.13,
-      legs: 613.55,
-    },
-    pieceMaterialUsage: {
-      helm: {
-        base: 69,
-        padding: 32,
-      },
-      torso: {
-        base: 188,
-        padding: 89,
-      },
-      rightArm: {
-        base: 69,
-        padding: 32,
-      },
-      leftArm: {
-        base: 69,
-        padding: 32,
-      },
-      legs: {
-        base: 177,
-        padding: 84,
       },
     },
   },
