@@ -1083,4 +1083,544 @@ export const samples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 34.64,
+      slash: 35.16,
+      blunt: 35.28,
+    },
+    setWeight: 6.67,
+    pieceWeight: {
+      helm: 0.8,
+      rightArm: 0.87,
+      torso: 2.13,
+      leftArm: 0.87,
+      legs: 2,
+    },
+    setDura: 1709.5,
+    pieceDurability: {
+      helm: 341.9,
+      rightArm: 256.43,
+      torso: 427.38,
+      leftArm: 256.43,
+      legs: 427.38,
+    },
+    setMaterialUsage: {
+      base: 291,
+      padding: 177,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 35,
+        padding: 21,
+      },
+      rightArm: {
+        base: 35,
+        padding: 21,
+      },
+      torso: {
+        base: 96,
+        padding: 59,
+      },
+      leftArm: {
+        base: 35,
+        padding: 21,
+      },
+      legs: {
+        base: 90,
+        padding: 55,
+      },
+    },
+  },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 28.99,
+      slash: 30.09,
+      blunt: 29.17,
+    },
+    setWeight: 4.85,
+    pieceWeight: {
+      helm: 0.58,
+      rightArm: 0.63,
+      torso: 1.55,
+      leftArm: 0.63,
+      legs: 1.46,
+    },
+    setDura: 845,
+    pieceDurability: {
+      helm: 169,
+      rightArm: 126.75,
+      torso: 211.25,
+      leftArm: 126.75,
+      legs: 211.25,
+    },
+    setMaterialUsage: {
+      base: 130,
+      padding: 177,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 16,
+        padding: 21,
+      },
+      rightArm: {
+        base: 16,
+        padding: 21,
+      },
+      torso: {
+        base: 42,
+        padding: 59,
+      },
+      leftArm: {
+        base: 16,
+        padding: 21,
+      },
+      legs: {
+        base: 40,
+        padding: 55,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 32.58,
+      slash: 29.52,
+      blunt: 30.89,
+    },
+    setWeight: 6.6,
+    pieceWeight: {
+      helm: 0.79,
+      rightArm: 0.86,
+      torso: 2.11,
+      leftArm: 0.86,
+      legs: 1.98,
+    },
+    setDura: 852.5,
+    pieceDurability: {
+      helm: 170.5,
+      rightArm: 127.88,
+      torso: 213.13,
+      leftArm: 127.88,
+      legs: 213.13,
+    },
+    setMaterialUsage: {
+      base: 130,
+      padding: 177,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 16,
+        padding: 21,
+      },
+      rightArm: {
+        base: 16,
+        padding: 21,
+      },
+      torso: {
+        base: 42,
+        padding: 59,
+      },
+      leftArm: {
+        base: 16,
+        padding: 21,
+      },
+      legs: {
+        base: 40,
+        padding: 55,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 43.02,
+      slash: 38.88,
+      blunt: 42.17,
+    },
+    setWeight: 9.96,
+    pieceWeight: {
+      helm: 1.2,
+      rightArm: 1.29,
+      torso: 3.19,
+      leftArm: 1.29,
+      legs: 2.99,
+    },
+    setDura: 2574.5,
+    pieceDurability: {
+      helm: 514.9,
+      rightArm: 386.18,
+      torso: 643.63,
+      leftArm: 386.18,
+      legs: 643.63,
+    },
+    setMaterialUsage: {
+      base: 431,
+      padding: 177,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 52,
+        padding: 21,
+      },
+      rightArm: {
+        base: 52,
+        padding: 21,
+      },
+      torso: {
+        base: 142,
+        padding: 59,
+      },
+      leftArm: {
+        base: 52,
+        padding: 21,
+      },
+      legs: {
+        base: 133,
+        padding: 55,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 40.88,
+      slash: 36.72,
+      blunt: 35.76,
+    },
+    setWeight: 7,
+    pieceWeight: {
+      helm: 0.84,
+      rightArm: 0.91,
+      torso: 2.24,
+      leftArm: 0.91,
+      legs: 2.1,
+    },
+    setDura: 1122.5,
+    pieceDurability: {
+      helm: 224.5,
+      rightArm: 168.38,
+      torso: 280.63,
+      leftArm: 168.38,
+      legs: 280.63,
+    },
+    setMaterialUsage: {
+      base: 130,
+      padding: 537,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 16,
+        padding: 64,
+      },
+      rightArm: {
+        base: 16,
+        padding: 64,
+      },
+      torso: {
+        base: 42,
+        padding: 178,
+      },
+      leftArm: {
+        base: 16,
+        padding: 64,
+      },
+      legs: {
+        base: 40,
+        padding: 167,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 32.55,
+      slash: 27.7,
+      blunt: 26.7,
+    },
+    setWeight: 4.1,
+    pieceWeight: {
+      helm: 0.49,
+      rightArm: 0.53,
+      torso: 1.31,
+      leftArm: 0.53,
+      legs: 1.23,
+    },
+    setDura: 847.5,
+    pieceDurability: {
+      helm: 169.5,
+      rightArm: 127.13,
+      torso: 211.88,
+      leftArm: 127.13,
+      legs: 211.88,
+    },
+    setMaterialUsage: {
+      base: 129,
+      padding: 178,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 16,
+        padding: 21,
+      },
+      rightArm: {
+        base: 17,
+        padding: 23,
+      },
+      torso: {
+        base: 41,
+        padding: 57,
+      },
+      leftArm: {
+        base: 17,
+        padding: 23,
+      },
+      legs: {
+        base: 38,
+        padding: 54,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 36.9,
+      slash: 31.6,
+      blunt: 31.4,
+    },
+    setWeight: 5.5,
+    pieceWeight: {
+      helm: 0.66,
+      rightArm: 0.72,
+      torso: 1.76,
+      leftArm: 0.72,
+      legs: 1.65,
+    },
+    setDura: 1530,
+    pieceDurability: {
+      helm: 306,
+      rightArm: 229.5,
+      torso: 382.5,
+      leftArm: 229.5,
+      legs: 382.5,
+    },
+    setMaterialUsage: {
+      base: 254,
+      padding: 178,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 31,
+        padding: 21,
+      },
+      rightArm: {
+        base: 33,
+        padding: 23,
+      },
+      torso: {
+        base: 81,
+        padding: 57,
+      },
+      leftArm: {
+        base: 33,
+        padding: 23,
+      },
+      legs: {
+        base: 76,
+        padding: 54,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 40.85,
+      slash: 34.9,
+      blunt: 31.57,
+    },
+    setWeight: 4.5,
+    pieceWeight: {
+      helm: 0.54,
+      rightArm: 0.59,
+      torso: 1.44,
+      leftArm: 0.59,
+      legs: 1.35,
+    },
+    setDura: 1177.5,
+    pieceDurability: {
+      helm: 235.5,
+      rightArm: 176.63,
+      torso: 294.38,
+      leftArm: 176.63,
+      legs: 294.38,
+    },
+    setMaterialUsage: {
+      base: 129,
+      padding: 538,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 16,
+        padding: 64,
+      },
+      rightArm: {
+        base: 17,
+        padding: 70,
+      },
+      torso: {
+        base: 41,
+        padding: 172,
+      },
+      leftArm: {
+        base: 17,
+        padding: 70,
+      },
+      legs: {
+        base: 38,
+        padding: 162,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 29.84,
+      slash: 32.96,
+      blunt: 25.01,
+    },
+    setWeight: 4.6,
+    pieceWeight: {
+      helm: 0.46,
+      rightArm: 0.64,
+      torso: 1.47,
+      leftArm: 0.64,
+      legs: 1.38,
+    },
+    setDura: 863.75,
+    pieceDurability: {
+      helm: 172.75,
+      rightArm: 129.56,
+      torso: 215.94,
+      leftArm: 129.56,
+      legs: 215.94,
+    },
+    setMaterialUsage: {
+      base: 128,
+      padding: 179,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 18,
+      },
+      rightArm: {
+        base: 18,
+        padding: 25,
+      },
+      torso: {
+        base: 38,
+        padding: 54,
+      },
+      leftArm: {
+        base: 18,
+        padding: 25,
+      },
+      legs: {
+        base: 41,
+        padding: 57,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 38.14,
+      slash: 40.16,
+      blunt: 29.88,
+    },
+    setWeight: 5,
+    pieceWeight: {
+      helm: 0.5,
+      rightArm: 0.7,
+      torso: 1.6,
+      leftArm: 0.7,
+      legs: 1.5,
+    },
+    setDura: 1208.75,
+    pieceDurability: {
+      helm: 241.75,
+      rightArm: 181.31,
+      torso: 302.19,
+      leftArm: 181.31,
+      legs: 302.19,
+    },
+    setMaterialUsage: {
+      base: 128,
+      padding: 538,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 54,
+      },
+      rightArm: {
+        base: 18,
+        padding: 75,
+      },
+      torso: {
+        base: 38,
+        padding: 162,
+      },
+      leftArm: {
+        base: 18,
+        padding: 75,
+      },
+      legs: {
+        base: 41,
+        padding: 172,
+      },
+    },
+  },
 ];
