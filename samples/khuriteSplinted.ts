@@ -703,4 +703,220 @@ export const khuriteSplintedSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 39.07,
+      slash: 36.24,
+      blunt: 43.52,
+    },
+    setWeight: 9.61,
+    pieceWeight: {
+      helm: 1.15,
+      rightArm: 1.25,
+      torso: 3.08,
+      leftArm: 1.25,
+      legs: 2.88,
+    },
+    setDura: 2292.35,
+    pieceDurability: {
+      helm: 458.47,
+      rightArm: 343.85,
+      torso: 573.09,
+      leftArm: 343.85,
+      legs: 573.09,
+    },
+    setMaterialUsage: {
+      base: 356,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 43,
+        padding: 16,
+      },
+      rightArm: {
+        base: 43,
+        padding: 16,
+      },
+      torso: {
+        base: 117,
+        padding: 44,
+      },
+      leftArm: {
+        base: 43,
+        padding: 16,
+      },
+      legs: {
+        base: 110,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Arthropod Carapace',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 47.04,
+      slash: 46.24,
+      blunt: 50.71,
+    },
+    setWeight: 13.9,
+    pieceWeight: {
+      helm: 1.67,
+      rightArm: 1.81,
+      torso: 4.45,
+      leftArm: 1.81,
+      legs: 4.17,
+    },
+    setDura: 3705.7,
+    pieceDurability: {
+      helm: 741.14,
+      rightArm: 555.86,
+      torso: 926.43,
+      leftArm: 555.86,
+      legs: 926.43,
+    },
+    setMaterialUsage: {
+      base: 842,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 101,
+        padding: 48,
+      },
+      rightArm: {
+        base: 101,
+        padding: 48,
+      },
+      torso: {
+        base: 278,
+        padding: 134,
+      },
+      leftArm: {
+        base: 101,
+        padding: 48,
+      },
+      legs: {
+        base: 261,
+        padding: 126,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Arthropod Carapace',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 40.54,
+      slash: 39.64,
+      blunt: 40.04,
+    },
+    setWeight: 12.5,
+    pieceWeight: {
+      helm: 1.5,
+      rightArm: 1.63,
+      torso: 4,
+      leftArm: 1.63,
+      legs: 3.75,
+    },
+    setDura: 3372.7,
+    pieceDurability: {
+      helm: 674.54,
+      rightArm: 505.91,
+      torso: 843.18,
+      leftArm: 505.91,
+      legs: 843.18,
+    },
+    setMaterialUsage: {
+      base: 842,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 101,
+        padding: 16,
+      },
+      rightArm: {
+        base: 101,
+        padding: 16,
+      },
+      torso: {
+        base: 278,
+        padding: 44,
+      },
+      leftArm: {
+        base: 101,
+        padding: 16,
+      },
+      legs: {
+        base: 261,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Arthropod Carapace',
+    padding: 'Ironfur',
+    baseDensity: 50,
+    paddingDensity: 50,
+    setDefense: {
+      pierce: 38.75,
+      slash: 37.9,
+      blunt: 41.83,
+    },
+    setWeight: 10.8,
+    pieceWeight: {
+      helm: 1.3,
+      rightArm: 1.4,
+      torso: 3.46,
+      leftArm: 1.4,
+      legs: 3.24,
+    },
+    setDura: 2407.6,
+    pieceDurability: {
+      helm: 481.52,
+      rightArm: 361.14,
+      torso: 601.9,
+      leftArm: 361.14,
+      legs: 601.9,
+    },
+    setMaterialUsage: {
+      base: 547,
+      padding: 269,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 66,
+        padding: 32,
+      },
+      rightArm: {
+        base: 66,
+        padding: 32,
+      },
+      torso: {
+        base: 180,
+        padding: 89,
+      },
+      leftArm: {
+        base: 66,
+        padding: 32,
+      },
+      legs: {
+        base: 169,
+        padding: 84,
+      },
+    },
+  },
 ];

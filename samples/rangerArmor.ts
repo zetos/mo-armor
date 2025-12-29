@@ -487,4 +487,220 @@ export const rangerArmorSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 41.97,
+      slash: 43.52,
+      blunt: 32.64,
+    },
+    setWeight: 6.13,
+    pieceWeight: {
+      helm: 0.61,
+      rightArm: 0.86,
+      torso: 1.96,
+      leftArm: 0.86,
+      legs: 1.84,
+    },
+    setDura: 1842.73,
+    pieceDurability: {
+      helm: 368.55,
+      rightArm: 276.41,
+      torso: 460.68,
+      leftArm: 276.41,
+      legs: 460.68,
+    },
+    setMaterialUsage: {
+      base: 229,
+      padding: 538,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 23,
+        padding: 54,
+      },
+      rightArm: {
+        base: 32,
+        padding: 75,
+      },
+      torso: {
+        base: 69,
+        padding: 162,
+      },
+      leftArm: {
+        base: 32,
+        padding: 75,
+      },
+      legs: {
+        base: 73,
+        padding: 172,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 33.67,
+      slash: 36.32,
+      blunt: 27.77,
+    },
+    setWeight: 5.73,
+    pieceWeight: {
+      helm: 0.57,
+      rightArm: 0.8,
+      torso: 1.83,
+      leftArm: 0.8,
+      legs: 1.72,
+    },
+    setDura: 1497.73,
+    pieceDurability: {
+      helm: 299.55,
+      rightArm: 224.66,
+      torso: 374.43,
+      leftArm: 224.66,
+      legs: 374.43,
+    },
+    setMaterialUsage: {
+      base: 229,
+      padding: 179,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 23,
+        padding: 18,
+      },
+      rightArm: {
+        base: 32,
+        padding: 25,
+      },
+      torso: {
+        base: 69,
+        padding: 54,
+      },
+      leftArm: {
+        base: 32,
+        padding: 25,
+      },
+      legs: {
+        base: 73,
+        padding: 57,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 37.32,
+      slash: 39.38,
+      blunt: 28.18,
+    },
+    setWeight: 4.75,
+    pieceWeight: {
+      helm: 0.48,
+      rightArm: 0.67,
+      torso: 1.52,
+      leftArm: 0.67,
+      legs: 1.43,
+    },
+    setDura: 1119.88,
+    pieceDurability: {
+      helm: 223.98,
+      rightArm: 167.98,
+      torso: 279.97,
+      leftArm: 167.98,
+      legs: 279.97,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 538,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 11,
+        padding: 54,
+      },
+      rightArm: {
+        base: 15,
+        padding: 75,
+      },
+      torso: {
+        base: 32,
+        padding: 162,
+      },
+      leftArm: {
+        base: 15,
+        padding: 75,
+      },
+      legs: {
+        base: 34,
+        padding: 172,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 29.02,
+      slash: 32.18,
+      blunt: 23.31,
+    },
+    setWeight: 4.35,
+    pieceWeight: {
+      helm: 0.44,
+      rightArm: 0.61,
+      torso: 1.39,
+      leftArm: 0.61,
+      legs: 1.31,
+    },
+    setDura: 774.88,
+    pieceDurability: {
+      helm: 154.98,
+      rightArm: 116.23,
+      torso: 193.72,
+      leftArm: 116.23,
+      legs: 193.72,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 179,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 11,
+        padding: 18,
+      },
+      rightArm: {
+        base: 15,
+        padding: 25,
+      },
+      torso: {
+        base: 32,
+        padding: 54,
+      },
+      leftArm: {
+        base: 15,
+        padding: 25,
+      },
+      legs: {
+        base: 34,
+        padding: 57,
+      },
+    },
+  },
 ];

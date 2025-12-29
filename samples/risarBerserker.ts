@@ -1135,4 +1135,382 @@ export const risarBerserkerSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 37.88,
+      slash: 39.78,
+      blunt: 48.73,
+    },
+    setWeight: 8,
+    pieceWeight: {
+      helm: 0.96,
+      rightArm: 1.04,
+      torso: 2.56,
+      leftArm: 1.04,
+      legs: 2.4,
+    },
+    setDura: 1998.85,
+    pieceDurability: {
+      helm: 399.77,
+      rightArm: 299.83,
+      torso: 499.71,
+      leftArm: 299.83,
+      legs: 499.71,
+    },
+    setMaterialUsage: {
+      base: 240,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 29,
+        padding: 48,
+      },
+      rightArm: {
+        base: 29,
+        padding: 48,
+      },
+      torso: {
+        base: 79,
+        padding: 134,
+      },
+      leftArm: {
+        base: 29,
+        padding: 48,
+      },
+      legs: {
+        base: 74,
+        padding: 126,
+      },
+    },
+  },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 31.38,
+      slash: 33.18,
+      blunt: 38.06,
+    },
+    setWeight: 6.6,
+    pieceWeight: {
+      helm: 0.79,
+      rightArm: 0.86,
+      torso: 2.11,
+      leftArm: 0.86,
+      legs: 1.98,
+    },
+    setDura: 1554.85,
+    pieceDurability: {
+      helm: 310.97,
+      rightArm: 233.23,
+      torso: 388.71,
+      leftArm: 233.23,
+      legs: 388.71,
+    },
+    setMaterialUsage: {
+      base: 240,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 29,
+        padding: 16,
+      },
+      rightArm: {
+        base: 29,
+        padding: 16,
+      },
+      torso: {
+        base: 79,
+        padding: 44,
+      },
+      leftArm: {
+        base: 29,
+        padding: 16,
+      },
+      legs: {
+        base: 74,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 32.85,
+      slash: 35.3,
+      blunt: 43.9,
+    },
+    setWeight: 6.5,
+    pieceWeight: {
+      helm: 0.78,
+      rightArm: 0.85,
+      torso: 2.08,
+      leftArm: 0.85,
+      legs: 1.95,
+    },
+    setDura: 1245.5,
+    pieceDurability: {
+      helm: 249.1,
+      rightArm: 186.83,
+      torso: 311.38,
+      leftArm: 186.83,
+      legs: 311.38,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 48,
+      },
+      rightArm: {
+        base: 13,
+        padding: 48,
+      },
+      torso: {
+        base: 35,
+        padding: 134,
+      },
+      leftArm: {
+        base: 13,
+        padding: 48,
+      },
+      legs: {
+        base: 33,
+        padding: 126,
+      },
+    },
+  },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 26.35,
+      slash: 28.7,
+      blunt: 33.23,
+    },
+    setWeight: 5.1,
+    pieceWeight: {
+      helm: 0.61,
+      rightArm: 0.66,
+      torso: 1.63,
+      leftArm: 0.66,
+      legs: 1.53,
+    },
+    setDura: 801.5,
+    pieceDurability: {
+      helm: 160.3,
+      rightArm: 120.23,
+      torso: 200.38,
+      leftArm: 120.23,
+      legs: 200.38,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 16,
+      },
+      rightArm: {
+        base: 13,
+        padding: 16,
+      },
+      torso: {
+        base: 35,
+        padding: 44,
+      },
+      leftArm: {
+        base: 13,
+        padding: 16,
+      },
+      legs: {
+        base: 33,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Horned Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 33.18,
+      slash: 33.78,
+      blunt: 32.26,
+    },
+    setWeight: 6.1,
+    pieceWeight: {
+      helm: 0.73,
+      rightArm: 0.79,
+      torso: 1.95,
+      leftArm: 0.79,
+      legs: 1.83,
+    },
+    setDura: 1512.85,
+    pieceDurability: {
+      helm: 302.57,
+      rightArm: 226.93,
+      torso: 378.21,
+      leftArm: 226.93,
+      legs: 378.21,
+    },
+    setMaterialUsage: {
+      base: 240,
+      padding: 177,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 29,
+        padding: 21,
+      },
+      rightArm: {
+        base: 29,
+        padding: 21,
+      },
+      torso: {
+        base: 79,
+        padding: 59,
+      },
+      leftArm: {
+        base: 29,
+        padding: 21,
+      },
+      legs: {
+        base: 74,
+        padding: 55,
+      },
+    },
+  },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Horned Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 41.48,
+      slash: 40.98,
+      blunt: 37.13,
+    },
+    setWeight: 6.5,
+    pieceWeight: {
+      helm: 0.78,
+      rightArm: 0.84,
+      torso: 2.08,
+      leftArm: 0.84,
+      legs: 1.95,
+    },
+    setDura: 1872.85,
+    pieceDurability: {
+      helm: 374.57,
+      rightArm: 280.93,
+      torso: 468.21,
+      leftArm: 280.93,
+      legs: 468.21,
+    },
+    setMaterialUsage: {
+      base: 240,
+      padding: 537,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 29,
+        padding: 64,
+      },
+      rightArm: {
+        base: 29,
+        padding: 64,
+      },
+      torso: {
+        base: 79,
+        padding: 178,
+      },
+      leftArm: {
+        base: 29,
+        padding: 64,
+      },
+      legs: {
+        base: 74,
+        padding: 167,
+      },
+    },
+  },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Horned Scales',
+    padding: 'Ironsilk',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 36.45,
+      slash: 36.5,
+      blunt: 32.3,
+    },
+    setWeight: 5,
+    pieceWeight: {
+      helm: 0.6,
+      rightArm: 0.65,
+      torso: 1.6,
+      leftArm: 0.65,
+      legs: 1.5,
+    },
+    setDura: 1119.5,
+    pieceDurability: {
+      helm: 223.9,
+      rightArm: 167.93,
+      torso: 279.88,
+      leftArm: 167.93,
+      legs: 279.88,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 537,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 64,
+      },
+      rightArm: {
+        base: 13,
+        padding: 64,
+      },
+      torso: {
+        base: 35,
+        padding: 178,
+      },
+      leftArm: {
+        base: 13,
+        padding: 64,
+      },
+      legs: {
+        base: 33,
+        padding: 167,
+      },
+    },
+  },
 ];
