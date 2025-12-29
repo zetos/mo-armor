@@ -132,16 +132,15 @@ function calculatePieceDurability(
 /**
  * Calculates defense for the armor set.
  * Formula per damage type:
- *   defense = (baseDefense + baseMaterialOffset) * baseScale(baseDensity) + paddingDefense * padScale(paddingDensity)
+ *   defense = materialBaseDefense * materialDensityScale(baseDensity) + paddingDefense * padScale(paddingDensity)
  *
- * Where baseScale and padScale use per-damage-type linear coefficients.
- * Each armor style has its own baseDefenseDensityCoeffs.
+ * Where materialDensityScale uses material-specific (or style-specific) linear coefficients.
+ * Each material can have its own base defense and density scaling per armor style.
  * Padding contribution is floored at 0 (no negative defense).
  */
 function calculateDefense(
-   baseDefense: DefenseStats,
-   baseMaterialDefenseOffset: DefenseStats,
-   baseDensityCoeffs: DefenseDensityCoeffs,
+   materialBaseDefense: DefenseStats,
+   materialDensityCoeffs: DefenseDensityCoeffs,
    paddingDefense: DefenseStats,
    paddingDensityCoeffs: DefenseDensityCoeffs,
    baseDensity: number,
@@ -151,8 +150,7 @@ function calculateDefense(
   const result: DefenseStats = { blunt: 0, pierce: 0, slash: 0 };
 
    for (const type of types) {
-     const effectiveBaseDefense = baseDefense[type] + baseMaterialDefenseOffset[type];
-     const baseContrib = effectiveBaseDefense * linearScale(baseDensity, baseDensityCoeffs[type]);
+     const baseContrib = materialBaseDefense[type] * linearScale(baseDensity, materialDensityCoeffs[type]);
      const padScale = linearScale(paddingDensity, paddingDensityCoeffs[type]);
      // Padding can contribute negative values (e.g., Ironsilk reduces blunt defense)
      const padContrib = paddingDefense[type] * padScale;
@@ -174,7 +172,7 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
   paddingDensity = 100,
 }: CalculateSetStatusInput<B, S>): SetStats {
   const styleConfig = armorStyles[armorStyle];
-  const baseMaterialConfig = getBaseMaterial(base);
+  const baseMaterialConfig = getBaseMaterial(base, armorStyle);
   const paddingMaterialConfig = getPaddingMaterial(armorStyle, padding);
 
   // Calculate piece-level material usage
@@ -255,11 +253,16 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
   const setWeight = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0));
   const setDura = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceDurability[piece], 0));
 
-   // Defense calculation - uses per-style base density coefficients and per-padding padding coefficients
+   // Defense calculation - uses material-specific or style base defense and density coefficients
+   // If material has style-specific config, use it; otherwise use style's base values
+   const materialDefenseConfig = baseMaterialConfig.resolvedDefenseConfig ?? {
+     baseDefense: styleConfig.baseDefense,
+     densityCoeffs: styleConfig.baseDefenseDensityCoeffs,
+   };
+   
    const setDefense = calculateDefense(
-     styleConfig.baseDefense,
-     baseMaterialConfig.defenseOffset,
-     styleConfig.baseDefenseDensityCoeffs,
+     materialDefenseConfig.baseDefense,
+     materialDefenseConfig.densityCoeffs,
      paddingMaterialConfig.defense,
      paddingMaterialConfig.defenseDensityCoeffs,
      baseDensity,

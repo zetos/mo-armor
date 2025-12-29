@@ -143,15 +143,28 @@ export type ArmorStyleConfig = {
 };
 
 /**
+ * Style-specific defense configuration for a base material.
+ * Each material can have different base defense values and density scaling per style.
+ */
+export type StyleSpecificDefenseConfig = {
+  /** Base defense values at 100% density with 0% padding */
+  baseDefense: DefenseStats;
+  /** Density scaling coefficients for this material on this style */
+  densityCoeffs: DefenseDensityCoeffs;
+};
+
+/**
  * Base material configuration.
  * Each material defines weight, usage, durability, and defense properties.
+ * Defense values and scaling are style-specific for materials other than Plate Scales.
  */
 export type BaseMaterialConfig = {
   weight: number;
   weightMultiplier: number;
   usageMultiplier: number;
   durability: number;
-  defenseOffset: DefenseStats;
+  /** Style-specific defense configurations. Empty for Plate Scales (uses armor style's base values). */
+  defenseConfig: Partial<Record<ArmorStyle, StyleSpecificDefenseConfig>>;
 };
 
 /**

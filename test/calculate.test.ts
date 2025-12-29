@@ -9,8 +9,13 @@ const TOLERANCE = 5.0;
 // Durability tolerance - larger variance due to formula approximation
 // Note: Some samples show up to ~15.5 difference
 const DURABILITY_TOLERANCE = 16.0;
-// Defense tolerance - some samples show variance up to 0.7
-const DEFENSE_TOLERANCE = 0.8;
+// Defense tolerance - with style-specific base defense and density coefficients
+// Achieves 94.31% success rate (232/246 checks pass)
+// Known failures:
+//   - 4 rounding errors on Plate Scales (0.01 diff, acceptable)
+//   - 7 on Horned Scales (Ranger Armor @ 0% base density - missing calibration samples)
+//   - 3 on Arthropod Carapace (may need material-specific density coefficients)
+const DEFENSE_TOLERANCE = 0.01;
 // Material usage can be off by 2 due to rounding and formula variance
 const MATERIAL_TOLERANCE = 2;
 
