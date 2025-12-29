@@ -174,6 +174,18 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
   const styleConfig = armorStyles[armorStyle];
   const baseMaterialConfig = getBaseMaterial(base, armorStyle);
   const paddingMaterialConfig = getPaddingMaterial(armorStyle, padding);
+  
+  // Use style-specific durability coefficients if available, otherwise use style's base coefficients with material multiplier
+  const durabilityCoeffs = baseMaterialConfig.resolvedDurabilityConfig ?? {
+    baseMin: styleConfig.durabilityCoeffs.baseMin * baseMaterialConfig.durability,
+    baseDensityContrib: styleConfig.durabilityCoeffs.baseDensityContrib * baseMaterialConfig.durability,
+    padContrib: styleConfig.durabilityCoeffs.padContrib,
+  };
+  
+  // Calculate effective usage multiplier with density scaling if configured
+  const usageMultiplier = baseMaterialConfig.resolvedUsageMultiplierConfig 
+    ? baseMaterialConfig.resolvedUsageMultiplierConfig.a + baseMaterialConfig.resolvedUsageMultiplierConfig.b * (baseDensity / 100)
+    : baseMaterialConfig.usageMultiplier;
 
   // Calculate piece-level material usage
   const pieceMaterialUsage: PieceStats<MaterialUsage> = {
@@ -204,7 +216,7 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
     // Material usage - now both base and padding scale with density
     const baseUsage = calculateBaseUsage(
       styleConfig.baseMaterialUsage[piece],
-      baseMaterialConfig.usageMultiplier,
+      usageMultiplier,
       baseDensity,
       styleConfig.baseMaterialUsageDensityCoeffs
     );
@@ -233,11 +245,11 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
        styleConfig.pieceWeightMultipliers[piece]
      ));
 
-     // Durability calculation - uses additive model with density and material multipliers
+     // Durability calculation - uses additive model with density and material coefficients
      pieceDurability[piece] = calculatePieceDurability(
-       styleConfig.durabilityCoeffs,
+       durabilityCoeffs,
        DURABILITY_PIECE_MULTIPLIERS[piece],
-       baseMaterialConfig.durability,
+       1.0, // Material multiplier already baked into durabilityCoeffs
        paddingMaterialConfig.durabilityMults,
        baseDensity,
        paddingDensity

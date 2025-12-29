@@ -154,17 +154,46 @@ export type StyleSpecificDefenseConfig = {
 };
 
 /**
+ * Style-specific durability configuration for a base material.
+ * Each material can have different durability coefficients per style.
+ * Uses the same additive model as armor styles but with material-specific values.
+ */
+export type StyleSpecificDurabilityConfig = {
+  /** Durability at 0/0 with Ironfur (base minimum) */
+  baseMin: number;
+  /** Additional durability from base density 0->100 */
+  baseDensityContrib: number;
+  /** Additional durability from padding density 0->100 with Ironfur */
+  padContrib: number;
+};
+
+/**
  * Base material configuration.
  * Each material defines weight, usage, durability, and defense properties.
  * Defense values and scaling are style-specific for materials other than Plate Scales.
  */
+/**
+ * Style-specific usage multiplier configuration for a base material.
+ * The effective multiplier scales with base density: mult(d) = a + b * (d / 100)
+ */
+export type StyleSpecificUsageMultiplierConfig = {
+  /** Multiplier at 0% density */
+  a: number;
+  /** Additional multiplier contribution from 0% to 100% density */
+  b: number;
+};
+
 export type BaseMaterialConfig = {
   weight: number;
   weightMultiplier: number;
   usageMultiplier: number;
+  /** Style-specific usage multipliers with density scaling. If provided, overrides the base usageMultiplier for that style. */
+  usageMultiplierConfig?: Partial<Record<ArmorStyle, StyleSpecificUsageMultiplierConfig>>;
   durability: number;
   /** Style-specific defense configurations. Empty for Plate Scales (uses armor style's base values). */
   defenseConfig: Partial<Record<ArmorStyle, StyleSpecificDefenseConfig>>;
+  /** Style-specific durability configurations. If empty, uses the base durability multiplier. */
+  durabilityConfig?: Partial<Record<ArmorStyle, StyleSpecificDurabilityConfig>>;
 };
 
 /**

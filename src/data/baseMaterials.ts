@@ -1,4 +1,4 @@
-import type { BaseMaterial, BaseMaterialConfig, ArmorStyle, DefenseStats, StyleSpecificDefenseConfig } from '../types';
+import type { BaseMaterial, BaseMaterialConfig, ArmorStyle, DefenseStats, StyleSpecificDefenseConfig, StyleSpecificDurabilityConfig, StyleSpecificUsageMultiplierConfig } from '../types';
 
 export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = {
   'Plate Scales': {
@@ -15,8 +15,23 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     // Weight multiplier to match Plate Scales baseline
     // Derived from Risar Berserker samples: ~0.88
     weightMultiplier: 0.88,
-    usageMultiplier: 1.96, // Derived from Kallardian Norse sample: 498/254 = 1.9606
-    durability: 1.221, // 1/0.819, higher durability than Plate Scales
+    usageMultiplier: 1.96, // Fallback (Kallardian Norse at 100%)
+    // Style-specific usage multipliers with density scaling (mult = a + b * density/100)
+    // Derived from 0% and 100% density samples
+    usageMultiplierConfig: {
+      'Risar Berserker': { a: 1.9155, b: 0.0501 },
+      'Kallardian Norse': { a: 1.9456, b: 0.0150 },
+      'Khurite Splinted': { a: 1.9155, b: 0.0381 },
+      'Ranger Armor': { a: 1.9530, b: 0.0112 },
+    },
+    durability: 1.221, // Fallback value
+    // Style-specific durability configurations (derived from 0%/0%, 100%/0%, 0%/100% samples)
+    durabilityConfig: {
+      'Risar Berserker': { baseMin: 274.0, baseDensityContrib: 284.05, padContrib: 111.0 },
+      'Kallardian Norse': { baseMin: 275.125, baseDensityContrib: 224.25, padContrib: 101.75 },
+      'Khurite Splinted': { baseMin: 277.375, baseDensityContrib: 565.8, padContrib: 83.25 },
+      'Ranger Armor': { baseMin: 280.3125, baseDensityContrib: 272.55, padContrib: 106.375 },
+    },
     // Style-specific defense configurations derived from 100/0 and 100/100 samples
     // For styles without 0% density samples, density coefficients default to style's base coefficients
     defenseConfig: {
@@ -51,7 +66,14 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
      // Derived from Kallardian Norse samples: ~0.98
      weightMultiplier: 0.98,
      usageMultiplier: 0.83, // Derived from multiple samples
-     durability: 0.91,
+     durability: 0.91, // Fallback value
+     // Style-specific durability configurations (derived from 0%/0%, 100%/0%, 0%/100% samples)
+     durabilityConfig: {
+       'Risar Berserker': { baseMin: 200.375, baseDensityContrib: 188.3375, padContrib: 111.0 },
+       'Kallardian Norse': { baseMin: 199.5625, baseDensityContrib: 148.6875, padContrib: 101.75 },
+       'Khurite Splinted': { baseMin: 197.9375, baseDensityContrib: 375.15, padContrib: 83.25 },
+       'Ranger Armor': { baseMin: 203.7825, baseDensityContrib: 180.7125, padContrib: 106.375 },
+     },
      // Style-specific defense configurations with material-specific density scaling
      defenseConfig: {
        'Risar Berserker': {
@@ -91,16 +113,20 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
 };
 
 /**
- * Get base material configuration with resolved defense config for the given armor style.
+ * Get base material configuration with resolved defense, durability, and usage configs for the given armor style.
  * 
  * @param material - The base material
- * @param armorStyle - The armor style (affects defense values and scaling)
- * @returns Base material config with resolved defense configuration
+ * @param armorStyle - The armor style (affects defense values, durability, usage, and scaling)
+ * @returns Base material config with resolved configurations
  */
 export function getBaseMaterial(
   material: BaseMaterial, 
   armorStyle: ArmorStyle
-): BaseMaterialConfig & { resolvedDefenseConfig: StyleSpecificDefenseConfig | null } {
+): BaseMaterialConfig & { 
+  resolvedDefenseConfig: StyleSpecificDefenseConfig | null;
+  resolvedDurabilityConfig: StyleSpecificDurabilityConfig | null;
+  resolvedUsageMultiplierConfig: StyleSpecificUsageMultiplierConfig | null;
+} {
   const config = baseMaterials[material];
   if (!config) {
     throw new Error(
@@ -112,8 +138,18 @@ export function getBaseMaterial(
   // If null, caller should use armor style's base defense and density coefficients
   const resolvedDefenseConfig = config.defenseConfig[armorStyle] ?? null;
   
+  // Resolve style-specific durability config
+  // If null, caller should use base durability multiplier
+  const resolvedDurabilityConfig = config.durabilityConfig?.[armorStyle] ?? null;
+  
+  // Resolve style-specific usage multiplier config
+  // If not configured, return null (caller will use base usage multiplier)
+  const resolvedUsageMultiplierConfig = config.usageMultiplierConfig?.[armorStyle] ?? null;
+  
   return { 
     ...config, 
-    resolvedDefenseConfig 
+    resolvedDefenseConfig,
+    resolvedDurabilityConfig,
+    resolvedUsageMultiplierConfig
   };
 }
