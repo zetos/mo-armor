@@ -433,4 +433,58 @@ export const rangerArmorSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 38.37,
+      slash: 42.32,
+      blunt: 44.24,
+    },
+    setWeight: 7.63,
+    pieceWeight: {
+      helm: 0.76,
+      rightArm: 1.07,
+      torso: 2.44,
+      leftArm: 1.07,
+      legs: 2.29,
+    },
+    setDura: 1963.48,
+    pieceDurability: {
+      helm: 392.7,
+      rightArm: 294.52,
+      torso: 490.87,
+      leftArm: 294.52,
+      legs: 490.87,
+    },
+    setMaterialUsage: {
+      base: 229,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 23,
+        padding: 40,
+      },
+      rightArm: {
+        base: 32,
+        padding: 56,
+      },
+      torso: {
+        base: 69,
+        padding: 122,
+      },
+      leftArm: {
+        base: 32,
+        padding: 56,
+      },
+      legs: {
+        base: 73,
+        padding: 130,
+      },
+    },
+  },
 ];
