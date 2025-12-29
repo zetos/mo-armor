@@ -325,4 +325,166 @@ export const khuriteSplintedSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Plate Scales',
+    padding: 'Ironfur',
+    baseDensity: 75,
+    paddingDensity: 25,
+    setDefense: {
+      pierce: 40.24,
+      slash: 37.59,
+      blunt: 47.82,
+    },
+    setWeight: 9.97,
+    pieceWeight: {
+      helm: 1.2,
+      rightArm: 1.3,
+      torso: 3.19,
+      leftArm: 1.3,
+      legs: 2.99,
+    },
+    setDura: 2258.75,
+    pieceDurability: {
+      helm: 451.75,
+      rightArm: 338.81,
+      torso: 564.69,
+      leftArm: 338.81,
+      legs: 564.69,
+    },
+    setMaterialUsage: {
+      base: 356,
+      padding: 202,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 43,
+        padding: 24,
+      },
+      rightArm: {
+        base: 43,
+        padding: 24,
+      },
+      torso: {
+        base: 117,
+        padding: 67,
+      },
+      leftArm: {
+        base: 43,
+        padding: 24,
+      },
+      legs: {
+        base: 110,
+        padding: 63,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Plate Scales',
+    padding: 'Ironfur',
+    baseDensity: 50,
+    paddingDensity: 50,
+    setDefense: {
+      pierce: 39.25,
+      slash: 36.9,
+      blunt: 47.67,
+    },
+    setWeight: 9.48,
+    pieceWeight: {
+      helm: 1.14,
+      rightArm: 1.23,
+      torso: 3.03,
+      leftArm: 1.23,
+      legs: 2.84,
+    },
+    setDura: 1911.5,
+    pieceDurability: {
+      helm: 382.3,
+      rightArm: 286.73,
+      torso: 477.88,
+      leftArm: 286.73,
+      legs: 477.88,
+    },
+    setMaterialUsage: {
+      base: 280,
+      padding: 269,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 34,
+        padding: 32,
+      },
+      rightArm: {
+        base: 34,
+        padding: 32,
+      },
+      torso: {
+        base: 92,
+        padding: 89,
+      },
+      leftArm: {
+        base: 34,
+        padding: 32,
+      },
+      legs: {
+        base: 86,
+        padding: 84,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Plate Scales',
+    padding: 'Ironfur',
+    baseDensity: 70,
+    paddingDensity: 18,
+    setDefense: {
+      pierce: 39.26,
+      slash: 36.66,
+      blunt: 46.51,
+    },
+    setWeight: 9.7,
+    pieceWeight: {
+      helm: 1.16,
+      rightArm: 1.26,
+      torso: 3.11,
+      leftArm: 1.26,
+      legs: 2.91,
+    },
+    setDura: 2149.34,
+    pieceDurability: {
+      helm: 429.87,
+      rightArm: 322.4,
+      torso: 537.34,
+      leftArm: 322.4,
+      legs: 537.34,
+    },
+    setMaterialUsage: {
+      base: 340,
+      padding: 184,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 41,
+        padding: 22,
+      },
+      rightArm: {
+        base: 41,
+        padding: 22,
+      },
+      torso: {
+        base: 112,
+        padding: 61,
+      },
+      leftArm: {
+        base: 41,
+        padding: 22,
+      },
+      legs: {
+        base: 105,
+        padding: 57,
+      },
+    },
+  },
 ];
