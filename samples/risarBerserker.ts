@@ -1027,4 +1027,58 @@ export const risarBerserkerSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Risar Berserker',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 58,
+    setDefense: {
+      pierce: 39.45,
+      slash: 39.34,
+      blunt: 38.1,
+    },
+    setWeight: 6.9,
+    pieceWeight: {
+      helm: 0.83,
+      rightArm: 0.9,
+      torso: 2.21,
+      leftArm: 0.9,
+      legs: 2.07,
+    },
+    setDura: 1918.3,
+    pieceDurability: {
+      helm: 383.66,
+      rightArm: 287.75,
+      torso: 479.58,
+      leftArm: 287.75,
+      legs: 479.58,
+    },
+    setMaterialUsage: {
+      base: 291,
+      padding: 386,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 35,
+        padding: 46,
+      },
+      rightArm: {
+        base: 35,
+        padding: 46,
+      },
+      torso: {
+        base: 96,
+        padding: 128,
+      },
+      leftArm: {
+        base: 35,
+        padding: 46,
+      },
+      legs: {
+        base: 90,
+        padding: 120,
+      },
+    },
+  },
 ];

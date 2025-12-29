@@ -46,11 +46,11 @@ function densityScalePaddingUsage(density: number): number {
 
 /**
  * Calculates the density scaling factor for base material usage.
- * At density 100 -> 1.0, at density 50 -> 0.75, at density 0 -> 0.5
- * Formula: 0.5 + 0.5 * (density / 100)
+ * Formula: a + b * (density / 100)
+ * Each armor style has its own coefficients.
  */
-function densityScaleBaseUsage(density: number): number {
-  return 0.5 + 0.5 * (density / 100);
+function densityScaleBaseUsage(density: number, coeffs: { a: number; b: number }): number {
+  return coeffs.a + coeffs.b * (density / 100);
 }
 
 /**
@@ -69,8 +69,13 @@ function densityScaleWeight(density: number): number {
  * Calculates base material usage for a piece
  * Formula: round(styleBaseUsage * materialUsageMult * densityScale)
  */
-function calculateBaseUsage(styleBaseUsage: number, materialUsageMultiplier: number, baseDensity: number): number {
-  return Math.round(styleBaseUsage * materialUsageMultiplier * densityScaleBaseUsage(baseDensity));
+function calculateBaseUsage(
+  styleBaseUsage: number,
+  materialUsageMultiplier: number,
+  baseDensity: number,
+  densityCoeffs: { a: number; b: number }
+): number {
+  return Math.round(styleBaseUsage * materialUsageMultiplier * densityScaleBaseUsage(baseDensity, densityCoeffs));
 }
 
 /**
@@ -110,27 +115,25 @@ function calculatePieceWeight(
 }
 
 /**
- * Calculates durability for a piece.
- * Formula: styleDuraBase * pieceMultiplier * baseMaterialDuraMult * paddingDurabilityMult * baseDensityFactor * paddingDensityFactor
+ * Calculates durability for a piece using the additive model.
+ * Formula: ((baseMin * padMinMult) + (baseDensityContrib * bd/100) + (padContrib * padPadMult * pd/100)) * pieceMultiplier * baseMaterialDuraMult
  *
- * Note: durabilityBase is calibrated for Arthropod Carapace (for Risar Berserker).
- * Other base materials have a durability multiplier relative to this baseline.
- *
- * baseDensityFactor = 0.654 + 0.346 * (baseDensity / 100)
- * paddingDensityFactor = 0.793 + 0.207 * (paddingDensity / 100)
+ * Note: baseMaterialDuraMult is relative to Plate Scales (which has mult=1.0).
+ * Other base materials like Arthropod Carapace have higher durability.
  */
 function calculatePieceDurability(
-  durabilityBase: number,
+  durabilityCoeffs: { baseMin: number; baseDensityContrib: number; padContrib: number },
   pieceMultiplier: number,
   baseMaterialDurabilityMult: number,
-  paddingDurabilityMult: number,
+  paddingDurabilityMults: { minMult: number; padMult: number },
   baseDensity: number,
   paddingDensity: number
 ): number {
-  const baseDensityFactor = 0.654 + 0.346 * (baseDensity / 100);
-  const paddingDensityFactor = 0.793 + 0.207 * (paddingDensity / 100);
-  const totalDura =
-    durabilityBase * pieceMultiplier * baseMaterialDurabilityMult * paddingDurabilityMult * baseDensityFactor * paddingDensityFactor;
+  const torsoDura =
+    durabilityCoeffs.baseMin * paddingDurabilityMults.minMult +
+    durabilityCoeffs.baseDensityContrib * (baseDensity / 100) +
+    durabilityCoeffs.padContrib * paddingDurabilityMults.padMult * (paddingDensity / 100);
+  const totalDura = torsoDura * pieceMultiplier * baseMaterialDurabilityMult;
   return round2(totalDura);
 }
 
@@ -220,7 +223,8 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
     const baseUsage = calculateBaseUsage(
       styleConfig.baseMaterialUsage[piece],
       baseMaterialConfig.usageMultiplier,
-      baseDensity
+      baseDensity,
+      styleConfig.baseMaterialUsageDensityCoeffs
     );
     const paddingUsage = calculatePaddingUsage(
       styleConfig.paddingUsage[piece],
@@ -246,12 +250,12 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       styleConfig.pieceWeightMultipliers[piece]
     );
 
-    // Durability calculation - uses both density factors and material multipliers
+    // Durability calculation - uses additive model with density and material multipliers
     pieceDurability[piece] = calculatePieceDurability(
-      styleConfig.durabilityBase,
+      styleConfig.durabilityCoeffs,
       DURABILITY_PIECE_MULTIPLIERS[piece],
       baseMaterialConfig.durability,
-      paddingMaterialConfig.durabilityMultiplier,
+      paddingMaterialConfig.durabilityMults,
       baseDensity,
       paddingDensity
     );

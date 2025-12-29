@@ -38,7 +38,7 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   },
   'Arthropod Carapace': {
     weight: 0.01082,
-    usageMultiplier: 1.97, // 69/35 ratio vs Plate Scales in Risar Berserker
+    usageMultiplier: 1.96, // Derived from Kallardian Norse sample: 498/254 = 1.9606
     durability: 1.221, // 1/0.819, higher durability than Plate Scales
     // Derived from Risar Berserker: D(Arthropod, 100/100) - D(Plate Scales, 100/0) - ironfurDefense
     defenseOffset: {

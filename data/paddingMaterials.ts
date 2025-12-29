@@ -16,11 +16,23 @@ export type DefenseDensityCoeffs = {
 };
 
 /**
+ * Durability multipliers for padding materials.
+ * Used with the additive durability model:
+ *   dura = (baseMin * minMult) + (baseDensityContrib * bd/100) + (padContrib * padMult * pd/100)
+ */
+export type DurabilityMults = {
+  /** Multiplier for baseMin (durability at 0% densities) */
+  minMult: number;
+  /** Multiplier for padding density contribution */
+  padMult: number;
+};
+
+/**
  * Padding material configurations.
  * Each material defines:
  * - materialMultiplier: Multiplier for padding material usage (1.0 = baseline)
  * - weight: Weight per unit of padding material
- * - durabilityMultiplier: Multiplier for durability contribution (1.0 = baseline)
+ * - durabilityMults: Multipliers for the additive durability model
  * - defense: Defense contribution values at 100% density (blunt, pierce, slash)
  * - defenseDensityCoeffs: Per-damage-type density scaling coefficients
  *
@@ -29,7 +41,7 @@ export type DefenseDensityCoeffs = {
 export type PaddingMaterialConfig = {
   materialMultiplier: number;
   weight: number;
-  durabilityMultiplier: number;
+  durabilityMults: DurabilityMults;
   defense: DefenseStats;
   defenseDensityCoeffs: DefenseDensityCoeffs;
 };
@@ -38,7 +50,8 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   Ironfur: {
     materialMultiplier: 1.0,
     weight: 0.0093,
-    durabilityMultiplier: 1.0,
+    // Baseline durability multipliers (all 1.0)
+    durabilityMults: { minMult: 1.0, padMult: 1.0 },
     // Derived from Kallardian Norse: D(100/100) - D(100/0) = padding contribution at 100%
     defense: {
       blunt: 10.67,
@@ -56,7 +69,8 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   Ironsilk: {
     materialMultiplier: 1.33,
     weight: 0.00421,
-    durabilityMultiplier: 0.9415,
+    // Derived: minMult ~0.955 (average across styles), padMult = 0.8108
+    durabilityMults: { minMult: 0.955, padMult: 0.8108 },
     // Derived from Kallardian Norse: D(100/100) - baseDefense
     // Note: Ironsilk REDUCES blunt defense but increases pierce/slash
     defense: {
@@ -75,7 +89,8 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   'Guard Fur': {
     materialMultiplier: 0.995, // 402/404 ratio from Ironfur
     weight: 0.0103, // Derived: (0.99/0.997 - 35*0.01431) / 48
-    durabilityMultiplier: 0.989, // 2647.4/2676.2 from Samples 19/1
+    // Derived: similar to Ironfur (from Risar Berserker samples)
+    durabilityMults: { minMult: 0.989, padMult: 0.989 },
     // Derived from Risar Berserker: D(100/100) - baseDefense
     defense: {
       blunt: 5.39,
@@ -92,7 +107,8 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   Bloodsilk: {
     materialMultiplier: 1.485, // 600/404 ratio from Ironfur
     weight: 0.0053, // Derived: (0.88/0.997 - 35*0.01431) / 72
-    durabilityMultiplier: 0.992, // 2173.9/2166.7 * 0.989 from Samples 14/17
+    // Derived: similar to Ironfur (from Risar Berserker samples)
+    durabilityMults: { minMult: 0.992, padMult: 0.992 },
     // Derived from Risar Berserker: D(100/100) - baseDefense
     defense: {
       blunt: 0.57,

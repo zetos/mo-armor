@@ -1135,4 +1135,58 @@ export const kallardianNorseSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 18,
+    setDefense: {
+      pierce: 38.39,
+      slash: 32.9,
+      blunt: 32.28,
+    },
+    setWeight: 5.57,
+    pieceWeight: {
+      helm: 0.67,
+      rightArm: 0.72,
+      torso: 1.78,
+      leftArm: 0.72,
+      legs: 1.67,
+    },
+    setDura: 1589.4,
+    pieceDurability: {
+      helm: 317.88,
+      rightArm: 238.41,
+      torso: 397.35,
+      leftArm: 238.41,
+      legs: 397.35,
+    },
+    setMaterialUsage: {
+      base: 254,
+      padding: 242,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 31,
+        padding: 29,
+      },
+      rightArm: {
+        base: 33,
+        padding: 31,
+      },
+      torso: {
+        base: 81,
+        padding: 78,
+      },
+      leftArm: {
+        base: 33,
+        padding: 31,
+      },
+      legs: {
+        base: 76,
+        padding: 73,
+      },
+    },
+  },
 ];
