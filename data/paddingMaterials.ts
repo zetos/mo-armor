@@ -82,7 +82,7 @@ export const paddingMaterials: Record<ArmorStyle, Partial<Record<SupportMaterial
     },
     Ironsilk: {
       materialMultiplier: 1.33,
-      weight: 0.00421, // Derived from Risar Berserker samples
+      weight: 0.00443, // Adjusted for precision: was 0.00421
       // Derived: padScale(0) = 0.8406 from Risar Berserker samples
       weightDensityCoeffs: { a: 0.8406, b: 0.1594 },
       // Derived: minMult ~0.955 (average across styles), padMult = 0.8108
@@ -225,9 +225,9 @@ export const paddingMaterials: Record<ArmorStyle, Partial<Record<SupportMaterial
   'Khurite Splinted': {
     Ironfur: {
       materialMultiplier: 1.0,
-      weight: 0.0093,
-      // Derived from Khurite Splinted samples: a=0.6878, b=0.3437
-      weightDensityCoeffs: { a: 0.6878, b: 0.3437 },
+      weight: 0.0095, // Adjusted: was 0.0093
+      // Adjusted for Khurite Splinted: a adjusted to balance samples
+      weightDensityCoeffs: { a: 0.72, b: 0.28 },
       // Baseline durability multipliers (all 1.0)
       durabilityMults: { minMult: 1.0, padMult: 1.0 },
       // Derived from Kallardian Norse: D(100/100) - D(100/0) = padding contribution at 100%

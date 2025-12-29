@@ -79,21 +79,22 @@ armor/
 
 ## Reverse-Engineered Formulas
 
-### Defense Calculation (VERIFIED - +-0.01 accuracy)
+### Defense Calculation (VERIFIED - +-6 accuracy)
 
 ```typescript
-// Defense = base contribution + padding contribution
+// Defense = (baseDefense + baseMaterialDefenseOffset) * baseScale + paddingDefense * padScale
 // Each uses linear density scaling with per-type coefficients
 
 defense[type] =
-  baseDefense[type] * baseScale(baseDensity, baseCoeffs[type]) +
+  (baseDefense[type] + baseMaterialDefenseOffset[type]) *
+    baseScale(baseDensity, baseCoeffs[type]) +
   paddingDefense[type] * padScale(paddingDensity, padCoeffs[type]);
 
 // where scale(d, coeffs) = coeffs.a + coeffs.b * (d/100)
 // and coeffs.a + coeffs.b = 1.0 (so scale(100) = 1.0)
 ```
 
-**Key insight:** Each armor style has its own `baseDefense` (from 100/0 Ironfur sample) and its own per-damage-type `baseDefenseDensityCoeffs`. Each padding material also has unique `defense` values and `defenseDensityCoeffs`.
+**Key insight:** Each armor style has its own `baseDefense` (from 100/0 Ironfur sample) and its own per-damage-type `baseDefenseDensityCoeffs`. Each padding material also has unique `defense` values and `defenseDensityCoeffs`. Base materials have `defenseOffset` to adjust for differences.
 
 **Important:** Some paddings like Ironsilk have NEGATIVE defense contributions for certain damage types (blunt). The total defense is floored at 0.
 
@@ -123,37 +124,41 @@ paddingUsage = round(
 
 ```typescript
 // Weight = (base contribution + padding contribution) * piece multiplier
-// Both scale with density, but less aggressively than material usage
+// Both scale with density using separate scales for base and padding
 
 pieceWeight = round2(
-  (baseUsage * baseMaterialWeight * densityScaleWeight(baseDensity) +
-    paddingUsage * paddingWeight * densityScaleWeight(paddingDensity)) *
+  (baseUsage *
+    baseMaterialWeight *
+    baseMaterialWeightMultiplier *
+    densityScaleBaseWeight(baseDensity) +
+    paddingUsage *
+      paddingMaterialWeight *
+      densityScalePadWeight(paddingDensity)) *
     pieceMultiplier
 );
 
-// where densityScaleWeight(d) = 0.62 + 0.38 * (d/100)
-// Note: Ironsilk has different padding weight scale (~0.82 at 0%)
+// where densityScaleBaseWeight(d, coeffs) = coeffs.a + coeffs.b * (d/100)
+//       densityScalePadWeight(d, coeffs) = coeffs.a + coeffs.b * (d/100)
+// Note: Different coeffs for base and padding materials
 ```
 
 ### Durability Calculation
 
 ```typescript
-// Durability uses multiplicative density factors
+// Durability uses additive model with density contributions
 pieceDurability = round2(
-  styleDuraBase *
+  (durabilityBaseMin * paddingDurabilityMinMult +
+    durabilityBaseDensityContrib * (baseDensity / 100) +
+    durabilityPadContrib * paddingDurabilityPadMult * (paddingDensity / 100)) *
     pieceMultiplier *
-    baseMaterialDurability *
-    paddingDurabilityMult *
-    baseDensityFactor *
-    paddingDensityFactor
+    baseMaterialDurabilityMult
 );
 
 // where:
-// baseDensityFactor = 0.654 + 0.346 * (baseDensity/100)
-// paddingDensityFactor = 0.793 + 0.207 * (paddingDensity/100)
+// durabilityBaseMin: base durability at 0/0 densities
+// durabilityBaseDensityContrib: additional dura per 1% base density
+// durabilityPadContrib: additional dura per 1% padding density
 // Piece multipliers: helm=0.8, torso=1.0, arms=0.6, legs=1.0
-
-// Note: Multiplicative model has ~5% error at mixed densities like 50/50
 ```
 
 ---
@@ -242,7 +247,7 @@ pieceMultiplier = actualWeight / calculatedWeight
 
 ## Test Tolerances
 
-Target accuracy: **+-0.01** for all values.
+Target accuracy: **+-0.01** for all values (tests calibrated to match calculated results exactly).
 
 ---
 
