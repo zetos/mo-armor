@@ -325,4 +325,112 @@ export const rangerArmorSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 40,
+    paddingDensity: 40,
+    setDefense: {
+      pierce: 35.25,
+      slash: 37.71,
+      blunt: 29.22,
+    },
+    setWeight: 5.43,
+    pieceWeight: {
+      helm: 0.54,
+      rightArm: 0.76,
+      torso: 1.74,
+      leftArm: 0.76,
+      legs: 1.63,
+    },
+    setDura: 1333.55,
+    pieceDurability: {
+      helm: 266.71,
+      rightArm: 200.03,
+      torso: 333.39,
+      leftArm: 200.03,
+      legs: 333.39,
+    },
+    setMaterialUsage: {
+      base: 189,
+      padding: 322,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 19,
+        padding: 32,
+      },
+      rightArm: {
+        base: 27,
+        padding: 45,
+      },
+      torso: {
+        base: 56,
+        padding: 97,
+      },
+      leftArm: {
+        base: 27,
+        padding: 45,
+      },
+      legs: {
+        base: 60,
+        padding: 103,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Plate Scales',
+    padding: 'Ironfur',
+    baseDensity: 25,
+    paddingDensity: 75,
+    setDefense: {
+      pierce: 34.22,
+      slash: 38.48,
+      blunt: 40.22,
+    },
+    setWeight: 6.57,
+    pieceWeight: {
+      helm: 0.66,
+      rightArm: 0.92,
+      torso: 2.1,
+      leftArm: 0.92,
+      legs: 1.97,
+    },
+    setDura: 1430.5,
+    pieceDurability: {
+      helm: 286.1,
+      rightArm: 214.58,
+      torso: 357.63,
+      leftArm: 214.58,
+      legs: 357.63,
+    },
+    setMaterialUsage: {
+      base: 166,
+      padding: 336,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 17,
+        padding: 33,
+      },
+      rightArm: {
+        base: 23,
+        padding: 47,
+      },
+      torso: {
+        base: 50,
+        padding: 101,
+      },
+      leftArm: {
+        base: 23,
+        padding: 47,
+      },
+      legs: {
+        base: 53,
+        padding: 108,
+      },
+    },
+  },
 ];
