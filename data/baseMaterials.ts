@@ -54,20 +54,20 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
       slash: 0.92,
     },
   },
-  'Horned Scales': {
-    weight: 0.0153,
-    // Assume similar to Plate Scales (need more samples to verify)
-    weightMultiplier: 1.08,
-    usageMultiplier: 0.83, // 29/35 ratio vs Plate Scales (from Sample 20)
-    durability: 0.91,
-    // Derived from Sample 17 (Plate Scales) vs Sample 20 (Horned Scales)
-    // Sample 20: blunt=43.45, pierce=36.68, slash=38.82
-    defenseOffset: {
-      blunt: -3.02, // 43.45 - 46.47
-      pierce: -1.46, // 36.68 - 38.14
-      slash: -1.38, // 38.82 - 40.20
-    },
-  },
+   'Horned Scales': {
+     weight: 0.0153,
+     // Derived from Kallardian Norse samples: ~0.98
+     weightMultiplier: 0.98,
+     usageMultiplier: 0.83, // 29/35 ratio vs Plate Scales (from Sample 20)
+     durability: 0.91,
+     // Derived from Sample 17 (Plate Scales) vs Sample 20 (Horned Scales)
+     // Sample 20: blunt=43.45, pierce=36.68, slash=38.82
+     defenseOffset: {
+       blunt: -3.02, // 43.45 - 46.47
+       pierce: -1.46, // 36.68 - 38.14
+       slash: -1.38, // 38.82 - 40.20
+     },
+   },
 };
 
 export function getBaseMaterial(material: BaseMaterial): BaseMaterialConfig {

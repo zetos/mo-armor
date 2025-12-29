@@ -202,7 +202,7 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
 }: CalculateSetStatusInput<B, S>): SetStats {
   const styleConfig = armorStyles[armorStyle];
   const baseMaterialConfig = getBaseMaterial(base);
-  const paddingMaterialConfig = getPaddingMaterial(padding);
+  const paddingMaterialConfig = getPaddingMaterial(armorStyle, padding);
 
   // Calculate piece-level material usage
   const pieceMaterialUsage: PieceStats<MaterialUsage> = {
