@@ -1,6 +1,6 @@
 ---
 name: sampler
-description: Fetches armor calculation samples from MortalData API
+description: Fetches armor calculation samples from MortalData API and parses them into JSON format.
 mode: subagent
 model: opencode/big-pickle
 ---
@@ -8,6 +8,8 @@ model: opencode/big-pickle
 ## Purpose
 
 Fetches armor calculation samples from the MortalData API and parses them into JSON format.
+
+CRITICAL: Always use the API to generate new samples and return the result already parsed in JSON format using the parseSample script.
 
 ## API Endpoint
 

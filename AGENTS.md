@@ -157,5 +157,4 @@ type DensityCoeffs = { a: number; b: number };
 
 All critical samples have been collected. The armor calculator now has comprehensive coverage for achieving >99% defense accuracy at ±0.01 tolerance.
 
-Optional sample for complete density matrix coverage:
-- **Khurite Splinted + Arthropod Carapace + Ironfur @ 0/0** (for complete density testing)
+✅ **Complete sample coverage achieved** - All necessary density combinations are available across all 4 armor styles and 3 base materials.
