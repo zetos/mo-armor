@@ -9,7 +9,7 @@ import type {
   DefenseStats,
   PieceKey,
 } from './types';
-import { armorStyles } from './data/armorStyles';
+import { armorStyles, type DefenseDensityCoeffs } from './data/armorStyles';
 import { getBaseMaterial } from './data/baseMaterials';
 import { getPaddingMaterial } from './data/paddingMaterials';
 
@@ -26,6 +26,8 @@ const DURABILITY_PIECE_MULTIPLIERS: PieceStats<number> = {
   legs: 1.0,
 };
 
+
+
 /**
  * Rounds a number to 2 decimal places
  */
@@ -34,12 +36,41 @@ function round2(value: number): number {
 }
 
 /**
- * Calculates the density scaling factor for material usage
+ * Calculates the density scaling factor for padding material usage.
  * At density 100 -> 1.0, at density 50 -> 0.667, at density 0 -> 0.333
  * Formula: 1/3 + 2/3 * (density / 100)
  */
-function densityScaleMaterial(density: number): number {
+function densityScalePaddingUsage(density: number): number {
   return 1 / 3 + (2 / 3) * (density / 100);
+}
+
+/**
+ * Calculates the density scaling factor for base material usage.
+ * At density 100 -> 1.0, at density 50 -> 0.75, at density 0 -> 0.5
+ * Formula: 0.5 + 0.5 * (density / 100)
+ */
+function densityScaleBaseUsage(density: number): number {
+  return 0.5 + 0.5 * (density / 100);
+}
+
+/**
+ * Calculates the density scaling factor for weight.
+ * Weight doesn't scale as aggressively as material usage.
+ * At density 100 -> 1.0, at density 50 -> 0.81, at density 0 -> ~0.62
+ * Formula: 0.62 + 0.38 * (density / 100)
+ */
+function densityScaleWeight(density: number): number {
+  return 0.62 + 0.38 * (density / 100);
+}
+
+
+
+/**
+ * Calculates base material usage for a piece
+ * Formula: round(styleBaseUsage * materialUsageMult * densityScale)
+ */
+function calculateBaseUsage(styleBaseUsage: number, materialUsageMultiplier: number, baseDensity: number): number {
+  return Math.round(styleBaseUsage * materialUsageMultiplier * densityScaleBaseUsage(baseDensity));
 }
 
 /**
@@ -51,38 +82,97 @@ function calculatePaddingUsage(
   materialMultiplier: number,
   paddingDensity: number
 ): number {
-  return Math.round(basePaddingUsage * materialMultiplier * densityScaleMaterial(paddingDensity));
+  return Math.round(basePaddingUsage * materialMultiplier * densityScalePaddingUsage(paddingDensity));
 }
 
 /**
- * Calculates weight for a piece
- * Formula: (baseUsage * baseMaterialWeight + paddingUsage * paddingMaterialWeight) * pieceMultiplier
+ * Calculates weight for a piece.
+ * Weight uses the style's base material values (at 100% density) but scales differently
+ * than material usage. Weight decreases less aggressively at low densities.
+ * 
+ * Formula: (styleBaseUsage * baseMaterialUsageMult * baseWeight * baseWeightScale + 
+ *           stylePaddingUsage * padMaterialMult * padWeight * padWeightScale) * pieceMultiplier
  */
 function calculatePieceWeight(
-  baseMatUsage: number,
+  styleBaseUsage: number,
+  baseMaterialUsageMultiplier: number,
   baseMaterialWeight: number,
-  paddingUsage: number,
+  stylePaddingUsage: number,
+  paddingMaterialMultiplier: number,
   paddingMaterialWeight: number,
+  baseDensity: number,
+  paddingDensity: number,
   pieceMultiplier: number
 ): number {
-  const rawWeight = baseMatUsage * baseMaterialWeight + paddingUsage * paddingMaterialWeight;
-  return round2(rawWeight * pieceMultiplier);
+  const baseContrib = styleBaseUsage * baseMaterialUsageMultiplier * baseMaterialWeight * densityScaleWeight(baseDensity);
+  const padContrib = stylePaddingUsage * paddingMaterialMultiplier * paddingMaterialWeight * densityScaleWeight(paddingDensity);
+  return round2((baseContrib + padContrib) * pieceMultiplier);
 }
 
 /**
- * Calculates durability for a piece
- * Formula: styleDuraBase * pieceMultiplier * paddingDurabilityMult * densityFactor
- * where densityFactor = 0.834 + 0.166 * paddingDensity/100
+ * Calculates durability for a piece.
+ * Formula: styleDuraBase * pieceMultiplier * baseMaterialDuraMult * paddingDurabilityMult * baseDensityFactor * paddingDensityFactor
+ *
+ * Note: durabilityBase is calibrated for Arthropod Carapace (for Risar Berserker).
+ * Other base materials have a durability multiplier relative to this baseline.
+ *
+ * baseDensityFactor = 0.654 + 0.346 * (baseDensity / 100)
+ * paddingDensityFactor = 0.793 + 0.207 * (paddingDensity / 100)
  */
 function calculatePieceDurability(
   durabilityBase: number,
   pieceMultiplier: number,
+  baseMaterialDurabilityMult: number,
   paddingDurabilityMult: number,
+  baseDensity: number,
   paddingDensity: number
 ): number {
-  const densityFactor = 0.834 + 0.166 * (paddingDensity / 100);
-  const totalDura = durabilityBase * pieceMultiplier * paddingDurabilityMult * densityFactor;
+  const baseDensityFactor = 0.654 + 0.346 * (baseDensity / 100);
+  const paddingDensityFactor = 0.793 + 0.207 * (paddingDensity / 100);
+  const totalDura =
+    durabilityBase * pieceMultiplier * baseMaterialDurabilityMult * paddingDurabilityMult * baseDensityFactor * paddingDensityFactor;
   return round2(totalDura);
+}
+
+/**
+ * Calculates defense density scale for a given density and coefficients.
+ * Formula: a + b * (density / 100)
+ */
+function defenseScale(density: number, coeffs: { a: number; b: number }): number {
+  return coeffs.a + coeffs.b * (density / 100);
+}
+
+/**
+ * Calculates defense for the armor set.
+ * Formula per damage type:
+ *   defense = (baseDefense + baseMaterialOffset) * baseScale(baseDensity) + paddingDefense * padScale(paddingDensity)
+ *
+ * Where baseScale and padScale use per-damage-type linear coefficients.
+ * Each armor style has its own baseDefenseDensityCoeffs.
+ * Padding contribution is floored at 0 (no negative defense).
+ */
+function calculateDefense(
+  baseDefense: DefenseStats,
+  baseMaterialDefenseOffset: DefenseStats,
+  baseDensityCoeffs: DefenseDensityCoeffs,
+  paddingDefense: DefenseStats,
+  paddingDensityCoeffs: DefenseDensityCoeffs,
+  baseDensity: number,
+  paddingDensity: number
+): DefenseStats {
+  const types: (keyof DefenseStats)[] = ['blunt', 'pierce', 'slash'];
+  const result: DefenseStats = { blunt: 0, pierce: 0, slash: 0 };
+
+  for (const type of types) {
+    const effectiveBaseDefense = baseDefense[type] + baseMaterialDefenseOffset[type];
+    const baseContrib = effectiveBaseDefense * defenseScale(baseDensity, baseDensityCoeffs[type]);
+    const padScale = defenseScale(paddingDensity, paddingDensityCoeffs[type]);
+    // Floor padding contribution at 0
+    const padContrib = Math.max(0, paddingDefense[type] * padScale);
+    result[type] = round2(baseContrib + padContrib);
+  }
+
+  return result;
 }
 
 /**
@@ -125,8 +215,12 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
   };
 
   for (const piece of PIECES) {
-    // Material usage (base doesn't change with density, padding does)
-    const baseUsage = styleConfig.baseMaterialUsage[piece];
+    // Material usage - now both base and padding scale with density
+    const baseUsage = calculateBaseUsage(
+      styleConfig.baseMaterialUsage[piece],
+      baseMaterialConfig.usageMultiplier,
+      baseDensity
+    );
     const paddingUsage = calculatePaddingUsage(
       styleConfig.paddingUsage[piece],
       paddingMaterialConfig.materialMultiplier,
@@ -138,20 +232,26 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       padding: paddingUsage,
     };
 
-    // Weight calculation
+    // Weight calculation - uses style base values with weight density scaling
     pieceWeight[piece] = calculatePieceWeight(
-      baseUsage,
+      styleConfig.baseMaterialUsage[piece],
+      baseMaterialConfig.usageMultiplier,
       baseMaterialConfig.weight,
-      paddingUsage,
+      styleConfig.paddingUsage[piece],
+      paddingMaterialConfig.materialMultiplier,
       paddingMaterialConfig.weight,
+      baseDensity,
+      paddingDensity,
       styleConfig.pieceWeightMultipliers[piece]
     );
 
-    // Durability calculation
+    // Durability calculation - uses both density factors and material multipliers
     pieceDurability[piece] = calculatePieceDurability(
       styleConfig.durabilityBase,
       DURABILITY_PIECE_MULTIPLIERS[piece],
+      baseMaterialConfig.durability,
       paddingMaterialConfig.durabilityMultiplier,
+      baseDensity,
       paddingDensity
     );
   }
@@ -165,15 +265,16 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
   const setWeight = round2(PIECES.reduce((sum, piece) => sum + pieceWeight[piece], 0));
   const setDura = round2(PIECES.reduce((sum, piece) => sum + pieceDurability[piece], 0));
 
-  // Defense calculation
-  // Defense is based on style's base defense + padding defense
-  // Note: At 100% density, padding contributes full defense value
-  const densityScale = paddingDensity / 100;
-  const setDefense: DefenseStats = {
-    blunt: round2(styleConfig.baseDefense.blunt + paddingMaterialConfig.defense.blunt * densityScale),
-    pierce: round2(styleConfig.baseDefense.pierce + paddingMaterialConfig.defense.pierce * densityScale),
-    slash: round2(styleConfig.baseDefense.slash + paddingMaterialConfig.defense.slash * densityScale),
-  };
+  // Defense calculation - uses per-style base density coefficients and per-padding padding coefficients
+  const setDefense = calculateDefense(
+    styleConfig.baseDefense,
+    baseMaterialConfig.defenseOffset,
+    styleConfig.baseDefenseDensityCoeffs,
+    paddingMaterialConfig.defense,
+    paddingMaterialConfig.defenseDensityCoeffs,
+    baseDensity,
+    paddingDensity
+  );
 
   return {
     armorStyle,
