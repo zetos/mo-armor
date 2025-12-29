@@ -1,4 +1,4 @@
-import type { SetStats } from '../types';
+import type { SetStats } from '../src/types';
 
 export const khuriteSplintedSamples: SetStats[] = [
   {

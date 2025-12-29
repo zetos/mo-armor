@@ -8,12 +8,12 @@ import type {
   MaterialUsage,
   DefenseStats,
   PieceKey,
+  DefenseDensityCoeffs,
 } from './types';
-import { armorStyles, type DefenseDensityCoeffs } from './data/armorStyles';
+import { PIECE_KEYS } from './types';
+import { armorStyles } from './data/armorStyles';
 import { getBaseMaterial } from './data/baseMaterials';
 import { getPaddingMaterial } from './data/paddingMaterials';
-
-const PIECES: readonly PieceKey[] = ['helm', 'torso', 'rightArm', 'leftArm', 'legs'] as const;
 
 /**
  * Durability multipliers for each piece relative to torso (torso = 1.0)
@@ -36,47 +36,26 @@ function round2(value: number): number {
 }
 
 /**
- * Rounds a number to 3 decimal places for higher precision calculations
+ * Calculates linear density scaling.
+ * Formula: a + b * (density / 100)
+ * 
+ * Common use cases:
+ * - At density 100: a + b = 1.0 (full scale)
+ * - At density 0: scale = a (intercept)
+ * 
+ * @param density - Density value (0-100)
+ * @param coeffs - Linear coefficients {a, b}
+ * @returns Scaled value
  */
-function round3(value: number): number {
-  return Math.round(value * 1000) / 1000;
+function linearScale(density: number, coeffs: { a: number; b: number }): number {
+  return coeffs.a + coeffs.b * (density / 100);
 }
 
 /**
- * Calculates the density scaling factor for padding material usage.
+ * Padding usage density scale coefficients.
  * At density 100 -> 1.0, at density 50 -> 0.667, at density 0 -> 0.333
- * Formula: 1/3 + 2/3 * (density / 100)
  */
-function densityScalePaddingUsage(density: number): number {
-  return 1 / 3 + (2 / 3) * (density / 100);
-}
-
-/**
- * Calculates the density scaling factor for base material usage.
- * Formula: a + b * (density / 100)
- * Each armor style has its own coefficients.
- */
-function densityScaleBaseUsage(density: number, coeffs: { a: number; b: number }): number {
-  return coeffs.a + coeffs.b * (density / 100);
-}
-
-/**
- * Calculates the density scaling factor for base material weight.
- * Each armor style has its own coefficients.
- * Formula: a + b * (density / 100)
- */
-function densityScaleBaseWeight(density: number, coeffs: { a: number; b: number }): number {
-  return coeffs.a + coeffs.b * (density / 100);
-}
-
-/**
- * Calculates the density scaling factor for padding weight.
- * Each padding material has its own coefficients.
- * Formula: a + b * (density / 100)
- */
-function densityScalePadWeight(density: number, coeffs: { a: number; b: number }): number {
-  return coeffs.a + coeffs.b * (density / 100);
-}
+const PADDING_USAGE_DENSITY_COEFFS = { a: 1 / 3, b: 2 / 3 };
 
 
 
@@ -90,7 +69,7 @@ function calculateBaseUsage(
   baseDensity: number,
   densityCoeffs: { a: number; b: number }
 ): number {
-  return Math.round(styleBaseUsage * materialUsageMultiplier * densityScaleBaseUsage(baseDensity, densityCoeffs));
+  return Math.round(styleBaseUsage * materialUsageMultiplier * linearScale(baseDensity, densityCoeffs));
 }
 
 /**
@@ -102,7 +81,7 @@ function calculatePaddingUsage(
   materialMultiplier: number,
   paddingDensity: number
 ): number {
-  return Math.round(basePaddingUsage * materialMultiplier * densityScalePaddingUsage(paddingDensity));
+  return Math.round(basePaddingUsage * materialMultiplier * linearScale(paddingDensity, PADDING_USAGE_DENSITY_COEFFS));
 }
 
 /**
@@ -122,8 +101,8 @@ function calculatePieceWeight(
   paddingDensity: number,
   pieceMultiplier: number
 ): number {
-  const baseContrib = baseUsage * baseMaterialWeight * baseMaterialWeightMultiplier * densityScaleBaseWeight(baseDensity, baseWeightDensityCoeffs);
-  const padContrib = paddingUsage * paddingMaterialWeight * densityScalePadWeight(paddingDensity, paddingWeightDensityCoeffs);
+  const baseContrib = baseUsage * baseMaterialWeight * baseMaterialWeightMultiplier * linearScale(baseDensity, baseWeightDensityCoeffs);
+  const padContrib = paddingUsage * paddingMaterialWeight * linearScale(paddingDensity, paddingWeightDensityCoeffs);
   return (baseContrib + padContrib) * pieceMultiplier;
 }
 
@@ -151,14 +130,6 @@ function calculatePieceDurability(
 }
 
 /**
- * Calculates defense density scale for a given density and coefficients.
- * Formula: a + b * (density / 100)
- */
-function defenseScale(density: number, coeffs: { a: number; b: number }): number {
-  return coeffs.a + coeffs.b * (density / 100);
-}
-
-/**
  * Calculates defense for the armor set.
  * Formula per damage type:
  *   defense = (baseDefense + baseMaterialOffset) * baseScale(baseDensity) + paddingDefense * padScale(paddingDensity)
@@ -181,8 +152,8 @@ function calculateDefense(
 
    for (const type of types) {
      const effectiveBaseDefense = baseDefense[type] + baseMaterialDefenseOffset[type];
-     const baseContrib = effectiveBaseDefense * defenseScale(baseDensity, baseDensityCoeffs[type]);
-     const padScale = defenseScale(paddingDensity, paddingDensityCoeffs[type]);
+     const baseContrib = effectiveBaseDefense * linearScale(baseDensity, baseDensityCoeffs[type]);
+     const padScale = linearScale(paddingDensity, paddingDensityCoeffs[type]);
      // Padding can contribute negative values (e.g., Ironsilk reduces blunt defense)
      const padContrib = paddingDefense[type] * padScale;
      // Floor total defense at 0
@@ -231,7 +202,7 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
     legs: 0,
   };
 
-  for (const piece of PIECES) {
+  for (const piece of PIECE_KEYS) {
     // Material usage - now both base and padding scale with density
     const baseUsage = calculateBaseUsage(
       styleConfig.baseMaterialUsage[piece],
@@ -277,12 +248,12 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
 
   // Calculate set totals
   const setMaterialUsage: MaterialUsage = {
-    base: PIECES.reduce((sum, piece) => sum + pieceMaterialUsage[piece].base, 0),
-    padding: PIECES.reduce((sum, piece) => sum + pieceMaterialUsage[piece].padding, 0),
+    base: PIECE_KEYS.reduce((sum, piece) => sum + pieceMaterialUsage[piece].base, 0),
+    padding: PIECE_KEYS.reduce((sum, piece) => sum + pieceMaterialUsage[piece].padding, 0),
   };
 
-  const setWeight = round2(PIECES.reduce((sum, piece) => sum + pieceWeight[piece], 0));
-  const setDura = round2(PIECES.reduce((sum, piece) => sum + pieceDurability[piece], 0));
+  const setWeight = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0));
+  const setDura = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceDurability[piece], 0));
 
    // Defense calculation - uses per-style base density coefficients and per-padding padding coefficients
    const setDefense = calculateDefense(

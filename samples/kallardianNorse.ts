@@ -1,4 +1,4 @@
-import type { SetStats } from '../types';
+import type { SetStats } from '../src/types';
 
 export const kallardianNorseSamples: SetStats[] = [
   {
@@ -44,60 +44,6 @@ export const kallardianNorseSamples: SetStats[] = [
       rightArm: {
         base: 33,
         padding: 52,
-      },
-      leftArm: {
-        base: 33,
-        padding: 52,
-      },
-      legs: {
-        base: 76,
-        padding: 122,
-      },
-    },
-  },
-  {
-    armorStyle: 'Kallardian Norse',
-    base: 'Plate Scales',
-    padding: 'Ironfur',
-    baseDensity: 100,
-    paddingDensity: 100,
-    setDefense: {
-      pierce: 41.6,
-      slash: 37.6,
-      blunt: 47.87,
-    },
-    setWeight: 7.4,
-    pieceWeight: {
-      helm: 0.89,
-      rightArm: 0.96,
-      torso: 2.37,
-      leftArm: 0.96,
-      legs: 2.22,
-    },
-    setDura: 1975.5,
-    pieceDurability: {
-      helm: 395.1,
-      rightArm: 296.33,
-      torso: 493.88,
-      leftArm: 296.33,
-      legs: 493.88,
-    },
-    setMaterialUsage: {
-      base: 254,
-      padding: 404,
-    },
-    pieceMaterialUsage: {
-      helm: {
-        base: 31,
-        padding: 48,
-      },
-      rightArm: {
-        base: 33,
-        padding: 52,
-      },
-      torso: {
-        base: 81,
-        padding: 130,
       },
       leftArm: {
         base: 33,

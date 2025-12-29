@@ -1,263 +1,145 @@
-# AGENTS.md - Armor Calculator Codebase Guide
+# AGENTS.md - Armor Calculator Development Guide
 
-This document provides context for AI coding agents working on this armor stats calculator.
+Quick reference for AI coding agents working on this armor stats calculator.
 
-## Build/Lint/Test Commands
+## Commands
 
 ```bash
 # Run all tests
 bun test
 
-# Run a single test file
-bun test calculateSetStatus.test.ts
-
-# Run tests matching a pattern
+# Run specific test
 bun test --test-name-pattern "Sample 1"
 
-# Type checking (no emit, strict mode)
+# Type checking
 bunx tsc --noEmit
 
-# Run the main module
-bun run start
+# Parse new sample data
+bun scripts/parseSample.ts sample.txt
 ```
 
 ## Project Structure
 
 ```
 armor/
-├── index.ts                    # Main exports and sample data
-├── calculateSetStatus.ts       # Core calculation function
-├── types.ts                    # Shared type definitions
-├── calculateSetStatus.test.ts  # Tests comparing against samples
-├── samples/                    # Game samples organized by armor style
-│   ├── index.ts
-│   ├── kallardianNorse.ts     # 18 samples
-│   ├── risarBerserker.ts      # 14 samples
-│   ├── khuriteSplinted.ts     # 6 samples
-│   └── rangerArmor.ts         # 6 samples
-└── data/
-    ├── armorStyles.ts          # Armor style configurations
-    ├── baseMaterials.ts        # Base material properties
-    └── paddingMaterials.ts     # Padding material properties
+├── src/
+│   ├── index.ts              # Main exports
+│   ├── calculate.ts          # Core calculation: calculateSetStatus()
+│   ├── types.ts              # All TypeScript types
+│   └── data/
+│       ├── armorStyles.ts    # Per-style coefficients & base stats
+│       ├── baseMaterials.ts  # Base material properties
+│       └── paddingMaterials.ts # Padding material properties
+├── test/calculate.test.ts    # Test suite (44 samples)
+├── samples/                  # Game data samples
+└── scripts/parseSample.ts    # Sample data parser
 ```
 
-## Code Style Guidelines
+## Code Style
 
-### Imports
+- **TypeScript strict mode** enabled
+- **Import types**: Use `import type { ... }` for type-only imports
+- **Naming**: PascalCase for types, camelCase for functions, UPPER_SNAKE_CASE for constants
+- **Formatting**: 2-space indent, single quotes, trailing commas
 
-- Use `import type { ... }` for type-only imports (required by `verbatimModuleSyntax`)
-- Group imports: types first, then modules
-- Use relative paths for local imports
+## Core Formulas
 
-### Formatting
-
-- 2-space indentation
-- Single quotes for strings
-- Trailing commas in multi-line objects/arrays
-- No semicolons (optional, but be consistent)
-
-### Types
-
-- TypeScript strict mode is enabled
-- Use explicit types for function parameters and return values
-- Prefer `type` over `interface` for object shapes
-- Use generic constraints when appropriate: `<B extends BaseMaterial>`
-
-### Naming Conventions
-
-- PascalCase: types, interfaces (`ArmorStyle`, `SetStats`)
-- camelCase: functions, variables (`calculateSetStatus`, `pieceWeight`)
-- UPPER_SNAKE_CASE: constants (`PIECES`, `DURABILITY_PIECE_MULTIPLIERS`)
-- Descriptive names: `baseMaterialUsage`, `paddingDensity`
-
-### Error Handling
-
-- Throw descriptive errors for missing configurations
-- Use `Partial<Record<...>>` for incomplete data maps with getter functions that throw
-
----
-
-## Reverse-Engineered Formulas
-
-### Defense Calculation (VERIFIED - +-6 accuracy)
-
+### Defense
 ```typescript
-// Defense = (baseDefense + baseMaterialDefenseOffset) * baseScale + paddingDefense * padScale
-// Each uses linear density scaling with per-type coefficients
+defense[type] = (baseDefense[type] + materialOffset[type]) × linearScale(baseDensity, coeffs)
+                + paddingDefense[type] × linearScale(paddingDensity, coeffs)
 
-defense[type] =
-  (baseDefense[type] + baseMaterialDefenseOffset[type]) *
-    baseScale(baseDensity, baseCoeffs[type]) +
-  paddingDefense[type] * padScale(paddingDensity, padCoeffs[type]);
-
-// where scale(d, coeffs) = coeffs.a + coeffs.b * (d/100)
-// and coeffs.a + coeffs.b = 1.0 (so scale(100) = 1.0)
+where linearScale(d, {a, b}) = a + b × (d/100)
 ```
 
-**Key insight:** Each armor style has its own `baseDefense` (from 100/0 Ironfur sample) and its own per-damage-type `baseDefenseDensityCoeffs`. Each padding material also has unique `defense` values and `defenseDensityCoeffs`. Base materials have `defenseOffset` to adjust for differences.
+### Weight
+```typescript
+weight = (baseUsage × baseWeight × linearScale(baseDensity, coeffs)
+          + paddingUsage × padWeight × linearScale(paddingDensity, coeffs))
+         × pieceMultiplier
+```
 
-**Important:** Some paddings like Ironsilk have NEGATIVE defense contributions for certain damage types (blunt). The total defense is floored at 0.
+### Durability
+```typescript
+durability = ((baseMin × padMinMult) + (baseDensityContrib × bd/100)
+              + (padContrib × padPadMult × pd/100))
+             × pieceMultiplier × baseMaterialMult
+```
 
 ### Material Usage
-
 ```typescript
-// Base material usage scales with density
-baseUsage = round(
-  styleBaseUsage *
-    baseMaterialUsageMultiplier *
-    densityScaleBaseUsage(baseDensity)
-);
-// where densityScaleBaseUsage(d) = 0.5 + 0.5 * (d/100)
-// Note: Actual ratio at 0% varies slightly by style (0.45-0.51)
-
-// Padding usage scales with density
-paddingUsage = round(
-  stylePaddingUsage *
-    paddingMaterialMultiplier *
-    densityScalePaddingUsage(paddingDensity)
-);
-// where densityScalePaddingUsage(d) = 1/3 + 2/3 * (d/100)
-// At 100% -> 1.0, at 50% -> 0.667, at 0% -> 0.333
+baseUsage = round(styleBase × materialMult × linearScale(baseDensity, coeffs))
+paddingUsage = round(stylePadding × materialMult × linearScale(paddingDensity, {a: 1/3, b: 2/3}))
 ```
 
-### Weight Calculation
+## Adding New Materials
 
-```typescript
-// Weight = (base contribution + padding contribution) * piece multiplier
-// Both scale with density using separate scales for base and padding
+### New Armor Style
+1. Collect samples: 100/100, 100/0, 0/100, 0/0 with Ironfur
+2. Add to `src/types.ts`: Update `ArmorStyle` union type
+3. Add to `src/data/armorStyles.ts`:
+   - `baseMaterialUsage`: From 100/100 sample's `pieceMaterialUsage.*.base`
+   - `paddingUsage`: From 100/100 sample's `pieceMaterialUsage.*.padding`
+   - `baseDefense`: From 100/0 Ironfur sample
+   - Calculate density coefficients from sample comparisons
 
-pieceWeight = round2(
-  (baseUsage *
-    baseMaterialWeight *
-    baseMaterialWeightMultiplier *
-    densityScaleBaseWeight(baseDensity) +
-    paddingUsage *
-      paddingMaterialWeight *
-      densityScalePadWeight(paddingDensity)) *
-    pieceMultiplier
-);
-
-// where densityScaleBaseWeight(d, coeffs) = coeffs.a + coeffs.b * (d/100)
-//       densityScalePadWeight(d, coeffs) = coeffs.a + coeffs.b * (d/100)
-// Note: Different coeffs for base and padding materials
-```
-
-### Durability Calculation
-
-```typescript
-// Durability uses additive model with density contributions
-pieceDurability = round2(
-  (durabilityBaseMin * paddingDurabilityMinMult +
-    durabilityBaseDensityContrib * (baseDensity / 100) +
-    durabilityPadContrib * paddingDurabilityPadMult * (paddingDensity / 100)) *
-    pieceMultiplier *
-    baseMaterialDurabilityMult
-);
-
-// where:
-// durabilityBaseMin: base durability at 0/0 densities
-// durabilityBaseDensityContrib: additional dura per 1% base density
-// durabilityPadContrib: additional dura per 1% padding density
-// Piece multipliers: helm=0.8, torso=1.0, arms=0.6, legs=1.0
-```
-
----
-
-## Key Data Structures
-
-### ArmorStyleConfig (in armorStyles.ts)
-
-```typescript
-{
-  baseMaterialUsage: PieceStats<number>,     // Material usage per piece at 100%
-  paddingUsage: PieceStats<number>,          // Padding usage per piece at 100%
-  pieceWeightMultipliers: PieceStats<number>, // Per-piece weight adjustments
-  durabilityBase: number,                    // Torso durability at 100/100
-  baseDefense: DefenseStats,                 // From 100/0 Ironfur sample
-  baseDefenseDensityCoeffs: DefenseDensityCoeffs, // Per-type scaling
-}
-```
-
-### PaddingMaterialConfig (in paddingMaterials.ts)
-
-```typescript
-{
-  materialMultiplier: number,      // Usage multiplier vs Ironfur
-  weight: number,                  // Weight per unit
-  durabilityMultiplier: number,    // Durability multiplier vs Ironfur
-  defense: DefenseStats,           // Defense at 100% (can be negative!)
-  defenseDensityCoeffs: DefenseDensityCoeffs, // Per-type scaling
-}
-```
-
----
-
-## Adding New Materials/Styles
-
-### To Add a New Armor Style
-
-1. Collect samples at 100/100 and 100/0 with Ironfur
-2. Add to `data/armorStyles.ts`:
-   - `baseMaterialUsage`: Copy from 100/100 sample's `pieceMaterialUsage.*.base`
-   - `paddingUsage`: Copy from 100/100 sample's `pieceMaterialUsage.*.padding`
-   - `durabilityBase`: Use the torso durability at 100/100
-   - `baseDefense`: Use defense values from 100/0 Ironfur sample
-   - `baseDefenseDensityCoeffs`: Calculate from 0/100 vs 100/0 samples
-   - `pieceWeightMultipliers`: Derive by comparing calculated vs actual weights
-
-### To Add a New Padding Material
-
-1. Collect samples at 100/100 and 100/50 with the new padding (preferably Kallardian Norse)
-2. Add to `data/paddingMaterials.ts`:
-   - `defense`: Calculate as `D(100/100) - baseDefense`
+### New Padding Material
+1. Collect samples: 100/100, 100/50 with material (use Kallardian Norse)
+2. Add to `src/types.ts`: Update `SupportMaterial` union
+3. Add to `src/data/paddingMaterials.ts`:
+   - `defense`: `D(100/100) - baseDefense`
    - `defenseDensityCoeffs`: Calculate from `D(100/0)` and `D(100/100)`
-   - `materialMultiplier`: ratio of new padding usage / Ironfur padding usage
-   - `weight`: Derive from weight difference between samples
-   - `durabilityMultiplier`: ratio of new durability / Ironfur durability
+   - `materialMultiplier`: Usage ratio vs Ironfur
+   - `weight`: Derive from weight difference
 
----
-
-## Deriving Values from Samples
-
-### Defense Values (MOST RELIABLE)
-
-1. Get 100/0 Ironfur sample for the armor style -> this is `baseDefense`
-2. Get 0/100 Ironfur sample -> calculate `baseScale(0) = (D(0/100) - ironfurDefense) / baseDefense`
-3. For new padding: `paddingDefense = D(100/100) - baseDefense`
-4. `padScale(0) = (D(100/0) - baseDefense) / paddingDefense`
-
-### Weight Coefficients
-
-Kallardian Norse is the baseline (all piece multipliers = 1.0):
-
-- **Plate Scales weight**: 0.01431 per unit
-- **Arthropod Carapace weight**: 0.01082 per unit
-- **Ironfur weight**: 0.0093 per unit
-- **Ironsilk weight**: 0.00421 per unit
-
-### Piece Weight Multipliers
-
-For non-Kallardian styles, compare calculated vs actual weights:
-
-```
-pieceMultiplier = actualWeight / calculatedWeight
-```
-
----
+### New Base Material
+1. Collect samples: 100/100 with Ironfur
+2. Add to `src/types.ts`: Update `BaseMaterial` union
+3. Add to `src/data/baseMaterials.ts`:
+   - `weight`: Weight per unit
+   - `usageMultiplier`: Usage ratio vs Plate Scales
+   - `durability`: Durability multiplier
+   - `defenseOffset`: `D(material) - D(Plate Scales)`
 
 ## Test Tolerances
 
-Target accuracy: **+-0.01** for all values (tests calibrated to match calculated results exactly).
+Current tolerances (reflect known formula accuracy):
+- **Weight**: ±5.0 kg (some samples show larger variance)
+- **Durability**: ±16.0 (formula approximation)
+- **Defense**: ±0.8 (very accurate)
+- **Material Usage**: ±2 units (rounding)
 
----
+## Sample Data
 
-## Sample Count by Armor Style
+- **Kallardian Norse**: 17 samples, 0-100% density range
+- **Risar Berserker**: 14 samples, multiple materials
+- **Khurite Splinted**: 10 samples
+- **Ranger Armor**: 8 samples
 
-| Armor Style      | Count | Density Range | Notes                                  |
-| ---------------- | ----- | ------------- | -------------------------------------- |
-| Kallardian Norse | 18    | 0-100 / 0-100 | Best coverage, used as baseline        |
-| Risar Berserker  | 14    | 0-100 / 0-100 | Good coverage, multiple base materials |
-| Khurite Splinted | 6     | 0-100 / 0-100 | Has 100/0 and 0/100 for Ironfur        |
-| Ranger Armor     | 6     | 0-100 / 0-100 | Has 100/0 and 0/100 for Ironfur        |
+Total: 44 samples across 4 armor styles
 
----
+## Key Data Structures
+
+```typescript
+// Armor configuration per style
+type ArmorStyleConfig = {
+  baseMaterialUsage: PieceStats<number>;
+  paddingUsage: PieceStats<number>;
+  pieceWeightMultipliers: PieceStats<number>;
+  durabilityCoeffs: DurabilityCoeffs;
+  baseDefense: DefenseStats;
+  baseDefenseDensityCoeffs: DefenseDensityCoeffs;
+  // ... and density scaling coeffs
+}
+
+// Linear scaling coefficients
+type DensityCoeffs = { a: number; b: number };
+```
+
+## Important Notes
+
+- Each armor style has unique coefficients for base defense scaling
+- Padding materials can have **negative defense** (e.g., Ironsilk reduces blunt)
+- Total defense is floored at 0 (no negative values)
+- Piece multipliers: helm=0.8, torso=1.0, arms=0.6, legs=1.0
+- Formula accuracy varies: defense is most accurate, weight/durability have more variance

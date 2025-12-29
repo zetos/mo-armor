@@ -1,11 +1,11 @@
 {
   "name": "armor",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun index",
+    "start": "bun src/index.ts",
     "test": "bun test",
-    "parse-sample": "bun parseSample.ts"
+    "parse-sample": "bun scripts/parseSample.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"

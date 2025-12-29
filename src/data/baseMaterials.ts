@@ -1,31 +1,4 @@
-import type { BaseMaterial, DefenseStats } from '../types';
-
-/**
- * Base material configurations.
- * Each material defines:
- * - weight: Weight per unit of material
- * - weightMultiplier: Additional weight multiplier for the pieceWeightMultipliers
- *   (Arthropod Carapace = 1.0 baseline, Plate Scales = ~1.08)
- * - usageMultiplier: Multiplier for material usage relative to the style's base (1.0 = baseline)
- *   The armorStyles.ts uses Plate Scales as the baseline for material usage.
- * - durability: Durability multiplier (1.0 = baseline)
- * - defenseOffset: Defense offset relative to Plate Scales (the baseline).
- *
- * Note: Only materials used in samples are configured.
- * Add new materials here as samples become available.
- */
-export type BaseMaterialConfig = {
-  weight: number;
-  weightMultiplier: number;
-  usageMultiplier: number;
-  durability: number;
-  /**
-   * Defense offset relative to Plate Scales (the baseline).
-   * Positive = more defense, negative = less defense.
-   * This is ADDED to the armorStyle's baseDefense.
-   */
-  defenseOffset: DefenseStats;
-};
+import type { BaseMaterial, BaseMaterialConfig } from '../types';
 
 export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = {
   'Plate Scales': {

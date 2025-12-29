@@ -3,7 +3,7 @@ import type {
   BaseMaterial,
   SetStats,
   SupportMaterial,
-} from './types';
+} from '../src/types';
 
 // Lookup tables for ID to name mapping
 const armorStyleNames: Record<number, ArmorStyle> = {

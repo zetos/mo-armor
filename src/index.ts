@@ -1,4 +1,4 @@
-export { calculateSetStatus } from './calculateSetStatus';
+export { calculateSetStatus } from './calculate';
 export * from './types';
 export {
   samples,
@@ -6,4 +6,4 @@ export {
   kallardianNorseSamples,
   khuriteSplintedSamples,
   rangerArmorSamples,
-} from './samples';
+} from '../samples';

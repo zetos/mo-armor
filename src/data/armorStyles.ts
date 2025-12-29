@@ -1,69 +1,12 @@
-import type { ArmorStyle, PieceStats, DefenseStats } from '../types';
+import type {
+  ArmorStyle,
+  PieceStats,
+  DefenseStats,
+  ArmorStyleConfig,
+  DefenseDensityCoeffs,
+} from '../types';
 
-/**
- * Defense density scale coefficients per damage type.
- * Formula: scale(density) = a + b * (density / 100)
- * At density 100 -> 1.0, at density 0 -> a
- */
-export type DefenseDensityCoeffs = {
-  blunt: { a: number; b: number };
-  pierce: { a: number; b: number };
-  slash: { a: number; b: number };
-};
-
-/**
- * Density scale coefficients for base material usage.
- * Formula: usage(density) = baseUsage * (a + b * density/100)
- * At density=100: a + b = 1.0
- * At density=0: scale = a (intercept)
- */
-export type UsageDensityCoeffs = { a: number; b: number };
-
-/**
- * Durability density coefficients (additive model).
- * Formula: dura = (baseMin * paddingMinMult) + (baseDensityContrib * bd/100) + (padContrib * paddingPadMult * pd/100)
- * All values are for the torso piece at 100/100 with Ironfur.
- * Piece multipliers apply on top.
- */
-export type DurabilityCoeffs = {
-  /** Durability at 0/0 with Ironfur */
-  baseMin: number;
-  /** Additional durability from base density 0->100 */
-  baseDensityContrib: number;
-  /** Additional durability from padding density 0->100 with Ironfur */
-  padContrib: number;
-};
-
-/**
- * Weight density coefficients.
- * Formula: weightScale(density) = a + b * (density/100)
- * At density=100: a + b = 1.0
- * At density=0: scale = a
- */
-export type WeightDensityCoeffs = { a: number; b: number };
-
-/**
- * Armor style configurations.
- * Each style defines:
- * - baseMaterialUsage: Amount of base material needed per piece (at 100% density)
- * - baseMaterialUsageDensityCoeffs: Density scaling for base material usage
- * - paddingUsage: Base padding amount per piece (before material multiplier, at 100% density)
- * - pieceWeightMultipliers: Per-piece weight adjustment multipliers
- * - baseWeightDensityCoeffs: Density scaling for base material weight
- * - durabilityCoeffs: Additive durability model coefficients
- * - baseDefense: Base defense values at 100% base density (from 100/0 Ironfur sample)
- * - baseDefenseDensityCoeffs: Per-damage-type density scaling for base defense
- */
-export type ArmorStyleConfig = {
-  baseMaterialUsage: PieceStats<number>;
-  baseMaterialUsageDensityCoeffs: UsageDensityCoeffs;
-  paddingUsage: PieceStats<number>;
-  pieceWeightMultipliers: PieceStats<number>;
-  baseWeightDensityCoeffs: WeightDensityCoeffs;
-  durabilityCoeffs: DurabilityCoeffs;
-  baseDefense: DefenseStats;
-  baseDefenseDensityCoeffs: DefenseDensityCoeffs;
-};
+export type { DefenseDensityCoeffs };
 
 export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
   'Risar Berserker': {

@@ -1,4 +1,4 @@
-import type { SetStats } from '../types';
+import type { SetStats } from '../src/types';
 import { risarBerserkerSamples } from './risarBerserker';
 import { kallardianNorseSamples } from './kallardianNorse';
 import { khuriteSplintedSamples } from './khuriteSplinted';
