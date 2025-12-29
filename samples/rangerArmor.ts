@@ -703,4 +703,166 @@ export const rangerArmorSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 27.22,
+      slash: 31.58,
+      blunt: 29.11,
+    },
+    setWeight: 4.85,
+    pieceWeight: {
+      helm: 0.49,
+      rightArm: 0.68,
+      torso: 1.55,
+      leftArm: 0.68,
+      legs: 1.46,
+    },
+    setDura: 815.13,
+    pieceDurability: {
+      helm: 163.03,
+      rightArm: 122.27,
+      torso: 203.78,
+      leftArm: 122.27,
+      legs: 203.78,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 11,
+        padding: 13,
+      },
+      rightArm: {
+        base: 15,
+        padding: 19,
+      },
+      torso: {
+        base: 32,
+        padding: 40,
+      },
+      leftArm: {
+        base: 15,
+        padding: 19,
+      },
+      legs: {
+        base: 34,
+        padding: 43,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 31.87,
+      slash: 35.72,
+      blunt: 33.57,
+    },
+    setWeight: 6.23,
+    pieceWeight: {
+      helm: 0.62,
+      rightArm: 0.87,
+      torso: 1.99,
+      leftArm: 0.87,
+      legs: 1.87,
+    },
+    setDura: 1537.98,
+    pieceDurability: {
+      helm: 307.6,
+      rightArm: 230.7,
+      torso: 384.49,
+      leftArm: 230.7,
+      legs: 384.49,
+    },
+    setMaterialUsage: {
+      base: 229,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 23,
+        padding: 13,
+      },
+      rightArm: {
+        base: 32,
+        padding: 19,
+      },
+      torso: {
+        base: 69,
+        padding: 40,
+      },
+      leftArm: {
+        base: 32,
+        padding: 19,
+      },
+      legs: {
+        base: 73,
+        padding: 43,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 33.72,
+      slash: 38.18,
+      blunt: 39.78,
+    },
+    setWeight: 6.25,
+    pieceWeight: {
+      helm: 0.63,
+      rightArm: 0.88,
+      torso: 2,
+      leftArm: 0.88,
+      legs: 1.88,
+    },
+    setDura: 1240.63,
+    pieceDurability: {
+      helm: 248.13,
+      rightArm: 186.09,
+      torso: 310.16,
+      leftArm: 186.09,
+      legs: 310.16,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 11,
+        padding: 40,
+      },
+      rightArm: {
+        base: 15,
+        padding: 56,
+      },
+      torso: {
+        base: 32,
+        padding: 122,
+      },
+      leftArm: {
+        base: 15,
+        padding: 56,
+      },
+      legs: {
+        base: 34,
+        padding: 130,
+      },
+    },
+  },
 ];
