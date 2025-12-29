@@ -9,7 +9,7 @@ model: opencode/big-pickle
 
 Fetches armor calculation samples from the MortalData API and parses them into JSON format.
 
-CRITICAL: Always use the API to generate new samples and return the result already parsed in JSON format using the parseSample script.
+CRITICAL: Always use the API to generate new samples and return the result already parsed in JSON format using the parseSample script. The script now supports direct API calls with parameters - no need to create intermediate files.
 
 ## API Endpoint
 
@@ -67,17 +67,35 @@ Fetch samples at 0%, 50%, 100% densities for material analysis.
 
 ## Integration Workflow
 
-1. Fetch sample data using the API
-2. Parse response using `scripts/parseSample.ts`
+**Direct API Method (Recommended):**
+
+1. Call parseSample script directly with API parameters
+2. Script fetches data and returns parsed JSON
 3. Add parsed JSON to appropriate sample file in `samples/`
-4. Update `samples/index.ts` to export new samples
-5. Run tests to validate integration
+
+**Legacy File Method:**
+
+1. Fetch sample data using the API manually
+2. Save response to a temporary file
+3. Parse response using `scripts/parseSample.ts <file>`
+4. Add parsed JSON to appropriate sample file in `samples/`
+
+The direct API method eliminates intermediate files and streamlines the workflow.
 
 ## Commands
 
 ```bash
-# Parse sample from file
+# Parse sample from file (backward compatibility)
 bun scripts/parseSample.ts sample.txt
+
+# Fetch sample directly from API (recommended)
+bun scripts/parseSample.ts --armorStyleId 307 --baseMatId 46 --supportMatId 84 --baseDensity 100 --supportDensity 0
+
+# Convenience scripts for armor styles
+bun run sample-kallardian --baseMatId 46 --supportMatId 84 --baseDensity 100 --supportDensity 0
+bun run sample-risar --baseMatId 108 --supportMatId 84 --baseDensity 50 --supportDensity 50
+bun run sample-khurite --baseMatId 104 --supportMatId 84 --baseDensity 100 --supportDensity 0
+bun run sample-ranger --baseMatId 108 --supportMatId 84 --baseDensity 25 --supportDensity 75
 
 # Run tests
 bun test

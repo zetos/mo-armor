@@ -119,11 +119,101 @@ function parseSampleLine(line: string): SetStats {
   };
 }
 
-async function main() {
-  const filePath = process.argv[2] || 'sample.txt';
-  const file = Bun.file(filePath);
-  const content = await file.text();
+interface SampleParams {
+  armorStyleId: number;
+  baseMatId: number;
+  supportMatId: number;
+  baseDensity: number;
+  supportDensity: number;
+}
 
+function parseArgs(): { mode: 'file' | 'api'; data: string | SampleParams } {
+  const args = process.argv.slice(2);
+
+  // Check if first argument looks like a file (contains no numeric IDs)
+  if (args.length === 0 || (args[0] && args[0].match(/^[a-zA-Z]/))) {
+    return {
+      mode: 'file',
+      data: args[0] || 'sample.txt',
+    };
+  }
+
+  // Parse CLI parameters
+  const params: Partial<SampleParams> = {};
+
+  for (let i = 0; i < args.length; i += 2) {
+    const flag = args[i];
+    const value = args[i + 1];
+
+    if (!value) {
+      throw new Error(`Missing value for flag: ${flag}`);
+    }
+
+    switch (flag) {
+      case '--armorStyleId':
+      case '--armor-style-id':
+        params.armorStyleId = parseInt(value);
+        break;
+      case '--baseMatId':
+      case '--base-mat-id':
+        params.baseMatId = parseInt(value);
+        break;
+      case '--supportMatId':
+      case '--support-mat-id':
+        params.supportMatId = parseInt(value);
+        break;
+      case '--baseDensity':
+      case '--base-density':
+        params.baseDensity = parseInt(value);
+        break;
+      case '--supportDensity':
+      case '--support-density':
+        params.supportDensity = parseInt(value);
+        break;
+      default:
+        throw new Error(`Unknown flag: ${flag}`);
+    }
+  }
+
+  const required: (keyof SampleParams)[] = [
+    'armorStyleId',
+    'baseMatId',
+    'supportMatId',
+    'baseDensity',
+    'supportDensity',
+  ];
+  const missing = required.filter((key) => params[key] === undefined);
+
+  if (missing.length > 0) {
+    throw new Error(`Missing required parameters: ${missing.join(', ')}`);
+  }
+
+  return {
+    mode: 'api',
+    data: params as SampleParams,
+  };
+}
+
+async function fetchFromAPI(params: SampleParams): Promise<string> {
+  const url = new URL('https://mortaldata.com/php/workbench/ArmorCalc.php');
+  url.searchParams.set('armorStyleId', params.armorStyleId.toString());
+  url.searchParams.set('baseMatId', params.baseMatId.toString());
+  url.searchParams.set('supportMatId', params.supportMatId.toString());
+  url.searchParams.set('baseDensity', params.baseDensity.toString());
+  url.searchParams.set('supportDensity', params.supportDensity.toString());
+
+  const response = await fetch(url.toString());
+
+  if (!response.ok) {
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  }
+
+  return await response.text();
+}
+
+async function processContent(content: string) {
   const lines = content
     .trim()
     .split('\n')
@@ -132,6 +222,33 @@ async function main() {
   for (const line of lines) {
     const sample = parseSampleLine(line);
     console.log(JSON.stringify(sample, null, 2));
+  }
+}
+
+async function main() {
+  try {
+    const { mode, data } = parseArgs();
+
+    let content: string;
+
+    if (mode === 'file') {
+      const filePath = data as string;
+      const file = Bun.file(filePath);
+      content = await file.text();
+      console.info(`# Reading from file: ${filePath}`, '\n\n');
+    } else {
+      const params = data as SampleParams;
+      console.info(`# Fetching from API:`, params, '\n\n');
+      content = await fetchFromAPI(params);
+    }
+
+    await processContent(content);
+  } catch (error) {
+    console.error(
+      '# Error:',
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
   }
 }
 
