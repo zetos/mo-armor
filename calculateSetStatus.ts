@@ -167,9 +167,10 @@ function calculateDefense(
     const effectiveBaseDefense = baseDefense[type] + baseMaterialDefenseOffset[type];
     const baseContrib = effectiveBaseDefense * defenseScale(baseDensity, baseDensityCoeffs[type]);
     const padScale = defenseScale(paddingDensity, paddingDensityCoeffs[type]);
-    // Floor padding contribution at 0
-    const padContrib = Math.max(0, paddingDefense[type] * padScale);
-    result[type] = round2(baseContrib + padContrib);
+    // Padding can contribute negative values (e.g., Ironsilk reduces blunt defense)
+    const padContrib = paddingDefense[type] * padScale;
+    // Floor total defense at 0
+    result[type] = round2(Math.max(0, baseContrib + padContrib));
   }
 
   return result;

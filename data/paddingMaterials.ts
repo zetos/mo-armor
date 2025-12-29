@@ -57,48 +57,53 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
     materialMultiplier: 1.33,
     weight: 0.00421,
     durabilityMultiplier: 0.9415,
-    // Derived from Sample 12 (100/100) using new Kallardian baseDefense
+    // Derived from Kallardian Norse: D(100/100) - baseDefense
+    // Note: Ironsilk REDUCES blunt defense but increases pierce/slash
     defense: {
-      blunt: 4.40,
-      pierce: 13.35,
-      slash: 11.10,
+      blunt: -0.93,
+      pierce: 10.10,
+      slash: 7.80,
     },
+    // Derived from (D(100/0) - baseDefense) / (D(100/100) - baseDefense)
+    // Very unusual scaling for blunt due to negative base defense value
     defenseDensityCoeffs: {
-      // Derived from Samples 11 (50%) and 12 (100%)
-      blunt: { a: -0.11, b: 1.11 },
-      pierce: { a: 0.378, b: 0.622 },
-      slash: { a: 0.352, b: 0.648 },
+      blunt: { a: 6.2366, b: -5.2366 },
+      pierce: { a: 0.1782, b: 0.8218 },
+      slash: { a: 0.0769, b: 0.9231 },
     },
   },
   'Guard Fur': {
     materialMultiplier: 0.995, // 402/404 ratio from Ironfur
     weight: 0.0103, // Derived: (0.99/0.997 - 35*0.01431) / 48
     durabilityMultiplier: 0.989, // 2647.4/2676.2 from Samples 19/1
+    // Derived from Risar Berserker: D(100/100) - baseDefense
     defense: {
-      blunt: 11.19,
-      pierce: 3.50,
-      slash: 5.04,
+      blunt: 5.39,
+      pierce: 5.30,
+      slash: 5.64,
     },
+    // Negative intercepts mean Guard Fur reduces defense at low densities
     defenseDensityCoeffs: {
-      blunt: { a: 0.282, b: 0.718 },
-      // Pierce and slash have negative intercepts
-      pierce: { a: -0.686, b: 1.686 },
-      slash: { a: -0.215, b: 1.215 },
+      blunt: { a: -0.4917, b: 1.4917 },
+      pierce: { a: -0.1132, b: 1.1132 },
+      slash: { a: -0.0851, b: 1.0851 },
     },
   },
   Bloodsilk: {
     materialMultiplier: 1.485, // 600/404 ratio from Ironfur
     weight: 0.0053, // Derived: (0.88/0.997 - 35*0.01431) / 72
     durabilityMultiplier: 0.992, // 2173.9/2166.7 * 0.989 from Samples 14/17
+    // Derived from Risar Berserker: D(100/100) - baseDefense
     defense: {
-      blunt: 6.37,
-      pierce: 9.70,
-      slash: 8.88,
+      blunt: 0.57,
+      pierce: 11.50,
+      slash: 9.48,
     },
+    // Very unusual scaling for blunt due to small base value
     defenseDensityCoeffs: {
-      blunt: { a: 0.118, b: 0.882 },
-      pierce: { a: 0.072, b: 0.928 },
-      slash: { a: 0.094, b: 0.906 },
+      blunt: { a: -8.8596, b: 9.8596 },
+      pierce: { a: 0.2174, b: 0.7826 },
+      slash: { a: 0.1519, b: 0.8481 },
     },
   },
 };
