@@ -13,7 +13,8 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   'Arthropod Carapace': {
     weight: 0.01082,
     // Weight multiplier to match Plate Scales baseline
-    // Derived from Risar Berserker samples: ~0.88
+    // TODO: Needs style-specific weight multipliers or formula revision for 0% density cases
+    // Currently derived from mid-high density samples: ~0.88
     weightMultiplier: 0.88,
     usageMultiplier: 1.96, // Fallback (Kallardian Norse at 100%)
     // Style-specific usage multipliers with density scaling (mult = a + b * density/100)
@@ -56,7 +57,7 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
         densityCoeffs: {
           blunt: { a: 0.8232, b: 0.1768 },
           pierce: { a: 0.7514, b: 0.2486 },
-          slash: { a: 0.7465, b: 0.2535 },
+          slash: { a: 0.7457, b: 0.2543 },
         },
       },
     },
@@ -102,10 +103,10 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
        },
        'Ranger Armor': {
          baseDefense: { blunt: 33.57, pierce: 31.87, slash: 35.72 },
-         densityCoeffs: { /* Use style's base coeffs as fallback */
-           blunt: { a: 0.8453, b: 0.1547 },
-           pierce: { a: 0.8431, b: 0.1569 },
-           slash: { a: 0.8737, b: 0.1263 },
+         densityCoeffs: {
+           blunt: { a: 0.8671, b: 0.1329 },
+           pierce: { a: 0.8541, b: 0.1459 },
+           slash: { a: 0.8841, b: 0.1159 },
          },
        },
      },

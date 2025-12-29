@@ -183,9 +183,20 @@ export type StyleSpecificUsageMultiplierConfig = {
   b: number;
 };
 
+/**
+ * Style-specific weight configuration for a base material.
+ * Allows overriding weight density coefficients per style.
+ */
+export type StyleSpecificWeightConfig = {
+  /** Weight density coefficients (scale = a + b * density/100) */
+  densityCoeffs: DensityCoeffs;
+};
+
 export type BaseMaterialConfig = {
   weight: number;
   weightMultiplier: number;
+  /** Style-specific weight density coefficients. If provided, overrides the armor style's base coefficients. */
+  weightConfig?: Partial<Record<ArmorStyle, StyleSpecificWeightConfig>>;
   usageMultiplier: number;
   /** Style-specific usage multipliers with density scaling. If provided, overrides the base usageMultiplier for that style. */
   usageMultiplierConfig?: Partial<Record<ArmorStyle, StyleSpecificUsageMultiplierConfig>>;
