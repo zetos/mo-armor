@@ -215,6 +215,8 @@ export type PaddingMaterialConfig = {
   materialMultiplier: number;
   weight: number;
   weightDensityCoeffs: DensityCoeffs;
+  /** Base-material-specific weight density coefficients. If provided, overrides weightDensityCoeffs for specific base materials. */
+  weightDensityCoeffsPerBase?: Partial<Record<BaseMaterial, DensityCoeffs>>;
   durabilityMults: DurabilityMults;
   defense: DefenseStats;
   defenseDensityCoeffs: DefenseDensityCoeffs;

@@ -231,14 +231,18 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       padding: paddingUsage,
     };
 
-     // Weight calculation - uses calculated usage with original weight scales
+     // Weight calculation - uses calculated usage with weight scales
+     // Use material-specific weight density coefficients if configured, otherwise use style's base coefficients
+     const effectiveBaseWeightCoeffs = baseMaterialConfig.resolvedWeightConfig?.densityCoeffs 
+       ?? styleConfig.baseWeightDensityCoeffs;
+     
      pieceWeight[piece] = round2(calculatePieceWeight(
        baseUsage,
        paddingUsage,
        baseMaterialConfig.weight,
        baseMaterialConfig.weightMultiplier,
        paddingMaterialConfig.weight,
-       styleConfig.baseWeightDensityCoeffs,
+       effectiveBaseWeightCoeffs,
        paddingMaterialConfig.weightDensityCoeffs,
        baseDensity,
        paddingDensity,

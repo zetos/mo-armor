@@ -19,13 +19,23 @@ const DEFENSE_TOLERANCE = 0.01;
 // Material usage can be off by 2 due to rounding and formula variance
 const MATERIAL_TOLERANCE = 2;
 
+/**
+ * Computes the difference between two numbers, rounded to avoid floating-point precision issues.
+ * e.g., 0.010000000000005116 becomes 0.01
+ */
+function roundedDiff(a: number, b: number): number {
+  return Math.round(Math.abs(a - b) * 1e10) / 1e10;
+}
+
 function expectClose(
   actual: number,
   expected: number,
   message: string,
   tolerance = TOLERANCE
 ) {
-  const diff = Math.abs(actual - expected);
+  // Round diff to avoid floating-point precision issues in comparison
+  // e.g., 0.010000000000005116 should be treated as 0.01
+  const diff = Math.round(Math.abs(actual - expected) * 1e10) / 1e10;
   if (diff > tolerance) {
     throw new Error(
       `${message}: expected ${expected}, got ${actual} (diff: ${diff})`
@@ -205,27 +215,18 @@ describe('Summary', () => {
           `setMaterialUsage.padding: ${result.setMaterialUsage.padding} vs ${sample.setMaterialUsage.padding}`
         );
       }
-      // Defense tolerance
-      if (
-        Math.abs(result.setDefense.blunt - sample.setDefense.blunt) >
-        DEFENSE_TOLERANCE
-      ) {
+      // Defense tolerance - use roundedDiff to avoid floating-point comparison issues
+      if (roundedDiff(result.setDefense.blunt, sample.setDefense.blunt) > DEFENSE_TOLERANCE) {
         errors.push(
           `setDefense.blunt: ${result.setDefense.blunt} vs ${sample.setDefense.blunt}`
         );
       }
-      if (
-        Math.abs(result.setDefense.pierce - sample.setDefense.pierce) >
-        DEFENSE_TOLERANCE
-      ) {
+      if (roundedDiff(result.setDefense.pierce, sample.setDefense.pierce) > DEFENSE_TOLERANCE) {
         errors.push(
           `setDefense.pierce: ${result.setDefense.pierce} vs ${sample.setDefense.pierce}`
         );
       }
-      if (
-        Math.abs(result.setDefense.slash - sample.setDefense.slash) >
-        DEFENSE_TOLERANCE
-      ) {
+      if (roundedDiff(result.setDefense.slash, sample.setDefense.slash) > DEFENSE_TOLERANCE) {
         errors.push(
           `setDefense.slash: ${result.setDefense.slash} vs ${sample.setDefense.slash}`
         );

@@ -1,4 +1,4 @@
-import type { BaseMaterial, BaseMaterialConfig, ArmorStyle, DefenseStats, StyleSpecificDefenseConfig, StyleSpecificDurabilityConfig, StyleSpecificUsageMultiplierConfig } from '../types';
+import type { BaseMaterial, BaseMaterialConfig, ArmorStyle, DefenseStats, StyleSpecificDefenseConfig, StyleSpecificDurabilityConfig, StyleSpecificUsageMultiplierConfig, StyleSpecificWeightConfig } from '../types';
 
 export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = {
   'Plate Scales': {
@@ -11,18 +11,23 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     defenseConfig: {},
   },
   'Arthropod Carapace': {
-    weight: 0.01082,
-    // Weight multiplier to match Plate Scales baseline
-    // TODO: Needs style-specific weight multipliers or formula revision for 0% density cases
-    // Currently derived from mid-high density samples: ~0.88
-    weightMultiplier: 0.88,
+    weight: 0.01131,  // Derived from 100%/0% analysis: baseContrib / (baseUsage * pieceMult)
+    // Weight multiplier to match Plate Scales baseline  
+    weightMultiplier: 1.0,  // Baked into weight value
+    // Style-specific weight density coefficients
+    // Arthropod Carapace has INVERSE density scaling: weight per unit is HIGHER at low densities
+    // At 0% density: scale = ~1.96, at 100% density: scale = 1.0
+    // This is because the material usage increases faster than the weight
+    weightConfig: {
+      'Khurite Splinted': { densityCoeffs: { a: 1.96, b: -0.96 } },
+    },
     usageMultiplier: 1.96, // Fallback (Kallardian Norse at 100%)
     // Style-specific usage multipliers with density scaling (mult = a + b * density/100)
     // Derived from 0% and 100% density samples
     usageMultiplierConfig: {
       'Risar Berserker': { a: 1.9155, b: 0.0501 },
       'Kallardian Norse': { a: 1.9456, b: 0.0150 },
-      'Khurite Splinted': { a: 1.9155, b: 0.0381 },
+      'Khurite Splinted': { a: 1.917, b: 0.037 },
       'Ranger Armor': { a: 1.9530, b: 0.0112 },
     },
     durability: 1.221, // Fallback value
@@ -66,7 +71,15 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
      weight: 0.0153,
      // Derived from Kallardian Norse samples: ~0.98
      weightMultiplier: 0.98,
-     usageMultiplier: 0.83, // Derived from multiple samples
+     usageMultiplier: 0.82, // Fallback (adjusted to minimize errors)
+     // Style-specific usage multipliers (fixed values, no density scaling)
+     // Derived from optimizing against sample data for each style
+     usageMultiplierConfig: {
+       'Risar Berserker': { a: 0.818, b: 0 },
+       'Kallardian Norse': { a: 0.821, b: 0 },
+       'Khurite Splinted': { a: 0.824, b: 0 },
+       'Ranger Armor': { a: 0.821, b: 0 },
+     },
      durability: 0.91, // Fallback value
      // Style-specific durability configurations (derived from 0%/0%, 100%/0%, 0%/100% samples)
      durabilityConfig: {
@@ -127,6 +140,7 @@ export function getBaseMaterial(
   resolvedDefenseConfig: StyleSpecificDefenseConfig | null;
   resolvedDurabilityConfig: StyleSpecificDurabilityConfig | null;
   resolvedUsageMultiplierConfig: StyleSpecificUsageMultiplierConfig | null;
+  resolvedWeightConfig: StyleSpecificWeightConfig | null;
 } {
   const config = baseMaterials[material];
   if (!config) {
@@ -147,10 +161,15 @@ export function getBaseMaterial(
   // If not configured, return null (caller will use base usage multiplier)
   const resolvedUsageMultiplierConfig = config.usageMultiplierConfig?.[armorStyle] ?? null;
   
+  // Resolve style-specific weight config
+  // If not configured, return null (caller will use armor style's base weight coefficients)
+  const resolvedWeightConfig = config.weightConfig?.[armorStyle] ?? null;
+  
   return { 
     ...config, 
     resolvedDefenseConfig,
     resolvedDurabilityConfig,
-    resolvedUsageMultiplierConfig
+    resolvedUsageMultiplierConfig,
+    resolvedWeightConfig
   };
 }
