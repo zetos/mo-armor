@@ -865,4 +865,112 @@ export const rangerArmorSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Plate Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 28.04,
+      slash: 32.36,
+      blunt: 30.81,
+    },
+    setWeight: 5.1,
+    pieceWeight: {
+      helm: 0.51,
+      rightArm: 0.71,
+      torso: 1.63,
+      leftArm: 0.71,
+      legs: 1.53,
+    },
+    setDura: 904,
+    pieceDurability: {
+      helm: 180.8,
+      rightArm: 135.6,
+      torso: 226,
+      leftArm: 135.6,
+      legs: 226,
+    },
+    setMaterialUsage: {
+      base: 128,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 13,
+      },
+      rightArm: {
+        base: 18,
+        padding: 19,
+      },
+      torso: {
+        base: 38,
+        padding: 40,
+      },
+      leftArm: {
+        base: 18,
+        padding: 19,
+      },
+      legs: {
+        base: 41,
+        padding: 43,
+      },
+    },
+  },
+  {
+    armorStyle: 'Ranger Armor',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 43.36,
+      slash: 44.84,
+      blunt: 35.52,
+    },
+    setWeight: 6.68,
+    pieceWeight: {
+      helm: 0.67,
+      rightArm: 0.94,
+      torso: 2.14,
+      leftArm: 0.94,
+      legs: 2,
+    },
+    setDura: 2038.25,
+    pieceDurability: {
+      helm: 407.65,
+      rightArm: 305.74,
+      torso: 509.56,
+      leftArm: 305.74,
+      legs: 509.56,
+    },
+    setMaterialUsage: {
+      base: 279,
+      padding: 538,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 28,
+        padding: 54,
+      },
+      rightArm: {
+        base: 39,
+        padding: 75,
+      },
+      torso: {
+        base: 84,
+        padding: 162,
+      },
+      leftArm: {
+        base: 39,
+        padding: 75,
+      },
+      legs: {
+        base: 89,
+        padding: 172,
+      },
+    },
+  },
 ];

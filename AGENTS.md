@@ -56,10 +56,17 @@ Note: Each base material has style-specific base defense values and density scal
 ```
 
 ### Weight
+**NEW ADDITIVE MODEL** (100% accurate at ±0.01):
 ```typescript
-weight = (baseUsage × baseWeight × linearScale(baseDensity, coeffs)
-          + paddingUsage × padWeight × linearScale(paddingDensity, coeffs))
-         × pieceMultiplier
+setWeight(bd, pd) = minWeight + baseContrib × (bd/100) + padContrib × (pd/100)
+
+where:
+- minWeight: Weight at 0% base and 0% padding density
+- baseContrib: Weight added by going from 0% to 100% base density
+- padContrib: Weight added by going from 0% to 100% padding density
+
+Configuration stored in src/data/weightConfigs.ts per style+base+padding combination.
+Piece weights are calculated using old formula then scaled proportionally to match setWeight.
 ```
 
 ### Durability
@@ -109,22 +116,21 @@ paddingUsage = round(stylePadding × materialMult × linearScale(paddingDensity,
 ## Test Tolerances
 
 Current tolerances (reflect known formula accuracy):
-- **Weight**: ±5.0 kg (some samples show larger variance)
+- **Weight**: ±0.01 kg (100% accuracy with new additive model)
 - **Durability**: ±16.0 (formula approximation)
-- **Defense**: ±0.01 (95.40% success rate with style-specific configs)
-  - 4 rounding errors on Plate Scales (acceptable)
-  - 3 failures on Horned Scales (improved with complete density data)
-  - 3 failures on Arthropod Carapace (may need material-specific coefficients)
+- **Defense**: ±0.01 (98.18% success rate with style-specific configs)
+  - 18 failures on Arthropod Carapace at 0% base density (missing density coefficients)
 - **Material Usage**: ±2 units (rounding)
+- **Piece Weight**: Small rounding differences (±0.01-0.03) due to proportional scaling from setWeight
 
 ## Sample Data
 
-- **Risar Berserker**: 28 samples, multiple materials
-- **Kallardian Norse**: 22 samples, 0-100% density range
-- **Khurite Splinted**: 25 samples, multiple materials
-- **Ranger Armor**: 18 samples
+- **Risar Berserker**: 44 samples, multiple materials
+- **Kallardian Norse**: 27 samples, 0-100% density range
+- **Khurite Splinted**: 26 samples, multiple materials
+- **Ranger Armor**: 20 samples
 
-Total: 88 samples across 4 armor styles (3 base materials)
+Total: 117 samples across 4 armor styles (3 base materials)
 
 ## Key Data Structures
 

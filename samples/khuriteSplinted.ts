@@ -1027,4 +1027,58 @@ export const khuriteSplintedSamples: SetStats[] = [
       },
     },
   },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Plate Scales',
+    padding: 'Ironsilk',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 51.32,
+      slash: 46.08,
+      blunt: 47.04,
+    },
+    setWeight: 10.36,
+    pieceWeight: {
+      helm: 1.24,
+      rightArm: 1.35,
+      torso: 3.32,
+      leftArm: 1.35,
+      legs: 3.11,
+    },
+    setDura: 2844.5,
+    pieceDurability: {
+      helm: 568.9,
+      rightArm: 426.68,
+      torso: 711.13,
+      leftArm: 426.68,
+      legs: 711.13,
+    },
+    setMaterialUsage: {
+      base: 431,
+      padding: 537,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 52,
+        padding: 64,
+      },
+      rightArm: {
+        base: 52,
+        padding: 64,
+      },
+      torso: {
+        base: 142,
+        padding: 178,
+      },
+      leftArm: {
+        base: 52,
+        padding: 64,
+      },
+      legs: {
+        base: 133,
+        padding: 167,
+      },
+    },
+  },
 ];

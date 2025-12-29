@@ -14,6 +14,7 @@ import { PIECE_KEYS } from './types';
 import { armorStyles } from './data/armorStyles';
 import { getBaseMaterial } from './data/baseMaterials';
 import { getPaddingMaterial } from './data/paddingMaterials';
+import { getWeightConfig, calculateWeight } from './data/weightConfigs';
 
 /**
  * Durability multipliers for each piece relative to torso (torso = 1.0)
@@ -231,12 +232,12 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       padding: paddingUsage,
     };
 
-     // Weight calculation - uses calculated usage with weight scales
+     // Weight calculation - OLD: deprecated, kept as fallback
      // Use material-specific weight density coefficients if configured, otherwise use style's base coefficients
      const effectiveBaseWeightCoeffs = baseMaterialConfig.resolvedWeightConfig?.densityCoeffs 
        ?? styleConfig.baseWeightDensityCoeffs;
      
-     pieceWeight[piece] = round2(calculatePieceWeight(
+     const oldWeightCalc = round2(calculatePieceWeight(
        baseUsage,
        paddingUsage,
        baseMaterialConfig.weight,
@@ -248,6 +249,9 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
        paddingDensity,
        styleConfig.pieceWeightMultipliers[piece]
      ));
+     
+     // Use old calculation as fallback for now (will be replaced per-piece)
+     pieceWeight[piece] = oldWeightCalc;
 
      // Durability calculation - uses additive model with density and material coefficients
      pieceDurability[piece] = calculatePieceDurability(
@@ -266,7 +270,27 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
     padding: PIECE_KEYS.reduce((sum, piece) => sum + pieceMaterialUsage[piece].padding, 0),
   };
 
-  const setWeight = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0));
+  // Calculate set weight using new additive model if config available
+  const weightConfig = getWeightConfig(armorStyle, base, padding);
+  let setWeight: number;
+  
+  if (weightConfig) {
+    // Use new additive model
+    setWeight = round2(calculateWeight(weightConfig, baseDensity, paddingDensity));
+    
+    // Adjust piece weights proportionally to match setWeight
+    const oldSum = PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0);
+    if (oldSum > 0) {
+      const ratio = setWeight / oldSum;
+      for (const piece of PIECE_KEYS) {
+        pieceWeight[piece] = round2(pieceWeight[piece] * ratio);
+      }
+    }
+  } else {
+    // Fallback to old calculation
+    setWeight = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0));
+  }
+  
   const setDura = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceDurability[piece], 0));
 
    // Defense calculation - uses material-specific or style base defense and density coefficients

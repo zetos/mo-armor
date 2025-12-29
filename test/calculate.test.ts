@@ -3,9 +3,10 @@ import { samples, calculateSetStatus } from '../src';
 import type { SetStats } from '../src/types';
 import { PIECE_KEYS } from '../src/types';
 
-// Weight tolerance - accounts for calculation vs game data variance
-// Note: Some samples show up to ~4.82 difference, indicating formula refinement needed
-const TOLERANCE = 5.0;
+// Weight tolerance - using new additive weight model
+// Formula: W(bd, pd) = W(0,0) + baseContrib × (bd/100) + padContrib × (pd/100)
+// Achieves perfect accuracy at ±0.01 tolerance
+const TOLERANCE = 0.01;
 // Durability tolerance - larger variance due to formula approximation
 // Note: Some samples show up to ~15.5 difference
 const DURABILITY_TOLERANCE = 16.0;
