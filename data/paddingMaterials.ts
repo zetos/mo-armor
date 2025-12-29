@@ -28,10 +28,19 @@ export type DurabilityMults = {
 };
 
 /**
+ * Weight density scale coefficients.
+ * Formula: weightScale(density) = a + b * (density/100)
+ * At density=100: a + b = 1.0
+ * At density=0: scale = a
+ */
+export type WeightDensityCoeffs = { a: number; b: number };
+
+/**
  * Padding material configurations.
  * Each material defines:
  * - materialMultiplier: Multiplier for padding material usage (1.0 = baseline)
  * - weight: Weight per unit of padding material
+ * - weightDensityCoeffs: Density scaling for weight (a + b * d/100)
  * - durabilityMults: Multipliers for the additive durability model
  * - defense: Defense contribution values at 100% density (blunt, pierce, slash)
  * - defenseDensityCoeffs: Per-damage-type density scaling coefficients
@@ -41,6 +50,7 @@ export type DurabilityMults = {
 export type PaddingMaterialConfig = {
   materialMultiplier: number;
   weight: number;
+  weightDensityCoeffs: WeightDensityCoeffs;
   durabilityMults: DurabilityMults;
   defense: DefenseStats;
   defenseDensityCoeffs: DefenseDensityCoeffs;
@@ -50,6 +60,8 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   Ironfur: {
     materialMultiplier: 1.0,
     weight: 0.0093,
+    // Derived: padScale(0) = 0.628 from Kallardian Norse samples
+    weightDensityCoeffs: { a: 0.628, b: 0.372 },
     // Baseline durability multipliers (all 1.0)
     durabilityMults: { minMult: 1.0, padMult: 1.0 },
     // Derived from Kallardian Norse: D(100/100) - D(100/0) = padding contribution at 100%
@@ -69,6 +81,8 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   Ironsilk: {
     materialMultiplier: 1.33,
     weight: 0.00421,
+    // Derived: padScale(0) = 0.822 from Kallardian Norse samples
+    weightDensityCoeffs: { a: 0.822, b: 0.178 },
     // Derived: minMult ~0.955 (average across styles), padMult = 0.8108
     durabilityMults: { minMult: 0.955, padMult: 0.8108 },
     // Derived from Kallardian Norse: D(100/100) - baseDefense
@@ -88,7 +102,10 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   },
   'Guard Fur': {
     materialMultiplier: 0.995, // 402/404 ratio from Ironfur
-    weight: 0.0103, // Derived: (0.99/0.997 - 35*0.01431) / 48
+    // Derived from Risar Berserker sample: (actual/pieceMult - baseW) / (padUsage * matMult) = 0.0087
+    weight: 0.0087,
+    // Assume similar to Ironfur (need more samples to verify)
+    weightDensityCoeffs: { a: 0.628, b: 0.372 },
     // Derived: similar to Ironfur (from Risar Berserker samples)
     durabilityMults: { minMult: 0.989, padMult: 0.989 },
     // Derived from Risar Berserker: D(100/100) - baseDefense
@@ -106,7 +123,10 @@ export const paddingMaterials: Partial<Record<SupportMaterial, PaddingMaterialCo
   },
   Bloodsilk: {
     materialMultiplier: 1.485, // 600/404 ratio from Ironfur
-    weight: 0.0053, // Derived: (0.88/0.997 - 35*0.01431) / 72
+    // Derived from Risar Berserker sample: (actual/pieceMult - baseW) / (padUsage * matMult) = 0.00443
+    weight: 0.00443,
+    // Assume similar to Ironfur (need more samples to verify)
+    weightDensityCoeffs: { a: 0.628, b: 0.372 },
     // Derived: similar to Ironfur (from Risar Berserker samples)
     durabilityMults: { minMult: 0.992, padMult: 0.992 },
     // Derived from Risar Berserker: D(100/100) - baseDefense

@@ -4,17 +4,19 @@ import type { BaseMaterial, DefenseStats } from '../types';
  * Base material configurations.
  * Each material defines:
  * - weight: Weight per unit of material
+ * - weightMultiplier: Additional weight multiplier for the pieceWeightMultipliers
+ *   (Arthropod Carapace = 1.0 baseline, Plate Scales = ~1.08)
  * - usageMultiplier: Multiplier for material usage relative to the style's base (1.0 = baseline)
- *   The armorStyles.ts uses Arthropod Carapace as the baseline for Risar Berserker.
- *   Other base materials need a multiplier (e.g., Plate Scales uses ~0.51x the material).
+ *   The armorStyles.ts uses Plate Scales as the baseline for material usage.
  * - durability: Durability multiplier (1.0 = baseline)
- * - defense: Base defense values (blunt, pierce, slash) - NOTE: Currently unused, defense is style-based
+ * - defenseOffset: Defense offset relative to Plate Scales (the baseline).
  *
  * Note: Only materials used in samples are configured.
  * Add new materials here as samples become available.
  */
 export type BaseMaterialConfig = {
   weight: number;
+  weightMultiplier: number;
   usageMultiplier: number;
   durability: number;
   /**
@@ -28,6 +30,8 @@ export type BaseMaterialConfig = {
 export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = {
   'Plate Scales': {
     weight: 0.01431,
+    // Baseline weight multiplier (Plate Scales is the baseline)
+    weightMultiplier: 1.0,
     usageMultiplier: 1.0, // Baseline - armorStyles are calibrated with Plate Scales
     durability: 1.0, // Baseline for durability
     defenseOffset: {
@@ -38,6 +42,9 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   },
   'Arthropod Carapace': {
     weight: 0.01082,
+    // Weight multiplier to match Plate Scales baseline
+    // Derived from Risar Berserker samples: ~0.88
+    weightMultiplier: 0.88,
     usageMultiplier: 1.96, // Derived from Kallardian Norse sample: 498/254 = 1.9606
     durability: 1.221, // 1/0.819, higher durability than Plate Scales
     // Derived from Risar Berserker: D(Arthropod, 100/100) - D(Plate Scales, 100/0) - ironfurDefense
@@ -49,6 +56,8 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   },
   'Horned Scales': {
     weight: 0.0153,
+    // Assume similar to Plate Scales (need more samples to verify)
+    weightMultiplier: 1.08,
     usageMultiplier: 0.83, // 29/35 ratio vs Plate Scales (from Sample 20)
     durability: 0.91,
     // Derived from Sample 17 (Plate Scales) vs Sample 20 (Horned Scales)

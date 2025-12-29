@@ -35,12 +35,21 @@ export type DurabilityCoeffs = {
 };
 
 /**
+ * Weight density coefficients.
+ * Formula: weightScale(density) = a + b * (density/100)
+ * At density=100: a + b = 1.0
+ * At density=0: scale = a
+ */
+export type WeightDensityCoeffs = { a: number; b: number };
+
+/**
  * Armor style configurations.
  * Each style defines:
  * - baseMaterialUsage: Amount of base material needed per piece (at 100% density)
  * - baseMaterialUsageDensityCoeffs: Density scaling for base material usage
  * - paddingUsage: Base padding amount per piece (before material multiplier, at 100% density)
  * - pieceWeightMultipliers: Per-piece weight adjustment multipliers
+ * - baseWeightDensityCoeffs: Density scaling for base material weight
  * - durabilityCoeffs: Additive durability model coefficients
  * - baseDefense: Base defense values at 100% base density (from 100/0 Ironfur sample)
  * - baseDefenseDensityCoeffs: Per-damage-type density scaling for base defense
@@ -50,6 +59,7 @@ export type ArmorStyleConfig = {
   baseMaterialUsageDensityCoeffs: UsageDensityCoeffs;
   paddingUsage: PieceStats<number>;
   pieceWeightMultipliers: PieceStats<number>;
+  baseWeightDensityCoeffs: WeightDensityCoeffs;
   durabilityCoeffs: DurabilityCoeffs;
   baseDefense: DefenseStats;
   baseDefenseDensityCoeffs: DefenseDensityCoeffs;
@@ -74,13 +84,17 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 48,
       legs: 126,
     },
+    // Derived from Plate Scales 100/100 sample (weightMultiplier = 1.0)
+    // actual / (baseW + padW) where baseW = 35*0.01431, padW = 48*0.0093
     pieceWeightMultipliers: {
-      helm: 0.997,
-      torso: 0.969,
-      rightArm: 1.081,
-      leftArm: 1.081,
-      legs: 0.968,
+      helm: 1.0876,
+      torso: 1.0458,
+      rightArm: 1.1719,
+      leftArm: 1.1719,
+      legs: 1.0447,
     },
+    // Derived from Kallardian Norse: baseScale(0) = 0.62
+    baseWeightDensityCoeffs: { a: 0.62, b: 0.38 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 221.75)
     durabilityCoeffs: {
@@ -125,6 +139,8 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 1.0,
       legs: 1.0,
     },
+    // Derived from 0/100 samples: baseScale(0) = 0.62
+    baseWeightDensityCoeffs: { a: 0.62, b: 0.38 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 0/0, 100/0, 0/100, 100/100 Ironfur samples
     durabilityCoeffs: {
@@ -169,6 +185,8 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 1.294,
       legs: 1.158,
     },
+    // Derived from 100/100 vs 0/100 Ironfur samples: baseScale(0) = 0.5249
+    baseWeightDensityCoeffs: { a: 0.5249, b: 0.4751 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 221.0)
     durabilityCoeffs: {
@@ -213,6 +231,8 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 1.066,
       legs: 0.987,
     },
+    // Derived from 100/100 vs 0/100 Ironfur samples: baseScale(0) = 0.5901
+    baseWeightDensityCoeffs: { a: 0.5901, b: 0.4099 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 226.01)
     durabilityCoeffs: {

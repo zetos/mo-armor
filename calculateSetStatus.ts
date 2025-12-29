@@ -54,13 +54,21 @@ function densityScaleBaseUsage(density: number, coeffs: { a: number; b: number }
 }
 
 /**
- * Calculates the density scaling factor for weight.
- * Weight doesn't scale as aggressively as material usage.
- * At density 100 -> 1.0, at density 50 -> 0.81, at density 0 -> ~0.62
- * Formula: 0.62 + 0.38 * (density / 100)
+ * Calculates the density scaling factor for base material weight.
+ * Each armor style has its own coefficients.
+ * Formula: a + b * (density / 100)
  */
-function densityScaleWeight(density: number): number {
-  return 0.62 + 0.38 * (density / 100);
+function densityScaleBaseWeight(density: number, coeffs: { a: number; b: number }): number {
+  return coeffs.a + coeffs.b * (density / 100);
+}
+
+/**
+ * Calculates the density scaling factor for padding weight.
+ * Each padding material has its own coefficients.
+ * Formula: a + b * (density / 100)
+ */
+function densityScalePadWeight(density: number, coeffs: { a: number; b: number }): number {
+  return coeffs.a + coeffs.b * (density / 100);
 }
 
 
@@ -95,22 +103,25 @@ function calculatePaddingUsage(
  * Weight uses the style's base material values (at 100% density) but scales differently
  * than material usage. Weight decreases less aggressively at low densities.
  * 
- * Formula: (styleBaseUsage * baseMaterialUsageMult * baseWeight * baseWeightScale + 
+ * Formula: (styleBaseUsage * baseMaterialUsageMult * baseWeight * baseMaterialWeightMult * baseWeightScale + 
  *           stylePaddingUsage * padMaterialMult * padWeight * padWeightScale) * pieceMultiplier
  */
 function calculatePieceWeight(
   styleBaseUsage: number,
   baseMaterialUsageMultiplier: number,
   baseMaterialWeight: number,
+  baseMaterialWeightMultiplier: number,
   stylePaddingUsage: number,
   paddingMaterialMultiplier: number,
   paddingMaterialWeight: number,
+  baseWeightDensityCoeffs: { a: number; b: number },
+  paddingWeightDensityCoeffs: { a: number; b: number },
   baseDensity: number,
   paddingDensity: number,
   pieceMultiplier: number
 ): number {
-  const baseContrib = styleBaseUsage * baseMaterialUsageMultiplier * baseMaterialWeight * densityScaleWeight(baseDensity);
-  const padContrib = stylePaddingUsage * paddingMaterialMultiplier * paddingMaterialWeight * densityScaleWeight(paddingDensity);
+  const baseContrib = styleBaseUsage * baseMaterialUsageMultiplier * baseMaterialWeight * baseMaterialWeightMultiplier * densityScaleBaseWeight(baseDensity, baseWeightDensityCoeffs);
+  const padContrib = stylePaddingUsage * paddingMaterialMultiplier * paddingMaterialWeight * densityScalePadWeight(paddingDensity, paddingWeightDensityCoeffs);
   return round2((baseContrib + padContrib) * pieceMultiplier);
 }
 
@@ -242,9 +253,12 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       styleConfig.baseMaterialUsage[piece],
       baseMaterialConfig.usageMultiplier,
       baseMaterialConfig.weight,
+      baseMaterialConfig.weightMultiplier,
       styleConfig.paddingUsage[piece],
       paddingMaterialConfig.materialMultiplier,
       paddingMaterialConfig.weight,
+      styleConfig.baseWeightDensityCoeffs,
+      paddingMaterialConfig.weightDensityCoeffs,
       baseDensity,
       paddingDensity,
       styleConfig.pieceWeightMultipliers[piece]
