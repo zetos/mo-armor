@@ -1,6 +1,6 @@
-# TASKS.md - Armor Calculator Improvement Roadmap
+# TASKS.md - Material Expansion Roadmap
 
-This file tracks incremental improvements to the armor calculator's accuracy and code quality.
+This file tracks the addition of new base materials and padding materials to the armor calculator.
 
 ## Status Legend
 - ⏳ **Not Started**
@@ -8,261 +8,343 @@ This file tracks incremental improvements to the armor calculator's accuracy and
 - ✅ **Complete**
 - ❌ **Blocked**
 
----
+## Using the Sampler
 
-## Phase 1: Sample Data Cleanup (✅)
+To collect samples for new materials, use the **sampler subagent** via the Task tool:
 
-### 1.1 Remove Non-Standard Material Samples
-**Status:** ✅ COMPLETE  
-**Goal:** Keep only Plate Scales samples (with Ironsilk OR Ironfur) to establish baseline accuracy.
-
-**Decision:** Keeping both Ironsilk and Ironfur padding materials as they are both standard. Removing only non-standard base materials (Arthropod Carapace, Horned Scales) and non-standard padding (Bloodsilk, Guard Fur).
-
-- [x] Clean up `samples/risarBerserker.ts` - Remove Arthropod Carapace, Horned Scales, Bloodsilk, Guard Fur (44 → 10 samples)
-- [x] Clean up `samples/kallardianNorse.ts` - Remove Arthropod Carapace, Horned Scales (27 → 19 samples)
-- [x] Clean up `samples/khuriteSplinted.ts` - Remove Arthropod Carapace, Horned Scales (26 → 11 samples)
-- [x] Clean up `samples/rangerArmor.ts` - Remove Horned Scales samples (20 → 10 samples)
-- [x] Update test counts in `test/calculate.test.ts` after cleanup
-- [x] Run tests to verify all remaining samples pass (1351 tests, all passing ✓)
-
-**Result:** 50 samples remaining (down from 117). Only Plate Scales + (Ironsilk OR Ironfur) combinations remain.
-
----
-
-## Phase 2: Ensure Critical Density Samples (✅)
-
-### 2.1 Audit Existing Samples
-**Status:** ✅ COMPLETE  
-**Goal:** Identify which critical density combinations are missing per armor style.
-
-**Audit Results:**
-- Risar Berserker: ✅ Has all critical densities (0/0, 0/100, 100/0, 100/100, 50/50)
-- Kallardian Norse: ❌ Missing Ironsilk @ 50/50
-- Khurite Splinted: ❌ Missing Ironsilk @ 50/50
-- Ranger Armor: ❌ Missing both Ironsilk @ 50/50 and Ironfur @ 50/50
-
-**Acceptance Criteria:** ✅ Identified 4 missing samples.
-
-### 2.2 Collect Missing Samples
-**Status:** ✅ COMPLETE  
-**Goal:** Use sampler tool to gather missing critical density combinations.
-
-- [x] Collect Kallardian Norse: Plate Scales/Ironsilk @ 50/50 ✅
-- [x] Collect Khurite Splinted: Plate Scales/Ironsilk @ 50/50 ✅
-- [x] Collect Ranger Armor: Plate Scales/Ironsilk @ 50/50 ✅
-- [x] Collect Ranger Armor: Plate Scales/Ironfur @ 50/50 ✅
-- [x] Add new samples to respective files (kallardianNorse.ts, khuriteSplinted.ts, rangerArmor.ts)
-- [x] Run tests to verify new samples (1459 tests, all passing ✓)
-
-**Result:** All 4 armor styles now have complete critical density coverage. Total: 54 samples.
-
----
-
-## Phase 3: Defense Calculation Accuracy (✅)
-
-### 3.0 Defense Accuracy Analysis
-**Status:** ✅ COMPLETE  
-**Goal:** Measure current defense accuracy and identify optimization opportunities.
-
-- [x] Create defense accuracy analyzer script (`scripts/analyzeDefense.ts`)
-- [x] Run analysis and document baseline accuracy metrics
-- [x] Identify systematic bias patterns
-
-**Results:**
-- 98.1% of defense values within ±0.01 tolerance
-- 95.7% perfect matches (error = 0)
-- Only 7 values at exactly ±0.01 boundary
-- Small positive bias on blunt defense (+0.000556 mean error)
-
-### 3.1-3.4 Armor Style Defense Reviews
-**Status:** ✅ COMPLETE  
-**Goal:** Verify defense accuracy for all armor styles.
-
-**Results per armor style:**
-- Risar Berserker: 96.7% within ±0.01, max error 0.01
-- Kallardian Norse: 98.3% within ±0.01, max error 0.01  
-- Khurite Splinted: 97.2% within ±0.01, max error 0.01
-- Ranger Armor: 100% within ±0.01, max error 0.01
-
-All coefficients verified and working correctly. No adjustments needed.
-
-### 3.5 Code Refactoring - Padding Materials
-**Status:** ✅ COMPLETE  
-**Goal:** Simplify paddingMaterials.ts by extracting shared defense configurations.
-
-**Key Findings:**
-1. Padding defense values are IDENTICAL across all armor styles
-2. Ironfur uses simple linear scaling (a=0, b=1) for all defense types
-3. Only weight properties vary per armor style
-
-**Changes Made:**
-- Extracted shared defense configs to `SHARED_PADDING_DEFENSE` constant
-- Separated style-specific weight configs to `STYLE_WEIGHT_CONFIGS`
-- Created `buildPaddingConfig()` helper function
-- Reduced file from ~340 lines to ~170 lines (50% reduction)
-- Added `getSharedPaddingDefense()` export for analysis
-
-### 3.6 Cross-Validation with Varied Density Samples
-**Status:** ✅ COMPLETE  
-**Goal:** Validate formula accuracy with non-standard density combinations.
-
-**Samples Tested (not added to permanent test suite):**
-- Risar Berserker: 20/90, 30/40, 25/75
-- Kallardian Norse: 15/85, 35/45, 60/20
-- Khurite Splinted: 10/80, 45/55, 70/30
-- Ranger Armor: 5/95, 55/35, 80/10
-
-**Result:** 100% pass rate at ±0.01 tolerance. Formula works correctly across all density ranges.
-
----
-
-## Phase 4: Weight Calculation Refactor (✅)
-
-### 4.1 Analyze Current Weight Implementation
-**Status:** ✅ COMPLETE  
-**Goal:** Understand the structure of `weightConfigs` and identify patterns.
-
-- [x] Document current `weightConfigs` structure and all combinations
-- [x] Extract `minWeight`, `baseContrib`, `padContrib` patterns per armor style
-- [x] Check if `baseContrib` is consistent across padding materials (for same armor+base)
-- [x] Check if `padContrib` is consistent across base materials (for same armor+padding)
-- [x] Identify if coefficients can be factored into material-level properties
-- [x] Document findings and proposed refactor approach
-
-**Key Findings:**
-1. `padContrib` is UNIVERSAL per padding material (same across all styles and base materials)
-   - Ironfur: 1.4, Ironsilk: 0.4, Guard Fur: 1.2, Bloodsilk: 0.6
-2. `baseContrib` is per style+base (padding-independent)
-   - Can be decomposed as: `baseContrib = styleBaseContrib × materialMultiplier`
-3. `minWeight` decomposes cleanly:
-   - `minWeight = styleBaseMinWeight + paddingOffset + baseMaterialOffset`
-
-### 4.2 Design Improved Weight Model
-**Status:** ✅ COMPLETE  
-**Goal:** Design a cleaner weight calculation system without hardcoded combos.
-
-- [x] Propose weight coefficient structure for `armorStyles.ts`
-- [x] Propose weight coefficient structure for `baseMaterials.ts`
-- [x] Propose weight coefficient structure for `paddingMaterials.ts`
-- [x] Determine if additional per-style base material configs are needed
-- [x] Write migration plan from `weightConfigs` to new structure
-- [x] Document new weight formula and coefficient meanings
-
-**New Weight Formula:**
-```typescript
-setWeight = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
-
-where:
-  minWeight = styleBaseMinWeight + paddingOffset + baseMaterialOffset
-  baseContrib = styleBaseContrib × baseMaterialMult
-  padContrib = (from padding material config)
+```
+Task(subagent_type="sampler", prompt="Fetch samples for [Armor Style] with [Base Material] and [Padding Material] at densities [X/Y]...")
 ```
 
-### 4.3 Implement New Weight Calculation
-**Status:** ✅ COMPLETE  
-**Goal:** Refactor weight calculation to use material properties.
+The sampler will:
+1. Fetch armor calculation data from the MortalData API
+2. Parse the response into the standard JSON format
+3. Return the samples for adding to the appropriate sample file
 
-- [x] Add weight coefficients to `src/data/armorStyles.ts` (StyleWeightConfig)
-- [x] Add weight coefficients to `src/data/baseMaterials.ts` (BaseMaterialWeightConfig)
-- [x] Add weight coefficients to `src/data/paddingMaterials.ts` (PaddingMaterialWeightConfig)
-- [x] Update weight calculation in `src/calculate.ts` to use new coefficients
-- [x] Run tests to verify weight accuracy remains at ±0.01 (1459 tests passing)
-- [x] Remove `src/data/weightConfigs.ts` file
-- [x] Update imports in `src/calculate.ts`
-- [x] Add new types to `src/types.ts`
-
-### 4.4 Verify Weight Calculation Accuracy
-**Status:** ✅ COMPLETE  
-**Goal:** Ensure new weight model maintains 100% accuracy.
-
-- [x] Run full test suite and verify all weight tests pass (1459/1459)
-- [x] Compare new vs old weight calculations for all samples
-- [x] Document any tolerance changes or edge cases
-- [x] Investigate piece weight tolerance improvement to ±0.01
-
-**Results:**
-- setWeight: 100% accuracy at ±0.01 tolerance
-- pieceWeight: 77.8% accuracy at ±0.01, 100% at ±0.03 (unchanged)
-  - Max error: 0.02, caused by proportional scaling rounding
-  - Cannot be improved without per-piece weight formulas from the game
-- PIECE_WEIGHT_TOLERANCE remains at 0.03 (inherent limitation of proportional scaling)
+**Critical Density Combinations Needed:**
+- 0/0 (base 0%, padding 0%)
+- 100/0 (base 100%, padding 0%)
+- 0/100 (base 0%, padding 100%)
+- 100/100 (base 100%, padding 100%)
+- 50/50 (for validation)
 
 ---
 
-## Phase 5: Final Validation & Documentation (✅)
+## Phase 1: Horned Scales (Base Material) ⏳
 
-### 5.0 Piece Weight Rounding Investigation
-**Status:** ✅ COMPLETE  
-**Goal:** Understand piece weight rounding behavior and improve tolerance to ±0.01.
+**Status:** ⏳ Not Started  
+**Priority:** High (already has partial config)
 
-- [x] Collect low-density padding samples (1%-10%) using sampler
-- [x] Analyze rounding patterns from new samples
-- [x] Derive per-piece additive weight model coefficients
-- [x] Implement per-piece additive weight calculation
-- [x] Verify 100% pass rate at ±0.01 tolerance
+Horned Scales has existing partial configuration in `baseMaterials.ts` but was removed from test samples. Need to validate and complete the configuration.
 
-**Key Findings:**
-- Piece weights follow the same additive pattern as set weights
-- Each piece has its own minWeight, baseContrib, and padContrib coefficients
-- Coefficients derived from Ironfur corner samples (0/0, 100/0, 0/100, 100/100)
-- Padding minWeightOffset distributed proportionally across pieces
-- padContribRatio scales piece padContrib for different padding materials
+### 1.1 Collect Horned Scales Samples
+**Goal:** Gather corner samples for all 4 armor styles using Ironfur padding.
 
-**New Piece Weight Formula:**
-```typescript
-pieceWeight(bd, pd) = (pieceMin - offsetAdj) + pieceBase×(bd/100) + piecePad×padRatio×(pd/100)
-where:
-  offsetAdj = (0.5 - paddingMinWeightOffset) × (pieceMin / totalIronfurMin)
-  padRatio = padContribRatio from padding material (1.0 for Ironfur, 0.286 for Ironsilk)
-```
+- [ ] Kallardian Norse + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Khurite Splinted + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Ranger Armor + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Add samples to appropriate files in `samples/`
 
-### 5.1 Comprehensive Test Pass
-**Status:** ✅ COMPLETE  
-**Goal:** Ensure all calculations are accurate across all samples.
+### 1.2 Validate Defense Configuration
+**Goal:** Verify or update defense coefficients for Horned Scales.
 
-- [x] Run full test suite: `bun test`
-- [x] Verify 100% pass rate for defense (±0.01)
-- [x] Verify 100% pass rate for weight (±0.01)
-- [x] Verify 100% pass rate for piece weight (±0.01) - NEW!
-- [x] Verify durability passes within acceptable tolerance (±16.0)
-- [x] Verify material usage passes within acceptable tolerance (±2)
+- [ ] Compare calculated vs actual defense values
+- [ ] Update `defenseConfig` in `baseMaterials.ts` if needed
+- [ ] Verify defense passes at ±0.01 tolerance
 
-**Results:**
-- 1459 tests passing
-- Defense: 100% at ±0.01
-- Weight: 100% at ±0.01
-- Piece Weight: 100% at ±0.01 (90.4% perfect matches)
-- Durability: 100% at ±16.0
-- Material Usage: 100% at ±2
+### 1.3 Validate Weight Configuration
+**Goal:** Add/verify weight coefficients for Horned Scales.
 
-### 5.2 Update Documentation
-**Status:** ✅ COMPLETE  
-**Goal:** Reflect improvements in project documentation.
+- [ ] Derive `additiveWeightConfig` (minWeightOffset, baseContribMult)
+- [ ] Add `additiveWeightConfig` to Horned Scales in `baseMaterials.ts`
+- [ ] Verify set weight passes at ±0.01 tolerance
 
-- [x] Update `AGENTS.md` with per-piece weight calculation formula
-- [x] Update `AGENTS.md` test tolerance section
-- [x] Update `TASKS.md` with Phase 5 completion
-- [x] Add `pieceWeightCoeffs` to `armorStyles.ts`
-- [x] Add `padContribRatio` to padding materials config
+### 1.4 Validate Durability Configuration
+**Goal:** Verify durability coefficients for Horned Scales.
 
-**Acceptance Criteria:** Documentation accurately reflects current implementation.
+- [ ] Compare calculated vs actual durability values
+- [ ] Update `durabilityConfig` if needed
+- [ ] Verify durability passes at ±16.0 tolerance
+
+### 1.5 Run Full Test Suite
+**Goal:** Ensure Horned Scales passes all tests.
+
+- [ ] Run `bun test` and verify all tests pass
+- [ ] Document any tolerance adjustments needed
+
+---
+
+## Phase 2: Arthropod Carapace (Base Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** High (already has partial config)
+
+Arthropod Carapace has existing partial configuration but was removed from test samples. Need to validate and complete.
+
+### 2.1 Collect Arthropod Carapace Samples
+**Goal:** Gather corner samples for all 4 armor styles using Ironfur padding.
+
+- [ ] Kallardian Norse + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Khurite Splinted + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Ranger Armor + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Add samples to appropriate files in `samples/`
+
+### 2.2 Validate Defense Configuration
+**Goal:** Verify or update defense coefficients.
+
+- [ ] Compare calculated vs actual defense values
+- [ ] Update `defenseConfig` in `baseMaterials.ts` if needed
+- [ ] Verify defense passes at ±0.01 tolerance
+
+### 2.3 Validate Weight Configuration
+**Goal:** Add/verify weight coefficients.
+
+- [ ] Derive `additiveWeightConfig` (minWeightOffset, baseContribMult)
+- [ ] Add `additiveWeightConfig` to Arthropod Carapace in `baseMaterials.ts`
+- [ ] Verify set weight passes at ±0.01 tolerance
+
+### 2.4 Validate Durability Configuration
+**Goal:** Verify durability coefficients.
+
+- [ ] Compare calculated vs actual durability values
+- [ ] Update `durabilityConfig` if needed
+- [ ] Verify durability passes at ±16.0 tolerance
+
+### 2.5 Run Full Test Suite
+**Goal:** Ensure Arthropod Carapace passes all tests.
+
+- [ ] Run `bun test` and verify all tests pass
+- [ ] Document any tolerance adjustments needed
+
+---
+
+## Phase 3: Guard Fur (Padding Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** Medium (has partial config in SHARED_PADDING_CONFIG)
+
+Guard Fur has defense and weight coefficients configured but needs validation with actual samples.
+
+### 3.1 Collect Guard Fur Samples
+**Goal:** Gather samples using Plate Scales base material.
+
+- [ ] Kallardian Norse + Plate Scales + Guard Fur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Plate Scales + Guard Fur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Add samples to appropriate files in `samples/`
+
+### 3.2 Validate Defense Configuration
+**Goal:** Verify defense coefficients for Guard Fur.
+
+- [ ] Compare calculated vs actual defense values
+- [ ] Update `SHARED_PADDING_CONFIG` defense values if needed
+- [ ] Verify defense passes at ±0.01 tolerance
+
+### 3.3 Validate Weight Configuration
+**Goal:** Verify weight coefficients for Guard Fur.
+
+- [ ] Verify `additiveWeightConfig` values (minWeightOffset: 0.4, padContrib: 1.2, padContribRatio: 0.8571)
+- [ ] Update `STYLE_WEIGHT_CONFIGS` if needed
+- [ ] Verify set weight and piece weight pass at ±0.01 tolerance
+
+### 3.4 Validate Durability Configuration
+**Goal:** Verify durability multipliers for Guard Fur.
+
+- [ ] Compare calculated vs actual durability values
+- [ ] Update `durabilityMults` if needed
+- [ ] Verify durability passes at ±16.0 tolerance
+
+### 3.5 Run Full Test Suite
+**Goal:** Ensure Guard Fur passes all tests.
+
+- [ ] Run `bun test` and verify all tests pass
+
+---
+
+## Phase 4: Bloodsilk (Padding Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** Medium (has partial config in SHARED_PADDING_CONFIG)
+
+Bloodsilk has defense and weight coefficients configured but needs validation.
+
+### 4.1 Collect Bloodsilk Samples
+**Goal:** Gather samples using Plate Scales base material.
+
+- [ ] Kallardian Norse + Plate Scales + Bloodsilk @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Plate Scales + Bloodsilk @ 0/0, 100/0, 0/100, 100/100
+- [ ] Add samples to appropriate files in `samples/`
+
+### 4.2 Validate Defense Configuration
+**Goal:** Verify defense coefficients for Bloodsilk.
+
+- [ ] Compare calculated vs actual defense values
+- [ ] Update `SHARED_PADDING_CONFIG` defense values if needed
+- [ ] Verify defense passes at ±0.01 tolerance
+
+### 4.3 Validate Weight Configuration
+**Goal:** Verify weight coefficients for Bloodsilk.
+
+- [ ] Verify `additiveWeightConfig` values (minWeightOffset: 0.1, padContrib: 0.6, padContribRatio: 0.4286)
+- [ ] Update `STYLE_WEIGHT_CONFIGS` if needed
+- [ ] Verify set weight and piece weight pass at ±0.01 tolerance
+
+### 4.4 Validate Durability Configuration
+**Goal:** Verify durability multipliers for Bloodsilk.
+
+- [ ] Compare calculated vs actual durability values
+- [ ] Update `durabilityMults` if needed
+- [ ] Verify durability passes at ±16.0 tolerance
+
+### 4.5 Run Full Test Suite
+**Goal:** Ensure Bloodsilk passes all tests.
+
+- [ ] Run `bun test` and verify all tests pass
+
+---
+
+## Phase 5: Keeled Scales (Base Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** Low (not configured)
+
+Keeled Scales is a new base material that needs full configuration.
+
+### 5.1 Collect Keeled Scales Samples
+**Goal:** Gather corner samples for at least 2 armor styles to establish baseline.
+
+- [ ] Kallardian Norse + Keeled Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Keeled Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Add samples to `samples/` files
+
+### 5.2 Configure Base Properties
+**Goal:** Add Keeled Scales to `baseMaterials.ts`.
+
+- [ ] Derive `weight` from samples
+- [ ] Derive `usageMultiplier` (relative to Plate Scales)
+- [ ] Derive `durability` multiplier
+- [ ] Add `defenseConfig` for each armor style
+- [ ] Add `additiveWeightConfig`
+
+### 5.3 Expand to Remaining Armor Styles
+**Goal:** Add support for all 4 armor styles.
+
+- [ ] Collect Khurite Splinted samples if needed
+- [ ] Collect Ranger Armor samples if needed
+- [ ] Add defense/durability configs for remaining styles
+
+### 5.4 Run Full Test Suite
+**Goal:** Ensure Keeled Scales passes all tests.
+
+- [ ] Run `bun test` and verify all tests pass
+
+---
+
+## Phase 6: Leptoid Scales (Base Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** Low (not configured)
+
+### 6.1 Collect Leptoid Scales Samples
+- [ ] Kallardian Norse + Leptoid Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Leptoid Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+
+### 6.2 Configure Base Properties
+- [ ] Add Leptoid Scales to `baseMaterials.ts` with all required properties
+
+### 6.3 Run Full Test Suite
+- [ ] Run `bun test` and verify all tests pass
+
+---
+
+## Phase 7: Placoid Scales (Base Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** Low (not configured)
+
+### 7.1 Collect Placoid Scales Samples
+- [ ] Kallardian Norse + Placoid Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Placoid Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+
+### 7.2 Configure Base Properties
+- [ ] Add Placoid Scales to `baseMaterials.ts` with all required properties
+
+### 7.3 Run Full Test Suite
+- [ ] Run `bun test` and verify all tests pass
+
+---
+
+## Phase 8: Pansar Scales (Base Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** Low (not configured)
+
+### 8.1 Collect Pansar Scales Samples
+- [ ] Kallardian Norse + Pansar Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Pansar Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+
+### 8.2 Configure Base Properties
+- [ ] Add Pansar Scales to `baseMaterials.ts` with all required properties
+
+### 8.3 Run Full Test Suite
+- [ ] Run `bun test` and verify all tests pass
+
+---
+
+## Phase 9: Ironwool (Padding Material) ⏳
+
+**Status:** ⏳ Not Started  
+**Priority:** Low (not configured)
+
+Ironwool is listed in types but not configured in `paddingMaterials.ts`.
+
+### 9.1 Collect Ironwool Samples
+- [ ] Kallardian Norse + Plate Scales + Ironwool @ 0/0, 100/0, 0/100, 100/100
+- [ ] Risar Berserker + Plate Scales + Ironwool @ 0/0, 100/0, 0/100, 100/100
+
+### 9.2 Configure Padding Properties
+- [ ] Add Ironwool to `SHARED_PADDING_CONFIG` with defense values
+- [ ] Add Ironwool to `STYLE_WEIGHT_CONFIGS` with weight properties
+- [ ] Add `additiveWeightConfig` (minWeightOffset, padContrib, padContribRatio)
+- [ ] Add durability multipliers
+
+### 9.3 Run Full Test Suite
+- [ ] Run `bun test` and verify all tests pass
 
 ---
 
 ## Notes
 
-- Each phase builds on the previous one
-- Sample cleanup should happen first to avoid wasting effort on non-standard materials
-- Defense accuracy depends on having critical density samples
-- Weight refactor should only happen after defense is accurate
-- All changes must maintain or improve test pass rates
+### Sample Collection Strategy
+1. Always use **Ironfur** padding when testing new base materials (it's the baseline)
+2. Always use **Plate Scales** base when testing new padding materials (it's the baseline)
+3. Collect corner samples first (0/0, 100/0, 0/100, 100/100), then add 50/50 for validation
+4. Use the **sampler subagent** to fetch samples from MortalData API
+
+### Configuration Dependencies
+- **Base materials** need: weight, weightMultiplier, usageMultiplier, durability, defenseConfig, additiveWeightConfig
+- **Padding materials** need: materialMultiplier, defense, defenseDensityCoeffs, durabilityMults, additiveWeightConfig (with padContribRatio), and per-style weight/weightDensityCoeffs
+
+### Test Tolerances
+- Defense: ±0.01
+- Weight (set): ±0.01
+- Weight (piece): ±0.01
+- Durability: ±16.0
+- Material Usage: ±2
+
+---
 
 ## Progress Tracking
 
-**Overall Progress:** 59/59 tasks complete (100%)
+**Overall Progress:** 0/45 tasks complete (0%)
 
-**Phase 1:** 6/6 tasks ✅ COMPLETE  
-**Phase 2:** 6/6 tasks ✅ COMPLETE  
-**Phase 3:** 12/12 tasks ✅ COMPLETE  
-**Phase 4:** 20/20 tasks ✅ COMPLETE  
-**Phase 5:** 15/15 tasks ✅ COMPLETE
+**Phase 1 (Horned Scales):** 0/5 sections  
+**Phase 2 (Arthropod Carapace):** 0/5 sections  
+**Phase 3 (Guard Fur):** 0/5 sections  
+**Phase 4 (Bloodsilk):** 0/5 sections  
+**Phase 5 (Keeled Scales):** 0/4 sections  
+**Phase 6 (Leptoid Scales):** 0/3 sections  
+**Phase 7 (Placoid Scales):** 0/3 sections  
+**Phase 8 (Pansar Scales):** 0/3 sections  
+**Phase 9 (Ironwool):** 0/3 sections
