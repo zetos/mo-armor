@@ -7,9 +7,9 @@ import { PIECE_KEYS } from '../src/types';
 // Formula: W(bd, pd) = W(0,0) + baseContrib × (bd/100) + padContrib × (pd/100)
 // Achieves perfect accuracy at ±0.01 tolerance
 const TOLERANCE = 0.01;
-// Piece weights are derived by proportional scaling + rounding.
-// The setWeight is accurate to ±0.01, but per-piece rounding can drift slightly.
-const PIECE_WEIGHT_TOLERANCE = 0.03; // TODO: Change it to ±0.01
+// Piece weights now use per-piece additive model, achieving ±0.01 accuracy
+// Formula: pieceWeight = pieceMin + pieceBase*(bd/100) + piecePad*padRatio*(pd/100)
+const PIECE_WEIGHT_TOLERANCE = 0.01;
 // Durability tolerance - larger variance due to formula approximation
 // Note: Some samples show up to ~15.5 difference
 const DURABILITY_TOLERANCE = 16.0;

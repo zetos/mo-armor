@@ -139,6 +139,25 @@ export type StyleWeightConfig = {
 };
 
 /**
+ * Per-piece weight coefficients for the additive weight model.
+ * Each piece has its own minWeight, baseContrib, and padContrib.
+ * 
+ * Formula: pieceWeight(bd, pd) = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
+ * 
+ * These are derived from corner samples with Ironfur padding.
+ * For other padding materials, adjust minWeight and padContrib using
+ * the padding material's minWeightOffset and padContrib ratio.
+ */
+export type PieceWeightCoeffs = {
+  /** Weight at 0/0 density with Plate Scales + Ironfur */
+  minWeight: number;
+  /** Weight contribution from base density 0->100% */
+  baseContrib: number;
+  /** Weight contribution from padding density 0->100% with Ironfur */
+  padContrib: number;
+};
+
+/**
  * Armor style configuration.
  * Each style defines base material usage, padding usage, weight multipliers,
  * durability coefficients, and defense values.
@@ -152,8 +171,10 @@ export type ArmorStyleConfig = {
   durabilityCoeffs: DurabilityCoeffs;
   baseDefense: DefenseStats;
   baseDefenseDensityCoeffs: DefenseDensityCoeffs;
-  /** Weight configuration for additive weight model */
+  /** Weight configuration for additive weight model (set-level) */
   weightConfig: StyleWeightConfig;
+  /** Per-piece weight coefficients for additive weight model (derived from Ironfur samples) */
+  pieceWeightCoeffs: PieceStats<PieceWeightCoeffs>;
 };
 
 /**
@@ -241,8 +262,10 @@ export type BaseMaterialConfig = {
 export type PaddingMaterialWeightConfig = {
   /** Offset added to minWeight (e.g., 0.5 for Ironfur, 0.0 for Ironsilk) */
   minWeightOffset: number;
-  /** Weight contribution from padding density 0->100% */
+  /** Weight contribution from padding density 0->100% (set-level, for fallback) */
   padContrib: number;
+  /** Ratio to apply to per-piece padContrib (1.0 for Ironfur, ~0.286 for Ironsilk) */
+  padContribRatio: number;
 };
 
 /**

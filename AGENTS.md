@@ -56,7 +56,9 @@ Note: Each base material has style-specific base defense values and density scal
 ```
 
 ### Weight
-**ADDITIVE MODEL** (100% accurate at ±0.01):
+**ADDITIVE MODEL** (100% accurate at ±0.01 for both set and piece weights):
+
+**Set Weight:**
 ```typescript
 setWeight(bd, pd) = minWeight + baseContrib × (bd/100) + padContrib × (pd/100)
 
@@ -64,13 +66,22 @@ where:
 - minWeight = styleBaseMinWeight + paddingOffset + baseMaterialOffset
 - baseContrib = styleBaseContrib × baseMaterialMult
 - padContrib = (from padding material config)
+```
+
+**Piece Weight:**
+```typescript
+pieceWeight(bd, pd) = (pieceMin - offsetAdj) + pieceBase×(bd/100) + piecePad×padRatio×(pd/100)
+
+where:
+- pieceMin, pieceBase, piecePad = from armorStyles.ts pieceWeightCoeffs (calibrated for Ironfur)
+- offsetAdj = (0.5 - paddingMinWeightOffset) × (pieceMin / totalIronfurMin)
+- padRatio = from padding material's padContribRatio (1.0 for Ironfur, ~0.286 for Ironsilk)
+```
 
 Configuration distributed across:
-- armorStyles.ts: weightConfig { baseMinWeight, baseContrib }
+- armorStyles.ts: weightConfig { baseMinWeight, baseContrib }, pieceWeightCoeffs
 - baseMaterials.ts: additiveWeightConfig { minWeightOffset, baseContribMult }
-- paddingMaterials.ts: additiveWeightConfig { minWeightOffset, padContrib }
-
-Piece weights are calculated using old formula then scaled proportionally to match setWeight.
+- paddingMaterials.ts: additiveWeightConfig { minWeightOffset, padContrib, padContribRatio }
 ```
 
 ### Durability
@@ -121,10 +132,10 @@ paddingUsage = round(stylePadding × materialMult × linearScale(paddingDensity,
 
 Current tolerances (reflect known formula accuracy):
 - **Weight**: ±0.01 kg (100% accuracy with additive model)
-- **Durability**: ±16.0 (formula approximation)
+- **Piece Weight**: ±0.01 kg (100% accuracy with per-piece additive model)
 - **Defense**: ±0.01 (100% accuracy with Plate Scales + Ironsilk/Ironfur)
+- **Durability**: ±16.0 (formula approximation)
 - **Material Usage**: ±2 units (rounding)
-- **Piece Weight**: ±0.03 (proportional scaling from setWeight introduces rounding errors)
 
 ## Sample Data
 
@@ -160,7 +171,7 @@ type DensityCoeffs = { a: number; b: number };
 - Padding materials can have **negative defense** (e.g., Ironsilk reduces blunt)
 - Total defense is floored at 0 (no negative values)
 - Piece multipliers: helm=0.8, torso=1.0, arms=0.6, legs=1.0
-- Formula accuracy: defense is highly accurate (94% at ±0.01), weight/durability have more variance
+- Formula accuracy: defense (100%), weight (100%), piece weight (100%) at ±0.01; durability ±16.0
 
 ## Samples Needed for Better Precision
 

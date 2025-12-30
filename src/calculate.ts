@@ -279,10 +279,9 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
   const paddingWeightConfig = getSharedPaddingConfig(padding)?.additiveWeightConfig;
 
   let setWeight: number;
-  const oldSum = PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0);
 
   if (styleWeightConfig && baseWeightConfig && paddingWeightConfig) {
-    // Use new additive model
+    // Use new additive model for set weight
     const minWeight = styleWeightConfig.baseMinWeight 
       + paddingWeightConfig.minWeightOffset 
       + baseWeightConfig.minWeightOffset;
@@ -292,20 +291,42 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
     const targetWeight = minWeight + baseContrib * (baseDensity / 100) + padContrib * (paddingDensity / 100);
     setWeight = round2(targetWeight);
 
-    // Adjust piece weights proportionally to match targetWeight.
-    // Scale first, then round to minimize drift.
-    if (oldSum > 0) {
-      const ratio = targetWeight / oldSum;
-      for (const piece of PIECE_KEYS) {
-        pieceWeight[piece] = round2(pieceWeight[piece] * ratio);
-      }
-    } else {
-      for (const piece of PIECE_KEYS) {
-        pieceWeight[piece] = 0;
-      }
+    // Use per-piece additive model for piece weights
+    // Formula: pieceWeight = pieceMin + pieceBase*(bd/100) + piecePad*padRatio*(pd/100)
+    // Where pieceMin accounts for padding's minWeightOffset
+    const pieceCoeffs = styleConfig.pieceWeightCoeffs;
+    const padContribRatio = paddingWeightConfig.padContribRatio;
+    const minWeightOffset = paddingWeightConfig.minWeightOffset;
+    
+    // Calculate the per-piece minWeight adjustment.
+    // The minWeightOffset (e.g., Ironfur=0.5, Ironsilk=0.0) is distributed proportionally
+    // across pieces based on each piece's share of the total Ironfur weight at 0/0.
+    // Since pieceCoeffs.minWeight IS the Ironfur 0/0 weight, we use those directly.
+    const ironfurTotalAt0_0 = PIECE_KEYS.reduce((sum, p) => sum + pieceCoeffs[p].minWeight, 0);
+    
+    // The set minWeightOffset is 0.5 for Ironfur (relative to Ironsilk baseline).
+    // So Ironsilk has offset 0.0, and Ironfur adds 0.5 to the total.
+    // We need to SUBTRACT the difference: (0.5 - minWeightOffset) distributed proportionally.
+    // For Ironfur: 0.5 - 0.5 = 0 (no adjustment needed)
+    // For Ironsilk: 0.5 - 0.0 = 0.5 (subtract 0.5 total, proportionally)
+    const totalOffsetAdjustment = 0.5 - minWeightOffset;
+    
+    for (const piece of PIECE_KEYS) {
+      const pc = pieceCoeffs[piece];
+      // Each piece's share of the offset adjustment
+      const pieceRatio = pc.minWeight / ironfurTotalAt0_0;
+      const pieceOffsetAdjustment = totalOffsetAdjustment * pieceRatio;
+      
+      // Per-piece additive formula
+      // Subtract the adjustment because pieceCoeffs are calibrated for Ironfur
+      const rawWeight = (pc.minWeight - pieceOffsetAdjustment) 
+        + pc.baseContrib * (baseDensity / 100) 
+        + pc.padContrib * padContribRatio * (paddingDensity / 100);
+      pieceWeight[piece] = round2(rawWeight);
     }
   } else {
     // Fallback to old calculation (should not happen with properly configured materials)
+    const oldSum = PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0);
     setWeight = round2(oldSum);
     for (const piece of PIECE_KEYS) {
       pieceWeight[piece] = round2(pieceWeight[piece]);

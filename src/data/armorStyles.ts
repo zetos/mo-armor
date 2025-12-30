@@ -4,6 +4,7 @@ import type {
   DefenseStats,
   ArmorStyleConfig,
   DefenseDensityCoeffs,
+  PieceWeightCoeffs,
 } from '../types';
 
 export type { DefenseDensityCoeffs };
@@ -64,6 +65,14 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       baseMinWeight: 4.85,
       baseContrib: 1.82,
     },
+    // Per-piece weight coefficients (derived from Ironfur corner samples)
+    pieceWeightCoeffs: {
+      helm: { minWeight: 0.64, baseContrib: 0.22, padContrib: 0.17 },
+      torso: { minWeight: 1.71, baseContrib: 0.58, padContrib: 0.45 },
+      rightArm: { minWeight: 0.7, baseContrib: 0.23, padContrib: 0.18 },
+      leftArm: { minWeight: 0.7, baseContrib: 0.23, padContrib: 0.18 },
+      legs: { minWeight: 1.61, baseContrib: 0.54, padContrib: 0.42 },
+    },
   },
   'Kallardian Norse': {
     baseMaterialUsage: {
@@ -114,6 +123,14 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
     weightConfig: {
       baseMinWeight: 4.1,
       baseContrib: 1.4,
+    },
+    // Per-piece weight coefficients (derived from Ironfur corner samples)
+    pieceWeightCoeffs: {
+      helm: { minWeight: 0.55, baseContrib: 0.17, padContrib: 0.17 },
+      torso: { minWeight: 1.47, baseContrib: 0.45, padContrib: 0.45 },
+      rightArm: { minWeight: 0.6, baseContrib: 0.18, padContrib: 0.18 },
+      leftArm: { minWeight: 0.6, baseContrib: 0.18, padContrib: 0.18 },
+      legs: { minWeight: 1.38, baseContrib: 0.42, padContrib: 0.42 },
     },
   },
   'Khurite Splinted': {
@@ -166,6 +183,14 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       baseMinWeight: 6.6,
       baseContrib: 3.36,
     },
+    // Per-piece weight coefficients (derived from Ironfur corner samples)
+    pieceWeightCoeffs: {
+      helm: { minWeight: 0.85, baseContrib: 0.41, padContrib: 0.17 },
+      torso: { minWeight: 2.27, baseContrib: 1.08, padContrib: 0.45 },
+      rightArm: { minWeight: 0.92, baseContrib: 0.44, padContrib: 0.19 },
+      leftArm: { minWeight: 0.92, baseContrib: 0.44, padContrib: 0.19 },
+      legs: { minWeight: 2.13, baseContrib: 1.01, padContrib: 0.42 },
+    },
   },
   'Ranger Armor': {
     baseMaterialUsage: {
@@ -216,6 +241,14 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
     weightConfig: {
       baseMinWeight: 4.6,
       baseContrib: 1.68,
+    },
+    // Per-piece weight coefficients (derived from Ironfur corner samples)
+    pieceWeightCoeffs: {
+      helm: { minWeight: 0.51, baseContrib: 0.17, padContrib: 0.14 },
+      torso: { minWeight: 1.63, baseContrib: 0.54, padContrib: 0.45 },
+      rightArm: { minWeight: 0.71, baseContrib: 0.24, padContrib: 0.2 },
+      leftArm: { minWeight: 0.71, baseContrib: 0.24, padContrib: 0.2 },
+      legs: { minWeight: 1.53, baseContrib: 0.5, padContrib: 0.42 },
     },
   },
 };

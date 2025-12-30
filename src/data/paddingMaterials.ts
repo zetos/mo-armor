@@ -46,9 +46,11 @@ const SHARED_PADDING_CONFIG: Partial<
       slash: { a: 0.0, b: 1.0 },
     },
     // Weight additive model: Ironfur adds 0.5 to minWeight and 1.4 to padContrib
+    // padContribRatio = 1.0 (baseline for per-piece weights)
     additiveWeightConfig: {
       minWeightOffset: 0.5,
       padContrib: 1.4,
+      padContribRatio: 1.0,
     },
   },
   Ironsilk: {
@@ -63,9 +65,11 @@ const SHARED_PADDING_CONFIG: Partial<
       slash: { a: 0.0769, b: 0.9231 },
     },
     // Weight additive model: Ironsilk is the baseline (offset = 0)
+    // padContribRatio = 0.4/1.4 ≈ 0.2857
     additiveWeightConfig: {
       minWeightOffset: 0.0,
       padContrib: 0.4,
+      padContribRatio: 0.2857,
     },
   },
   'Guard Fur': {
@@ -79,9 +83,11 @@ const SHARED_PADDING_CONFIG: Partial<
       slash: { a: -0.0851, b: 1.0851 },
     },
     // Weight additive model
+    // padContribRatio = 1.2/1.4 ≈ 0.8571
     additiveWeightConfig: {
       minWeightOffset: 0.4,
       padContrib: 1.2,
+      padContribRatio: 0.8571,
     },
   },
   Bloodsilk: {
@@ -94,9 +100,11 @@ const SHARED_PADDING_CONFIG: Partial<
       slash: { a: 0.1519, b: 0.8481 },
     },
     // Weight additive model
+    // padContribRatio = 0.6/1.4 ≈ 0.4286
     additiveWeightConfig: {
       minWeightOffset: 0.1,
       padContrib: 0.6,
+      padContribRatio: 0.4286,
     },
   },
 };
