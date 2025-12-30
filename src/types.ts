@@ -15,14 +15,17 @@ export type BaseMaterial =
   | 'Plate Scales'
   | 'Placoid Scales'
   | 'Pansar Scales'
-  | 'Arthropod Carapace';
+  | 'Arthropod Carapace'
+  | 'Ganoid Scales';
 
 export type SupportMaterial =
   | 'Ironfur'
   | 'Ironsilk'
   | 'Ironwool'
   | 'Bloodsilk'
-  | 'Guard Fur';
+  | 'Guard Fur'
+  | 'Quality Leather'
+  | 'Raw Hide';
 
 export type MaterialUsage = {
   base: number;
@@ -141,9 +144,9 @@ export type StyleWeightConfig = {
 /**
  * Per-piece weight coefficients for the additive weight model.
  * Each piece has its own minWeight, baseContrib, and padContrib.
- * 
+ *
  * Formula: pieceWeight(bd, pd) = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
- * 
+ *
  * These are derived from corner samples with Ironfur padding.
  * For other padding materials, adjust minWeight and padContrib using
  * the padding material's minWeightOffset and padContrib ratio.
@@ -247,7 +250,9 @@ export type BaseMaterialConfig = {
   additiveWeightConfig?: BaseMaterialWeightConfig;
   usageMultiplier: number;
   /** Style-specific usage multipliers with density scaling. If provided, overrides the base usageMultiplier for that style. */
-  usageMultiplierConfig?: Partial<Record<ArmorStyle, StyleSpecificUsageMultiplierConfig>>;
+  usageMultiplierConfig?: Partial<
+    Record<ArmorStyle, StyleSpecificUsageMultiplierConfig>
+  >;
   durability: number;
   /** Style-specific defense configurations. Empty for Plate Scales (uses armor style's base values). */
   defenseConfig: Partial<Record<ArmorStyle, StyleSpecificDefenseConfig>>;

@@ -20,8 +20,8 @@ https://mortaldata.com/php/workbench/ArmorCalc.php
 ## Parameters
 
 - `armorStyleId`: Armor style ID (310, 307, 313, 383)
-- `baseMatId`: Base material ID (46, 84, 85, 87, 202, 90, 104, 108, 77, 80)
-- `supportMatId`: Support material ID (46, 84, 85, 87, 202, 77)
+- `baseMatId`: Base material ID (46, 70, 84, 85, 87, 90, 92, 104, 107, 108, 109, 110)
+- `supportMatId`: Support material ID (46, 70, 77, 84, 85, 87, 202)
 - `baseDensity`: Base material density (0-100)
 - `supportDensity`: Support material density (0-100)
 
@@ -37,15 +37,20 @@ https://mortaldata.com/php/workbench/ArmorCalc.php
 ### Materials
 
 - 46: Arthropod Carapace
+- 70: Ganoid Scales
+- 77: Guard Fur
+- 80: Horned Scales
 - 84: Ironfur
 - 85: Ironsilk
 - 87: Ironwool
-- 202: Bloodsilk
 - 90: Keeled Scales
+- 92: Leptoid Scales
 - 104: Pansar Scales
+- 107: Placoid Scales
 - 108: Plate Scales
-- 77: Guard Fur
-- 80: Horned Scales
+- 109: Quality Leather
+- 110: Raw Hide
+- 202: Bloodsilk
 
 ## Usage Examples
 

@@ -20,10 +20,15 @@ const materialNames: Record<number, BaseMaterial | SupportMaterial> = {
   87: 'Ironwool',
   202: 'Bloodsilk',
   90: 'Keeled Scales',
+  92: 'Leptoid Scales',
   104: 'Pansar Scales',
+  107: 'Placoid Scales',
   108: 'Plate Scales',
   77: 'Guard Fur',
   80: 'Horned Scales',
+  70: 'Ganoid Scales',
+  109: 'Quality Leather',
+  110: 'Raw Hide',
 };
 
 function getField(fields: string[], index: number): string {
