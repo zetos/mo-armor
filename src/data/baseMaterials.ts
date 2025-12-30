@@ -43,18 +43,20 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     defenseConfig: {
       'Risar Berserker': {
         baseDefense: { blunt: 35.71, pierce: 32.38, slash: 35.48 },
-        densityCoeffs: { /* Use style's base coeffs as fallback */
-          blunt: { a: 0.8513, b: 0.1487 },
-          pierce: { a: 0.8280, b: 0.1720 },
-          slash: { a: 0.8533, b: 0.1467 },
+        // Derived from 0%/0% and 100%/0% samples
+        densityCoeffs: {
+          blunt: { a: 0.8924, b: 0.1076 },
+          pierce: { a: 0.8313, b: 0.1687 },
+          slash: { a: 0.8461, b: 0.1539 },
         },
       },
       'Kallardian Norse': {
         baseDefense: { blunt: 32.53, pierce: 34.70, slash: 31.80 },
-        densityCoeffs: { /* Use style's base coeffs as fallback */
-          blunt: { a: 0.8737, b: 0.1263 },
-          pierce: { a: 0.8761, b: 0.1239 },
-          slash: { a: 0.8742, b: 0.1258 },
+        // Derived from 0%/0% and 100%/0% samples
+        densityCoeffs: {
+          blunt: { a: 0.9093, b: 0.0907 },
+          pierce: { a: 0.8795, b: 0.1205 },
+          slash: { a: 0.8679, b: 0.1321 },
         },
       },
       'Khurite Splinted': {

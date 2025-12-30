@@ -237,21 +237,22 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
      const effectiveBaseWeightCoeffs = baseMaterialConfig.resolvedWeightConfig?.densityCoeffs 
        ?? styleConfig.baseWeightDensityCoeffs;
      
-     const oldWeightCalc = round2(calculatePieceWeight(
-       baseUsage,
-       paddingUsage,
-       baseMaterialConfig.weight,
-       baseMaterialConfig.weightMultiplier,
-       paddingMaterialConfig.weight,
-       effectiveBaseWeightCoeffs,
-       paddingMaterialConfig.weightDensityCoeffs,
-       baseDensity,
-       paddingDensity,
-       styleConfig.pieceWeightMultipliers[piece]
-     ));
-     
-     // Use old calculation as fallback for now (will be replaced per-piece)
-     pieceWeight[piece] = oldWeightCalc;
+      const oldWeightCalc = calculatePieceWeight(
+        baseUsage,
+        paddingUsage,
+        baseMaterialConfig.weight,
+        baseMaterialConfig.weightMultiplier,
+        paddingMaterialConfig.weight,
+        effectiveBaseWeightCoeffs,
+        paddingMaterialConfig.weightDensityCoeffs,
+        baseDensity,
+        paddingDensity,
+        styleConfig.pieceWeightMultipliers[piece]
+      );
+      
+      // Store the unrounded old calculation for now.
+      // We'll round after any proportional scaling to avoid compounding rounding error.
+      pieceWeight[piece] = oldWeightCalc;
 
      // Durability calculation - uses additive model with density and material coefficients
      pieceDurability[piece] = calculatePieceDurability(
@@ -273,22 +274,32 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
   // Calculate set weight using new additive model if config available
   const weightConfig = getWeightConfig(armorStyle, base, padding);
   let setWeight: number;
-  
+
+  const oldSum = PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0);
+
   if (weightConfig) {
-    // Use new additive model
-    setWeight = round2(calculateWeight(weightConfig, baseDensity, paddingDensity));
-    
-    // Adjust piece weights proportionally to match setWeight
-    const oldSum = PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0);
+    // Use new additive model (keep the unrounded value for scaling)
+    const targetWeight = calculateWeight(weightConfig, baseDensity, paddingDensity);
+    setWeight = round2(targetWeight);
+
+    // Adjust piece weights proportionally to match targetWeight.
+    // Important: scale first, then round, to minimize drift.
     if (oldSum > 0) {
-      const ratio = setWeight / oldSum;
+      const ratio = targetWeight / oldSum;
       for (const piece of PIECE_KEYS) {
         pieceWeight[piece] = round2(pieceWeight[piece] * ratio);
+      }
+    } else {
+      for (const piece of PIECE_KEYS) {
+        pieceWeight[piece] = 0;
       }
     }
   } else {
     // Fallback to old calculation
-    setWeight = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0));
+    setWeight = round2(oldSum);
+    for (const piece of PIECE_KEYS) {
+      pieceWeight[piece] = round2(pieceWeight[piece]);
+    }
   }
   
   const setDura = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceDurability[piece], 0));
