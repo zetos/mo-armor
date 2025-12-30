@@ -127,6 +127,18 @@ export type DurabilityCoeffs = {
 };
 
 /**
+ * Weight configuration for armor styles.
+ * Used with the additive weight model:
+ *   setWeight = (baseMinWeight + padOffset + baseOffset) + baseContrib*(bd/100) + padContrib*(pd/100)
+ */
+export type StyleWeightConfig = {
+  /** Weight at 0% base and 0% padding density with Plate Scales + Ironsilk */
+  baseMinWeight: number;
+  /** Weight contribution from base density 0->100% with Plate Scales */
+  baseContrib: number;
+};
+
+/**
  * Armor style configuration.
  * Each style defines base material usage, padding usage, weight multipliers,
  * durability coefficients, and defense values.
@@ -140,6 +152,8 @@ export type ArmorStyleConfig = {
   durabilityCoeffs: DurabilityCoeffs;
   baseDefense: DefenseStats;
   baseDefenseDensityCoeffs: DefenseDensityCoeffs;
+  /** Weight configuration for additive weight model */
+  weightConfig: StyleWeightConfig;
 };
 
 /**
@@ -192,11 +206,24 @@ export type StyleSpecificWeightConfig = {
   densityCoeffs: DensityCoeffs;
 };
 
+/**
+ * Weight configuration for base materials in the additive model.
+ * These values are added/multiplied to the armor style's base weight config.
+ */
+export type BaseMaterialWeightConfig = {
+  /** Offset added to styleBaseMinWeight (e.g., -0.25 for Horned Scales) */
+  minWeightOffset: number;
+  /** Multiplier for styleBaseContrib (e.g., 0.82 for Horned Scales) */
+  baseContribMult: number;
+};
+
 export type BaseMaterialConfig = {
   weight: number;
   weightMultiplier: number;
   /** Style-specific weight density coefficients. If provided, overrides the armor style's base coefficients. */
   weightConfig?: Partial<Record<ArmorStyle, StyleSpecificWeightConfig>>;
+  /** Weight configuration for additive weight model */
+  additiveWeightConfig?: BaseMaterialWeightConfig;
   usageMultiplier: number;
   /** Style-specific usage multipliers with density scaling. If provided, overrides the base usageMultiplier for that style. */
   usageMultiplierConfig?: Partial<Record<ArmorStyle, StyleSpecificUsageMultiplierConfig>>;
@@ -205,6 +232,17 @@ export type BaseMaterialConfig = {
   defenseConfig: Partial<Record<ArmorStyle, StyleSpecificDefenseConfig>>;
   /** Style-specific durability configurations. If empty, uses the base durability multiplier. */
   durabilityConfig?: Partial<Record<ArmorStyle, StyleSpecificDurabilityConfig>>;
+};
+
+/**
+ * Weight configuration for padding materials in the additive model.
+ * These values are added to the armor style's base weight config.
+ */
+export type PaddingMaterialWeightConfig = {
+  /** Offset added to minWeight (e.g., 0.5 for Ironfur, 0.0 for Ironsilk) */
+  minWeightOffset: number;
+  /** Weight contribution from padding density 0->100% */
+  padContrib: number;
 };
 
 /**

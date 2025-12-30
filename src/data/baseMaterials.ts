@@ -9,6 +9,11 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     durability: 1.0, // Baseline for durability
     // Plate Scales uses each armor style's base defense and density coefficients
     defenseConfig: {},
+    // Weight additive model: Plate Scales is the baseline (no offset, mult = 1.0)
+    additiveWeightConfig: {
+      minWeightOffset: 0.0,
+      baseContribMult: 1.0,
+    },
   },
   'Arthropod Carapace': {
     weight: 0.01131,  // Derived from 100%/0% analysis: baseContrib / (baseUsage * pieceMult)

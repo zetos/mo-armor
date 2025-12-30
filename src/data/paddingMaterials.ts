@@ -6,15 +6,16 @@ import type {
   DefenseDensityCoeffs,
   DensityCoeffs,
   DurabilityMults,
+  PaddingMaterialWeightConfig,
 } from '../types';
 
 /**
- * SHARED PADDING DEFENSE CONFIGURATIONS
+ * SHARED PADDING CONFIGURATIONS
  *
- * Defense values and density coefficients are UNIVERSAL across all armor styles.
- * Only weight-related properties vary per style.
+ * Defense values, density coefficients, and weight contributions are UNIVERSAL across all armor styles.
+ * Only per-piece weight properties vary per style.
  */
-interface SharedPaddingDefense {
+interface SharedPaddingConfig {
   /** Material usage multiplier relative to Ironfur */
   materialMultiplier: number;
   /** Durability multipliers */
@@ -23,14 +24,16 @@ interface SharedPaddingDefense {
   defense: DefenseStats;
   /** Defense density scaling coefficients */
   defenseDensityCoeffs: DefenseDensityCoeffs;
+  /** Weight configuration for additive weight model */
+  additiveWeightConfig: PaddingMaterialWeightConfig;
 }
 
 /**
- * Shared defense configurations for each padding material.
+ * Shared configurations for each padding material.
  * These values are identical across all armor styles.
  */
-const SHARED_PADDING_DEFENSE: Partial<
-  Record<SupportMaterial, SharedPaddingDefense>
+const SHARED_PADDING_CONFIG: Partial<
+  Record<SupportMaterial, SharedPaddingConfig>
 > = {
   Ironfur: {
     materialMultiplier: 1.0,
@@ -41,6 +44,11 @@ const SHARED_PADDING_DEFENSE: Partial<
       blunt: { a: 0.0, b: 1.0 },
       pierce: { a: 0.0, b: 1.0 },
       slash: { a: 0.0, b: 1.0 },
+    },
+    // Weight additive model: Ironfur adds 0.5 to minWeight and 1.4 to padContrib
+    additiveWeightConfig: {
+      minWeightOffset: 0.5,
+      padContrib: 1.4,
     },
   },
   Ironsilk: {
@@ -54,6 +62,11 @@ const SHARED_PADDING_DEFENSE: Partial<
       pierce: { a: 0.1782, b: 0.8218 },
       slash: { a: 0.0769, b: 0.9231 },
     },
+    // Weight additive model: Ironsilk is the baseline (offset = 0)
+    additiveWeightConfig: {
+      minWeightOffset: 0.0,
+      padContrib: 0.4,
+    },
   },
   'Guard Fur': {
     materialMultiplier: 0.995,
@@ -65,6 +78,11 @@ const SHARED_PADDING_DEFENSE: Partial<
       pierce: { a: -0.1132, b: 1.1132 },
       slash: { a: -0.0851, b: 1.0851 },
     },
+    // Weight additive model
+    additiveWeightConfig: {
+      minWeightOffset: 0.4,
+      padContrib: 1.2,
+    },
   },
   Bloodsilk: {
     materialMultiplier: 1.485,
@@ -74,6 +92,11 @@ const SHARED_PADDING_DEFENSE: Partial<
       blunt: { a: -8.8596, b: 9.8596 },
       pierce: { a: 0.2174, b: 0.7826 },
       slash: { a: 0.1519, b: 0.8481 },
+    },
+    // Weight additive model
+    additiveWeightConfig: {
+      minWeightOffset: 0.1,
+      padContrib: 0.6,
     },
   },
 };
@@ -154,26 +177,26 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
 };
 
 /**
- * Builds the full padding material config by combining shared defense with style-specific weight.
+ * Builds the full padding material config by combining shared config with style-specific weight.
  */
 function buildPaddingConfig(
   material: SupportMaterial,
   style: ArmorStyle
 ): PaddingMaterialConfig | null {
-  const sharedDefense = SHARED_PADDING_DEFENSE[material];
+  const sharedConfig = SHARED_PADDING_CONFIG[material];
   const styleWeight = STYLE_WEIGHT_CONFIGS[style]?.[material];
 
-  if (!sharedDefense || !styleWeight) {
+  if (!sharedConfig || !styleWeight) {
     return null;
   }
 
   return {
-    materialMultiplier: sharedDefense.materialMultiplier,
+    materialMultiplier: sharedConfig.materialMultiplier,
     weight: styleWeight.weight,
     weightDensityCoeffs: styleWeight.weightDensityCoeffs,
-    durabilityMults: sharedDefense.durabilityMults,
-    defense: sharedDefense.defense,
-    defenseDensityCoeffs: sharedDefense.defenseDensityCoeffs,
+    durabilityMults: sharedConfig.durabilityMults,
+    defense: sharedConfig.defense,
+    defenseDensityCoeffs: sharedConfig.defenseDensityCoeffs,
   };
 }
 
@@ -232,10 +255,10 @@ export function getPaddingMaterial(
 }
 
 /**
- * Get shared padding defense configuration (for analysis/debugging).
+ * Get shared padding configuration (for analysis/debugging).
  */
-export function getSharedPaddingDefense(
+export function getSharedPaddingConfig(
   material: SupportMaterial
-): SharedPaddingDefense | undefined {
-  return SHARED_PADDING_DEFENSE[material];
+): SharedPaddingConfig | undefined {
+  return SHARED_PADDING_CONFIG[material];
 }

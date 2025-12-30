@@ -30,7 +30,7 @@ armor/
 │       ├── armorStyles.ts    # Per-style coefficients & base stats
 │       ├── baseMaterials.ts  # Base material properties
 │       └── paddingMaterials.ts # Padding material properties
-├── test/calculate.test.ts    # Test suite (44 samples)
+├── test/calculate.test.ts    # Test suite (54 samples)
 ├── samples/                  # Game data samples
 └── scripts/parseSample.ts    # Sample data parser
 ```
@@ -56,16 +56,20 @@ Note: Each base material has style-specific base defense values and density scal
 ```
 
 ### Weight
-**NEW ADDITIVE MODEL** (100% accurate at ±0.01):
+**ADDITIVE MODEL** (100% accurate at ±0.01):
 ```typescript
 setWeight(bd, pd) = minWeight + baseContrib × (bd/100) + padContrib × (pd/100)
 
 where:
-- minWeight: Weight at 0% base and 0% padding density
-- baseContrib: Weight added by going from 0% to 100% base density
-- padContrib: Weight added by going from 0% to 100% padding density
+- minWeight = styleBaseMinWeight + paddingOffset + baseMaterialOffset
+- baseContrib = styleBaseContrib × baseMaterialMult
+- padContrib = (from padding material config)
 
-Configuration stored in src/data/weightConfigs.ts per style+base+padding combination.
+Configuration distributed across:
+- armorStyles.ts: weightConfig { baseMinWeight, baseContrib }
+- baseMaterials.ts: additiveWeightConfig { minWeightOffset, baseContribMult }
+- paddingMaterials.ts: additiveWeightConfig { minWeightOffset, padContrib }
+
 Piece weights are calculated using old formula then scaled proportionally to match setWeight.
 ```
 
@@ -116,21 +120,20 @@ paddingUsage = round(stylePadding × materialMult × linearScale(paddingDensity,
 ## Test Tolerances
 
 Current tolerances (reflect known formula accuracy):
-- **Weight**: ±0.01 kg (100% accuracy with new additive model)
+- **Weight**: ±0.01 kg (100% accuracy with additive model)
 - **Durability**: ±16.0 (formula approximation)
-- **Defense**: ±0.01 (98.18% success rate with style-specific configs)
-  - 18 failures on Arthropod Carapace at 0% base density (missing density coefficients)
+- **Defense**: ±0.01 (100% accuracy with Plate Scales + Ironsilk/Ironfur)
 - **Material Usage**: ±2 units (rounding)
-- **Piece Weight**: Small rounding differences (±0.01-0.03) due to proportional scaling from setWeight
+- **Piece Weight**: ±0.03 (proportional scaling from setWeight introduces rounding errors)
 
 ## Sample Data
 
-- **Risar Berserker**: 44 samples, multiple materials
-- **Kallardian Norse**: 27 samples, 0-100% density range
-- **Khurite Splinted**: 26 samples, multiple materials
-- **Ranger Armor**: 20 samples
+- **Risar Berserker**: 10 samples (Plate Scales + Ironsilk/Ironfur)
+- **Kallardian Norse**: 20 samples (Plate Scales + Ironsilk/Ironfur)
+- **Khurite Splinted**: 12 samples (Plate Scales + Ironsilk/Ironfur)
+- **Ranger Armor**: 12 samples (Plate Scales + Ironsilk/Ironfur)
 
-Total: 117 samples across 4 armor styles (3 base materials)
+Total: 54 samples across 4 armor styles (Plate Scales base material only)
 
 ## Key Data Structures
 

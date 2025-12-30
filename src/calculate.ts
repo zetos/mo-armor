@@ -13,8 +13,7 @@ import type {
 import { PIECE_KEYS } from './types';
 import { armorStyles } from './data/armorStyles';
 import { getBaseMaterial } from './data/baseMaterials';
-import { getPaddingMaterial } from './data/paddingMaterials';
-import { getWeightConfig, calculateWeight } from './data/weightConfigs';
+import { getPaddingMaterial, getSharedPaddingConfig } from './data/paddingMaterials';
 
 /**
  * Durability multipliers for each piece relative to torso (torso = 1.0)
@@ -271,19 +270,30 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
     padding: PIECE_KEYS.reduce((sum, piece) => sum + pieceMaterialUsage[piece].padding, 0),
   };
 
-  // Calculate set weight using new additive model if config available
-  const weightConfig = getWeightConfig(armorStyle, base, padding);
-  let setWeight: number;
+  // Calculate set weight using additive model
+  // Formula: setWeight = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
+  // Where: minWeight = styleBaseMinWeight + paddingOffset + baseMaterialOffset
+  //        baseContrib = styleBaseContrib * baseMaterialMult
+  const styleWeightConfig = styleConfig.weightConfig;
+  const baseWeightConfig = baseMaterialConfig.additiveWeightConfig;
+  const paddingWeightConfig = getSharedPaddingConfig(padding)?.additiveWeightConfig;
 
+  let setWeight: number;
   const oldSum = PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0);
 
-  if (weightConfig) {
-    // Use new additive model (keep the unrounded value for scaling)
-    const targetWeight = calculateWeight(weightConfig, baseDensity, paddingDensity);
+  if (styleWeightConfig && baseWeightConfig && paddingWeightConfig) {
+    // Use new additive model
+    const minWeight = styleWeightConfig.baseMinWeight 
+      + paddingWeightConfig.minWeightOffset 
+      + baseWeightConfig.minWeightOffset;
+    const baseContrib = styleWeightConfig.baseContrib * baseWeightConfig.baseContribMult;
+    const padContrib = paddingWeightConfig.padContrib;
+
+    const targetWeight = minWeight + baseContrib * (baseDensity / 100) + padContrib * (paddingDensity / 100);
     setWeight = round2(targetWeight);
 
     // Adjust piece weights proportionally to match targetWeight.
-    // Important: scale first, then round, to minimize drift.
+    // Scale first, then round to minimize drift.
     if (oldSum > 0) {
       const ratio = targetWeight / oldSum;
       for (const piece of PIECE_KEYS) {
@@ -295,7 +305,7 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       }
     }
   } else {
-    // Fallback to old calculation
+    // Fallback to old calculation (should not happen with properly configured materials)
     setWeight = round2(oldSum);
     for (const piece of PIECE_KEYS) {
       pieceWeight[piece] = round2(pieceWeight[piece]);

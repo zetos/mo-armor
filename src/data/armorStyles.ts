@@ -57,6 +57,13 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       pierce: { a: 0.8280, b: 0.1720 },
       slash: { a: 0.8533, b: 0.1467 },
     },
+    // Weight additive model: setWeight = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
+    // baseMinWeight: Weight at 0/0 with Plate Scales + Ironsilk
+    // baseContrib: Weight contribution from base density 0->100% with Plate Scales
+    weightConfig: {
+      baseMinWeight: 4.85,
+      baseContrib: 1.82,
+    },
   },
   'Kallardian Norse': {
     baseMaterialUsage: {
@@ -102,6 +109,11 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       blunt: { a: 0.8737, b: 0.1263 },
       pierce: { a: 0.8761, b: 0.1239 },
       slash: { a: 0.8742, b: 0.1258 },
+    },
+    // Weight additive model: setWeight = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
+    weightConfig: {
+      baseMinWeight: 4.1,
+      baseContrib: 1.4,
     },
   },
   'Khurite Splinted': {
@@ -149,6 +161,11 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       pierce: { a: 0.7467, b: 0.2533 },
       slash: { a: 0.7555, b: 0.2445 },
     },
+    // Weight additive model: setWeight = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
+    weightConfig: {
+      baseMinWeight: 6.6,
+      baseContrib: 3.36,
+    },
   },
   'Ranger Armor': {
     baseMaterialUsage: {
@@ -194,6 +211,11 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       blunt: { a: 0.8453, b: 0.1547 },
       pierce: { a: 0.8431, b: 0.1569 },
       slash: { a: 0.8737, b: 0.1263 },
+    },
+    // Weight additive model: setWeight = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
+    weightConfig: {
+      baseMinWeight: 4.6,
+      baseContrib: 1.68,
     },
   },
 };
