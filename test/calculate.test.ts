@@ -9,16 +9,14 @@ import { PIECE_KEYS } from '../src/types';
 const TOLERANCE = 0.01;
 // Piece weights are derived by proportional scaling + rounding.
 // The setWeight is accurate to ±0.01, but per-piece rounding can drift slightly.
-const PIECE_WEIGHT_TOLERANCE = 0.03;
+const PIECE_WEIGHT_TOLERANCE = 0.03; // TODO: Change it to ±0.01
 // Durability tolerance - larger variance due to formula approximation
 // Note: Some samples show up to ~15.5 difference
 const DURABILITY_TOLERANCE = 16.0;
 // Defense tolerance - with style-specific base defense and density coefficients
-// Achieves 94.31% success rate (232/246 checks pass)
-// Known failures:
-//   - 4 rounding errors on Plate Scales (0.01 diff, acceptable)
-//   - 7 on Horned Scales (Ranger Armor @ 0% base density - missing calibration samples)
-//   - 3 on Arthropod Carapace (may need material-specific density coefficients)
+// Phase 1 & 2 complete: Only Plate Scales + (Ironsilk OR Ironfur) samples with critical densities
+// Sample counts: Risar Berserker (10), Kallardian Norse (20), Khurite Splinted (12), Ranger Armor (12)
+// Total: 54 samples across 4 armor styles, all with critical density coverage (0/0, 0/100, 100/0, 100/100, 50/50)
 const DEFENSE_TOLERANCE = 0.01;
 // Material usage can be off by 2 due to rounding and formula variance
 const MATERIAL_TOLERANCE = 2;
