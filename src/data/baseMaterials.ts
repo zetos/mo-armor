@@ -45,18 +45,18 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
         baseDefense: { blunt: 35.71, pierce: 32.38, slash: 35.48 },
         // Derived from 0%/0% and 100%/0% samples
         densityCoeffs: {
-          blunt: { a: 0.8924, b: 0.1076 },
-          pierce: { a: 0.8313, b: 0.1687 },
-          slash: { a: 0.8461, b: 0.1539 },
+          blunt: { a: 0.89274713, b: 0.10725287 },
+          pierce: { a: 0.83137739, b: 0.16862261 },
+          slash: { a: 0.84611048, b: 0.15388952 },
         },
       },
       'Kallardian Norse': {
         baseDefense: { blunt: 32.53, pierce: 34.70, slash: 31.80 },
         // Derived from 0%/0% and 100%/0% samples
         densityCoeffs: {
-          blunt: { a: 0.9093, b: 0.0907 },
-          pierce: { a: 0.8795, b: 0.1205 },
-          slash: { a: 0.8679, b: 0.1321 },
+          blunt: { a: 0.90931448, b: 0.09068552 },
+          pierce: { a: 0.87896254, b: 0.12103746 },
+          slash: { a: 0.86792453, b: 0.13207547 },
         },
       },
       'Khurite Splinted': {
