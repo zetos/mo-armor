@@ -110,41 +110,121 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
        'Ranger Armor': { baseMin: 203.7825, baseDensityContrib: 180.7125, padContrib: 106.375 },
      },
      // Style-specific defense configurations with material-specific density scaling
-     defenseConfig: {
-       'Risar Berserker': {
-         baseDefense: { blunt: 38.06, pierce: 31.38, slash: 33.18 },
-         densityCoeffs: {
-           blunt: { a: 0.8731, b: 0.1269 },
-           pierce: { a: 0.8397, b: 0.1603 },
-           slash: { a: 0.8650, b: 0.1350 },
-         },
-       },
-       'Kallardian Norse': {
-         baseDefense: { blunt: 34.58, pierce: 33.83, slash: 29.80 },
-         densityCoeffs: {
-           blunt: { a: 0.8924, b: 0.1076 },
-           pierce: { a: 0.8856, b: 0.1144 },
-           slash: { a: 0.8842, b: 0.1158 },
-         },
-       },
-       'Khurite Splinted': {
-         baseDefense: { blunt: 43.52, pierce: 39.07, slash: 36.24 },
-         densityCoeffs: {
-           blunt: { a: 0.7948, b: 0.2052 },
-           pierce: { a: 0.7620, b: 0.2380 },
-           slash: { a: 0.7715, b: 0.2285 },
-         },
-       },
-       'Ranger Armor': {
-         baseDefense: { blunt: 33.57, pierce: 31.87, slash: 35.72 },
-         densityCoeffs: {
-           blunt: { a: 0.8671, b: 0.1329 },
-           pierce: { a: 0.8541, b: 0.1459 },
-           slash: { a: 0.8841, b: 0.1159 },
-         },
-       },
-     },
-   },
+      defenseConfig: {
+        'Risar Berserker': {
+          baseDefense: { blunt: 38.06, pierce: 31.38, slash: 33.18 },
+          densityCoeffs: {
+            blunt: { a: 0.8731, b: 0.1269 },
+            pierce: { a: 0.8397, b: 0.1603 },
+            slash: { a: 0.8650, b: 0.1350 },
+          },
+        },
+        'Kallardian Norse': {
+          baseDefense: { blunt: 34.58, pierce: 33.83, slash: 29.80 },
+          densityCoeffs: {
+            blunt: { a: 0.8924, b: 0.1076 },
+            pierce: { a: 0.8856, b: 0.1144 },
+            slash: { a: 0.8842, b: 0.1158 },
+          },
+        },
+        'Khurite Splinted': {
+          baseDefense: { blunt: 43.52, pierce: 39.07, slash: 36.24 },
+          densityCoeffs: {
+            blunt: { a: 0.7948, b: 0.2052 },
+            pierce: { a: 0.7620, b: 0.2380 },
+            slash: { a: 0.7715, b: 0.2285 },
+          },
+        },
+        'Ranger Armor': {
+          baseDefense: { blunt: 33.57, pierce: 31.87, slash: 35.72 },
+          densityCoeffs: {
+            blunt: { a: 0.8671, b: 0.1329 },
+            pierce: { a: 0.8541, b: 0.1459 },
+            slash: { a: 0.8841, b: 0.1159 },
+          },
+        },
+      },
+    },
+  'Keeled Scales': {
+    weight: 0.0109,
+    weightMultiplier: 1.0,
+    usageMultiplier: 0.65, // Fallback
+    // Style-specific usage multipliers with density scaling
+    usageMultiplierConfig: {
+      'Risar Berserker': { a: 0.638, b: 0.012 },
+      'Kallardian Norse': { a: 0.643, b: 0.007 },
+    },
+    durability: 0.80, // Fallback value
+    // Style-specific durability configurations
+    durabilityConfig: {
+      'Risar Berserker': { baseMin: 179.0, baseDensityContrib: 160.55, padContrib: 111.0 },
+      'Kallardian Norse': { baseMin: 177.625, baseDensityContrib: 126.75, padContrib: 101.75 },
+    },
+    // Weight additive model: Keeled Scales is lighter than Plate Scales
+    additiveWeightConfig: {
+      minWeightOffset: -0.5,
+      baseContribMult: 0.643,
+    },
+    // Style-specific defense configurations
+    defenseConfig: {
+      'Risar Berserker': {
+        baseDefense: { blunt: 36.43, pierce: 29.93, slash: 31.8 },
+        densityCoeffs: {
+          blunt: { a: 0.8864, b: 0.1136 },
+          pierce: { a: 0.8523, b: 0.1477 },
+          slash: { a: 0.8774, b: 0.1226 },
+        },
+      },
+      'Kallardian Norse': {
+        baseDefense: { blunt: 33.16, pierce: 32.57, slash: 28.6 },
+        densityCoeffs: {
+          blunt: { a: 0.9038, b: 0.0962 },
+          pierce: { a: 0.8956, b: 0.1044 },
+          slash: { a: 0.8951, b: 0.1049 },
+        },
+      },
+    },
+  },
+  'Leptoid Scales': {
+    weight: 0.0055,
+    weightMultiplier: 1.0,
+    usageMultiplier: 0.36, // Fallback
+    // Style-specific usage multipliers with density scaling
+    usageMultiplierConfig: {
+      'Risar Berserker': { a: 0.362, b: 0.0 },
+      'Kallardian Norse': { a: 0.364, b: 0.0 },
+    },
+    durability: 0.45, // Fallback value
+    // Style-specific durability configurations
+    durabilityConfig: {
+      'Risar Berserker': { baseMin: 103.0, baseDensityContrib: 61.75, padContrib: 111.0 },
+      'Kallardian Norse': { baseMin: 99.625, baseDensityContrib: 48.75, padContrib: 101.75 },
+    },
+    // Weight additive model: Leptoid Scales is much lighter than Plate Scales
+    additiveWeightConfig: {
+      minWeightOffset: -1.15,
+      baseContribMult: 0.179,
+    },
+    // Style-specific defense configurations
+    defenseConfig: {
+      'Risar Berserker': {
+        baseDefense: { blunt: 30.5, pierce: 22.54, slash: 25.54 },
+        densityCoeffs: {
+          blunt: { a: 0.9469, b: 0.0531 },
+          pierce: { a: 0.9428, b: 0.0572 },
+          slash: { a: 0.9514, b: 0.0486 },
+        },
+      },
+      'Kallardian Norse': {
+        baseDefense: { blunt: 28.0, pierce: 26.14, slash: 23.16 },
+        densityCoeffs: {
+          blunt: { a: 0.9554, b: 0.0446 },
+          pierce: { a: 0.9621, b: 0.0379 },
+          slash: { a: 0.9585, b: 0.0415 },
+        },
+      },
+    },
+  },
 };
 
 /**
