@@ -1081,4 +1081,438 @@ export const kallardianNorseSamples: SetStats[] = [
       },
     },
   },
+  // Horned Scales samples
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 29.96,
+      slash: 26.35,
+      blunt: 30.86,
+    },
+    setWeight: 4.35,
+    pieceWeight: {
+      helm: 0.52,
+      rightArm: 0.57,
+      torso: 1.39,
+      leftArm: 0.57,
+      legs: 1.31,
+    },
+    setDura: 798.25,
+    pieceDurability: {
+      helm: 159.65,
+      rightArm: 119.74,
+      torso: 199.56,
+      leftArm: 119.74,
+      legs: 199.56,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 133,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 16,
+      },
+      rightArm: {
+        base: 14,
+        padding: 17,
+      },
+      torso: {
+        base: 34,
+        padding: 43,
+      },
+      leftArm: {
+        base: 14,
+        padding: 17,
+      },
+      legs: {
+        base: 32,
+        padding: 40,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 33.83,
+      slash: 29.8,
+      blunt: 34.58,
+    },
+    setWeight: 5.5,
+    pieceWeight: {
+      helm: 0.66,
+      rightArm: 0.72,
+      torso: 1.76,
+      leftArm: 0.72,
+      legs: 1.65,
+    },
+    setDura: 1393,
+    pieceDurability: {
+      helm: 278.6,
+      rightArm: 208.95,
+      torso: 348.25,
+      leftArm: 208.95,
+      legs: 348.25,
+    },
+    setMaterialUsage: {
+      base: 209,
+      padding: 133,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 25,
+        padding: 16,
+      },
+      rightArm: {
+        base: 27,
+        padding: 17,
+      },
+      torso: {
+        base: 67,
+        padding: 43,
+      },
+      leftArm: {
+        base: 27,
+        padding: 17,
+      },
+      legs: {
+        base: 63,
+        padding: 40,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 36.46,
+      slash: 32.95,
+      blunt: 41.53,
+    },
+    setWeight: 5.75,
+    pieceWeight: {
+      helm: 0.69,
+      rightArm: 0.75,
+      torso: 1.84,
+      leftArm: 0.75,
+      legs: 1.73,
+    },
+    setDura: 1205.25,
+    pieceDurability: {
+      helm: 241.05,
+      rightArm: 180.79,
+      torso: 301.31,
+      leftArm: 180.79,
+      legs: 301.31,
+    },
+    setMaterialUsage: {
+      base: 107,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 13,
+        padding: 48,
+      },
+      rightArm: {
+        base: 14,
+        padding: 52,
+      },
+      torso: {
+        base: 34,
+        padding: 130,
+      },
+      leftArm: {
+        base: 14,
+        padding: 52,
+      },
+      legs: {
+        base: 32,
+        padding: 122,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Horned Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 40.33,
+      slash: 36.4,
+      blunt: 45.24,
+    },
+    setWeight: 6.9,
+    pieceWeight: {
+      helm: 0.83,
+      rightArm: 0.9,
+      torso: 2.21,
+      leftArm: 0.9,
+      legs: 2.07,
+    },
+    setDura: 1800,
+    pieceDurability: {
+      helm: 360,
+      rightArm: 270,
+      torso: 450,
+      leftArm: 270,
+      legs: 450,
+    },
+    setMaterialUsage: {
+      base: 209,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 25,
+        padding: 48,
+      },
+      rightArm: {
+        base: 27,
+        padding: 52,
+      },
+      torso: {
+        base: 67,
+        padding: 130,
+      },
+      leftArm: {
+        base: 27,
+        padding: 52,
+      },
+      legs: {
+        base: 63,
+        padding: 122,
+      },
+    },
+  },
+  // Arthropod Carapace samples
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Arthropod Carapace',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 30.5,
+      slash: 27.6,
+      blunt: 29.58,
+    },
+    setWeight: 5.2,
+    pieceWeight: {
+      helm: 0.62,
+      rightArm: 0.68,
+      torso: 1.66,
+      leftArm: 0.68,
+      legs: 1.56,
+    },
+    setDura: 1100.5,
+    pieceDurability: {
+      helm: 220.1,
+      rightArm: 165.08,
+      torso: 275.13,
+      leftArm: 165.08,
+      legs: 275.13,
+    },
+    setMaterialUsage: {
+      base: 251,
+      padding: 133,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 30,
+        padding: 16,
+      },
+      rightArm: {
+        base: 33,
+        padding: 17,
+      },
+      torso: {
+        base: 80,
+        padding: 43,
+      },
+      leftArm: {
+        base: 33,
+        padding: 17,
+      },
+      legs: {
+        base: 75,
+        padding: 40,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Arthropod Carapace',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 34.7,
+      slash: 31.8,
+      blunt: 32.53,
+    },
+    setWeight: 7.2,
+    pieceWeight: {
+      helm: 0.86,
+      rightArm: 0.94,
+      torso: 2.3,
+      leftArm: 0.94,
+      legs: 2.16,
+    },
+    setDura: 1997.5,
+    pieceDurability: {
+      helm: 399.5,
+      rightArm: 299.63,
+      torso: 499.38,
+      leftArm: 299.63,
+      legs: 499.38,
+    },
+    setMaterialUsage: {
+      base: 498,
+      padding: 133,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 60,
+        padding: 16,
+      },
+      rightArm: {
+        base: 65,
+        padding: 17,
+      },
+      torso: {
+        base: 159,
+        padding: 43,
+      },
+      leftArm: {
+        base: 65,
+        padding: 17,
+      },
+      legs: {
+        base: 149,
+        padding: 40,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Arthropod Carapace',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 37,
+      slash: 34.2,
+      blunt: 40.25,
+    },
+    setWeight: 6.6,
+    pieceWeight: {
+      helm: 0.79,
+      rightArm: 0.86,
+      torso: 2.11,
+      leftArm: 0.86,
+      legs: 1.98,
+    },
+    setDura: 1507.5,
+    pieceDurability: {
+      helm: 301.5,
+      rightArm: 226.13,
+      torso: 376.88,
+      leftArm: 226.13,
+      legs: 376.88,
+    },
+    setMaterialUsage: {
+      base: 251,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 30,
+        padding: 48,
+      },
+      rightArm: {
+        base: 33,
+        padding: 52,
+      },
+      torso: {
+        base: 80,
+        padding: 130,
+      },
+      leftArm: {
+        base: 33,
+        padding: 52,
+      },
+      legs: {
+        base: 75,
+        padding: 122,
+      },
+    },
+  },
+  {
+    armorStyle: 'Kallardian Norse',
+    base: 'Arthropod Carapace',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 41.2,
+      slash: 38.4,
+      blunt: 43.2,
+    },
+    setWeight: 8.6,
+    pieceWeight: {
+      helm: 1.03,
+      rightArm: 1.12,
+      torso: 2.75,
+      leftArm: 1.12,
+      legs: 2.58,
+    },
+    setDura: 2404.5,
+    pieceDurability: {
+      helm: 480.9,
+      rightArm: 360.68,
+      torso: 601.13,
+      leftArm: 360.68,
+      legs: 601.13,
+    },
+    setMaterialUsage: {
+      base: 498,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 60,
+        padding: 48,
+      },
+      rightArm: {
+        base: 65,
+        padding: 52,
+      },
+      torso: {
+        base: 159,
+        padding: 130,
+      },
+      leftArm: {
+        base: 65,
+        padding: 52,
+      },
+      legs: {
+        base: 149,
+        padding: 122,
+      },
+    },
+  },
 ];

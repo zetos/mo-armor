@@ -30,93 +30,96 @@ The sampler will:
 
 ---
 
-## Phase 1: Horned Scales (Base Material) ⏳
+## Phase 1: Horned Scales (Base Material) ✅
 
-**Status:** ⏳ Not Started  
+**Status:** ✅ Complete  
 **Priority:** High (already has partial config)
 
-Horned Scales has existing partial configuration in `baseMaterials.ts` but was removed from test samples. Need to validate and complete the configuration.
+Horned Scales has been fully configured and validated with 16 new samples across all 4 armor styles.
 
 ### 1.1 Collect Horned Scales Samples
 **Goal:** Gather corner samples for all 4 armor styles using Ironfur padding.
 
-- [ ] Kallardian Norse + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Risar Berserker + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Khurite Splinted + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Ranger Armor + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Add samples to appropriate files in `samples/`
+- [x] Kallardian Norse + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Risar Berserker + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Khurite Splinted + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Ranger Armor + Horned Scales + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Add samples to appropriate files in `samples/`
 
 ### 1.2 Validate Defense Configuration
 **Goal:** Verify or update defense coefficients for Horned Scales.
 
-- [ ] Compare calculated vs actual defense values
-- [ ] Update `defenseConfig` in `baseMaterials.ts` if needed
-- [ ] Verify defense passes at ±0.01 tolerance
+- [x] Compare calculated vs actual defense values
+- [x] Existing `defenseConfig` was correct - no updates needed
+- [x] Verify defense passes at ±0.01 tolerance
 
 ### 1.3 Validate Weight Configuration
 **Goal:** Add/verify weight coefficients for Horned Scales.
 
-- [ ] Derive `additiveWeightConfig` (minWeightOffset, baseContribMult)
-- [ ] Add `additiveWeightConfig` to Horned Scales in `baseMaterials.ts`
-- [ ] Verify set weight passes at ±0.01 tolerance
+- [x] Derive `additiveWeightConfig` (minWeightOffset: -0.25, baseContribMult: 0.821)
+- [x] Add `additiveWeightConfig` to Horned Scales in `baseMaterials.ts`
+- [x] Update `calculate.ts` to apply base material's weight config to piece weights
+- [x] Verify set weight passes at ±0.01 tolerance
 
 ### 1.4 Validate Durability Configuration
 **Goal:** Verify durability coefficients for Horned Scales.
 
-- [ ] Compare calculated vs actual durability values
-- [ ] Update `durabilityConfig` if needed
-- [ ] Verify durability passes at ±16.0 tolerance
+- [x] Compare calculated vs actual durability values
+- [x] Existing `durabilityConfig` was correct - no updates needed
+- [x] Verify durability passes at ±16.0 tolerance
 
 ### 1.5 Run Full Test Suite
 **Goal:** Ensure Horned Scales passes all tests.
 
-- [ ] Run `bun test` and verify all tests pass
-- [ ] Document any tolerance adjustments needed
+- [x] Run `bun test` - 1891 tests passing
+- [x] No tolerance adjustments needed
 
 ---
 
-## Phase 2: Arthropod Carapace (Base Material) ⏳
+## Phase 2: Arthropod Carapace (Base Material) ✅
 
-**Status:** ⏳ Not Started  
+**Status:** ✅ Complete  
 **Priority:** High (already has partial config)
 
-Arthropod Carapace has existing partial configuration but was removed from test samples. Need to validate and complete.
+Arthropod Carapace has been fully configured and validated with 16 new samples across all 4 armor styles.
 
 ### 2.1 Collect Arthropod Carapace Samples
 **Goal:** Gather corner samples for all 4 armor styles using Ironfur padding.
 
-- [ ] Kallardian Norse + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Risar Berserker + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Khurite Splinted + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Ranger Armor + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
-- [ ] Add samples to appropriate files in `samples/`
+- [x] Kallardian Norse + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Risar Berserker + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Khurite Splinted + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Ranger Armor + Arthropod Carapace + Ironfur @ 0/0, 100/0, 0/100, 100/100
+- [x] Add samples to appropriate files in `samples/`
 
 ### 2.2 Validate Defense Configuration
 **Goal:** Verify or update defense coefficients.
 
-- [ ] Compare calculated vs actual defense values
-- [ ] Update `defenseConfig` in `baseMaterials.ts` if needed
-- [ ] Verify defense passes at ±0.01 tolerance
+- [x] Compare calculated vs actual defense values
+- [x] Added `defenseConfig` for Ranger Armor (was missing)
+- [x] Existing configs for Risar Berserker, Kallardian Norse, Khurite Splinted were correct
+- [x] Verify defense passes at ±0.01 tolerance
 
 ### 2.3 Validate Weight Configuration
 **Goal:** Add/verify weight coefficients.
 
-- [ ] Derive `additiveWeightConfig` (minWeightOffset, baseContribMult)
-- [ ] Add `additiveWeightConfig` to Arthropod Carapace in `baseMaterials.ts`
-- [ ] Verify set weight passes at ±0.01 tolerance
+- [x] Derived `additiveWeightConfig` (minWeightOffset: 0.6, baseContribMult: 1.4286)
+- [x] Added `additiveWeightConfig` to Arthropod Carapace in `baseMaterials.ts`
+- [x] Removed legacy `weightConfig` (no longer needed with additive model)
+- [x] Verify set weight passes at ±0.01 tolerance
 
 ### 2.4 Validate Durability Configuration
 **Goal:** Verify durability coefficients.
 
-- [ ] Compare calculated vs actual durability values
-- [ ] Update `durabilityConfig` if needed
-- [ ] Verify durability passes at ±16.0 tolerance
+- [x] Compare calculated vs actual durability values
+- [x] Existing `durabilityConfig` was correct - no updates needed
+- [x] Verify durability passes at ±16.0 tolerance
 
 ### 2.5 Run Full Test Suite
 **Goal:** Ensure Arthropod Carapace passes all tests.
 
-- [ ] Run `bun test` and verify all tests pass
-- [ ] Document any tolerance adjustments needed
+- [x] Run `bun test` - 2323 tests passing (up from 1891 before adding Arthropod Carapace samples)
+- [x] No tolerance adjustments needed
 
 ---
 
@@ -337,10 +340,10 @@ Ironwool is listed in types but not configured in `paddingMaterials.ts`.
 
 ## Progress Tracking
 
-**Overall Progress:** 0/45 tasks complete (0%)
+**Overall Progress:** 10/45 tasks complete (22%)
 
-**Phase 1 (Horned Scales):** 0/5 sections  
-**Phase 2 (Arthropod Carapace):** 0/5 sections  
+**Phase 1 (Horned Scales):** 5/5 sections ✅  
+**Phase 2 (Arthropod Carapace):** 5/5 sections ✅  
 **Phase 3 (Guard Fur):** 0/5 sections  
 **Phase 4 (Bloodsilk):** 0/5 sections  
 **Phase 5 (Keeled Scales):** 0/4 sections  

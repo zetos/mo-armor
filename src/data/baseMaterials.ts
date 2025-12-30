@@ -19,13 +19,6 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     weight: 0.01131,  // Derived from 100%/0% analysis: baseContrib / (baseUsage * pieceMult)
     // Weight multiplier to match Plate Scales baseline  
     weightMultiplier: 1.0,  // Baked into weight value
-    // Style-specific weight density coefficients
-    // Arthropod Carapace has INVERSE density scaling: weight per unit is HIGHER at low densities
-    // At 0% density: scale = ~1.96, at 100% density: scale = 1.0
-    // This is because the material usage increases faster than the weight
-    weightConfig: {
-      'Khurite Splinted': { densityCoeffs: { a: 1.96, b: -0.96 } },
-    },
     usageMultiplier: 1.96, // Fallback (Kallardian Norse at 100%)
     // Style-specific usage multipliers with density scaling (mult = a + b * density/100)
     // Derived from 0% and 100% density samples
@@ -42,6 +35,12 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
       'Kallardian Norse': { baseMin: 275.125, baseDensityContrib: 224.25, padContrib: 101.75 },
       'Khurite Splinted': { baseMin: 277.375, baseDensityContrib: 565.8, padContrib: 83.25 },
       'Ranger Armor': { baseMin: 280.3125, baseDensityContrib: 272.55, padContrib: 106.375 },
+    },
+    // Weight additive model: Arthropod Carapace is heavier than Plate Scales
+    // Derived from corner samples: offset=+0.6 (heavier at 0 density), mult=1.4286 (higher base density contribution)
+    additiveWeightConfig: {
+      minWeightOffset: 0.6,
+      baseContribMult: 1.4286,
     },
     // Style-specific defense configurations derived from 100/0 and 100/100 samples
     // For styles without 0% density samples, density coefficients default to style's base coefficients
@@ -72,6 +71,15 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
           slash: { a: 0.7457, b: 0.2543 },
         },
       },
+      'Ranger Armor': {
+        baseDefense: { blunt: 31.32, pierce: 32.82, slash: 37.92 },
+        // Derived from 0%/0% and 100%/0% samples
+        densityCoeffs: {
+          blunt: { a: 0.88697318, b: 0.11302682 },
+          pierce: { a: 0.84643510, b: 0.15356490 },
+          slash: { a: 0.86708861, b: 0.13291139 },
+        },
+      },
     },
   },
    'Horned Scales': {
@@ -88,6 +96,12 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
        'Ranger Armor': { a: 0.821, b: 0 },
      },
      durability: 0.91, // Fallback value
+     // Weight additive model: Horned Scales is lighter than Plate Scales
+     // Derived from corner samples: offset=-0.25 (lighter at 0 density), mult=0.821 (lower base density contribution)
+     additiveWeightConfig: {
+       minWeightOffset: -0.25,
+       baseContribMult: 0.821,
+     },
      // Style-specific durability configurations (derived from 0%/0%, 100%/0%, 0%/100% samples)
      durabilityConfig: {
        'Risar Berserker': { baseMin: 200.375, baseDensityContrib: 188.3375, padContrib: 111.0 },
