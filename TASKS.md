@@ -233,14 +233,14 @@ Keeled Scales has been fully configured and validated with 8 new samples across 
 ### 5.3 Expand to Remaining Armor Styles
 **Goal:** Add support for all 4 armor styles.
 
-- [ ] Collect Khurite Splinted samples if needed
-- [ ] Collect Ranger Armor samples if needed
-- [ ] Add defense/durability configs for remaining styles
+- [x] Collect Khurite Splinted samples (0/0, 100/0, 0/100, 100/100)
+- [x] Collect Ranger Armor samples (0/0, 100/0, 0/100, 100/100)
+- [x] Add defense/durability/usage configs for Khurite Splinted and Ranger Armor
 
 ### 5.4 Run Full Test Suite
 **Goal:** Ensure Keeled Scales passes all tests.
 
-- [x] Run `bun test` - 3187 tests passing
+- [x] Run `bun test` - 3619 tests passing (all 4 armor styles)
 
 ---
 
@@ -260,11 +260,16 @@ Leptoid Scales has been fully configured and validated with 8 new samples across
   - weight: 0.0055
   - usageMultiplier: ~0.36
   - durability: ~0.45
-  - defenseConfig for Kallardian Norse and Risar Berserker
+  - defenseConfig for all 4 armor styles
   - additiveWeightConfig (minWeightOffset: -1.15, baseContribMult: 0.179)
 
-### 6.3 Run Full Test Suite
-- [x] Run `bun test` - 3187 tests passing
+### 6.3 Expand to Remaining Armor Styles
+- [x] Collect Khurite Splinted samples (0/0, 100/0, 0/100, 100/100)
+- [x] Collect Ranger Armor samples (0/0, 100/0, 0/100, 100/100)
+- [x] Add defense/durability/usage configs for Khurite Splinted and Ranger Armor
+
+### 6.4 Run Full Test Suite
+- [x] Run `bun test` - 3619 tests passing (all 4 armor styles)
 
 ---
 
@@ -395,14 +400,14 @@ This phase focuses on improving code quality and removing technical debt accumul
 
 ## Progress Tracking
 
-**Overall Progress:** 27/49 tasks complete (55%)
+**Overall Progress:** 29/51 tasks complete (57%)
 
 **Phase 1 (Horned Scales):** 5/5 sections ✅  
 **Phase 2 (Arthropod Carapace):** 5/5 sections ✅  
 **Phase 3 (Guard Fur):** 5/5 sections ✅  
 **Phase 4 (Bloodsilk):** 5/5 sections ✅  
-**Phase 5 (Keeled Scales):** 4/4 sections ✅  
-**Phase 6 (Leptoid Scales):** 3/3 sections ✅  
+**Phase 5 (Keeled Scales):** 4/4 sections ✅ (all 4 armor styles)  
+**Phase 6 (Leptoid Scales):** 4/4 sections ✅ (all 4 armor styles)  
 **Phase 7 (Placoid Scales):** 0/3 sections  
 **Phase 8 (Pansar Scales):** 0/3 sections  
 **Phase 9 (Ironwool):** 0/3 sections  
