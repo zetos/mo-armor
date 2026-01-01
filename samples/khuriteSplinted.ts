@@ -1517,4 +1517,438 @@ export const khuriteSplintedSamples: SetStats[] = [
       },
     },
   },
+  // Placoid Scales samples
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Placoid Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 24.18,
+      slash: 23.16,
+      blunt: 29.6,
+    },
+    setWeight: 5.9,
+    pieceWeight: {
+      helm: 0.71,
+      rightArm: 0.77,
+      torso: 1.89,
+      leftArm: 0.77,
+      legs: 1.77,
+    },
+    setDura: 416.6,
+    pieceDurability: {
+      helm: 83.32,
+      rightArm: 62.49,
+      torso: 104.15,
+      leftArm: 62.49,
+      legs: 104.15,
+    },
+    setMaterialUsage: {
+      base: 47,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 6,
+        padding: 16,
+      },
+      rightArm: {
+        base: 6,
+        padding: 16,
+      },
+      torso: {
+        base: 15,
+        padding: 44,
+      },
+      leftArm: {
+        base: 6,
+        padding: 16,
+      },
+      legs: {
+        base: 14,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Placoid Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 27.19,
+      slash: 26.04,
+      blunt: 32.89,
+    },
+    setWeight: 6.38,
+    pieceWeight: {
+      helm: 0.77,
+      rightArm: 0.83,
+      torso: 2.04,
+      leftArm: 0.83,
+      legs: 1.91,
+    },
+    setDura: 1016.84,
+    pieceDurability: {
+      helm: 203.37,
+      rightArm: 152.53,
+      torso: 254.21,
+      leftArm: 152.53,
+      legs: 254.21,
+    },
+    setMaterialUsage: {
+      base: 156,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 19,
+        padding: 16,
+      },
+      rightArm: {
+        base: 19,
+        padding: 16,
+      },
+      torso: {
+        base: 51,
+        padding: 44,
+      },
+      leftArm: {
+        base: 19,
+        padding: 16,
+      },
+      legs: {
+        base: 48,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Placoid Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 30.68,
+      slash: 29.76,
+      blunt: 40.26,
+    },
+    setWeight: 7.3,
+    pieceWeight: {
+      helm: 0.88,
+      rightArm: 0.95,
+      torso: 2.34,
+      leftArm: 0.95,
+      legs: 2.19,
+    },
+    setDura: 749.6,
+    pieceDurability: {
+      helm: 149.92,
+      rightArm: 112.44,
+      torso: 187.4,
+      leftArm: 112.44,
+      legs: 187.4,
+    },
+    setMaterialUsage: {
+      base: 47,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 6,
+        padding: 48,
+      },
+      rightArm: {
+        base: 6,
+        padding: 48,
+      },
+      torso: {
+        base: 15,
+        padding: 134,
+      },
+      leftArm: {
+        base: 6,
+        padding: 48,
+      },
+      legs: {
+        base: 14,
+        padding: 126,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Placoid Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 33.69,
+      slash: 32.64,
+      blunt: 43.56,
+    },
+    setWeight: 7.78,
+    pieceWeight: {
+      helm: 0.93,
+      rightArm: 1.01,
+      torso: 2.49,
+      leftArm: 1.01,
+      legs: 2.33,
+    },
+    setDura: 1349.84,
+    pieceDurability: {
+      helm: 269.97,
+      rightArm: 202.48,
+      torso: 337.46,
+      leftArm: 202.48,
+      legs: 337.46,
+    },
+    setMaterialUsage: {
+      base: 156,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 19,
+        padding: 48,
+      },
+      rightArm: {
+        base: 19,
+        padding: 48,
+      },
+      torso: {
+        base: 51,
+        padding: 134,
+      },
+      leftArm: {
+        base: 19,
+        padding: 48,
+      },
+      legs: {
+        base: 48,
+        padding: 126,
+      },
+    },
+  },
+  // Pansar Scales samples
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Pansar Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 31.79,
+      slash: 29.88,
+      blunt: 39.43,
+    },
+    setWeight: 7.4,
+    pieceWeight: {
+      helm: 0.89,
+      rightArm: 0.96,
+      torso: 2.37,
+      leftArm: 0.96,
+      legs: 2.22,
+    },
+    setDura: 976.25,
+    pieceDurability: {
+      helm: 195.25,
+      rightArm: 146.44,
+      torso: 244.06,
+      leftArm: 146.44,
+      legs: 244.06,
+    },
+    setMaterialUsage: {
+      base: 156,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 19,
+        padding: 16,
+      },
+      rightArm: {
+        base: 19,
+        padding: 16,
+      },
+      torso: {
+        base: 51,
+        padding: 44,
+      },
+      leftArm: {
+        base: 19,
+        padding: 16,
+      },
+      legs: {
+        base: 48,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Pansar Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 0,
+    setDefense: {
+      pierce: 43.37,
+      slash: 40.32,
+      blunt: 53.79,
+    },
+    setWeight: 11.48,
+    pieceWeight: {
+      helm: 1.38,
+      rightArm: 1.49,
+      torso: 3.67,
+      leftArm: 1.49,
+      legs: 3.44,
+    },
+    setDura: 2919.65,
+    pieceDurability: {
+      helm: 583.93,
+      rightArm: 437.95,
+      torso: 729.91,
+      leftArm: 437.95,
+      legs: 729.91,
+    },
+    setMaterialUsage: {
+      base: 523,
+      padding: 134,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 63,
+        padding: 16,
+      },
+      rightArm: {
+        base: 63,
+        padding: 16,
+      },
+      torso: {
+        base: 172,
+        padding: 44,
+      },
+      leftArm: {
+        base: 63,
+        padding: 16,
+      },
+      legs: {
+        base: 162,
+        padding: 42,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Pansar Scales',
+    padding: 'Ironfur',
+    baseDensity: 0,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 38.29,
+      slash: 36.48,
+      blunt: 50.1,
+    },
+    setWeight: 8.8,
+    pieceWeight: {
+      helm: 1.06,
+      rightArm: 1.14,
+      torso: 2.82,
+      leftArm: 1.14,
+      legs: 2.64,
+    },
+    setDura: 1309.25,
+    pieceDurability: {
+      helm: 261.85,
+      rightArm: 196.39,
+      torso: 327.31,
+      leftArm: 196.39,
+      legs: 327.31,
+    },
+    setMaterialUsage: {
+      base: 156,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 19,
+        padding: 48,
+      },
+      rightArm: {
+        base: 19,
+        padding: 48,
+      },
+      torso: {
+        base: 51,
+        padding: 134,
+      },
+      leftArm: {
+        base: 19,
+        padding: 48,
+      },
+      legs: {
+        base: 48,
+        padding: 126,
+      },
+    },
+  },
+  {
+    armorStyle: 'Khurite Splinted',
+    base: 'Pansar Scales',
+    padding: 'Ironfur',
+    baseDensity: 100,
+    paddingDensity: 100,
+    setDefense: {
+      pierce: 49.87,
+      slash: 46.92,
+      blunt: 64.46,
+    },
+    setWeight: 12.88,
+    pieceWeight: {
+      helm: 1.55,
+      rightArm: 1.67,
+      torso: 4.12,
+      leftArm: 1.67,
+      legs: 3.86,
+    },
+    setDura: 3252.65,
+    pieceDurability: {
+      helm: 650.53,
+      rightArm: 487.9,
+      torso: 813.16,
+      leftArm: 487.9,
+      legs: 813.16,
+    },
+    setMaterialUsage: {
+      base: 523,
+      padding: 404,
+    },
+    pieceMaterialUsage: {
+      helm: {
+        base: 63,
+        padding: 48,
+      },
+      rightArm: {
+        base: 63,
+        padding: 48,
+      },
+      torso: {
+        base: 172,
+        padding: 134,
+      },
+      leftArm: {
+        base: 63,
+        padding: 48,
+      },
+      legs: {
+        base: 162,
+        padding: 126,
+      },
+    },
+  },
 ];

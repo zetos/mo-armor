@@ -265,6 +265,126 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
       },
     },
   },
+  'Placoid Scales': {
+    weight: 0.0055,
+    weightMultiplier: 1.0,
+    usageMultiplier: 0.36, // Fallback
+    // Style-specific usage multipliers with density scaling
+    usageMultiplierConfig: {
+      'Risar Berserker': { a: 0.362, b: 0.0 },
+      'Kallardian Norse': { a: 0.364, b: 0.0 },
+      'Khurite Splinted': { a: 0.362, b: 0.0 },
+      'Ranger Armor': { a: 0.375, b: -0.017 },
+    },
+    durability: 0.50, // Fallback value
+    // Style-specific durability configurations
+    durabilityConfig: {
+      'Risar Berserker': { baseMin: 110.35, baseDensityContrib: 75.335, padContrib: 111.0 },
+      'Kallardian Norse': { baseMin: 109.75, baseDensityContrib: 59.475, padContrib: 101.75 },
+      'Khurite Splinted': { baseMin: 104.15, baseDensityContrib: 150.06, padContrib: 83.25 },
+      'Ranger Armor': { baseMin: 113.425, baseDensityContrib: 72.1425, padContrib: 106.375 },
+    },
+    // Weight additive model: Placoid Scales is much lighter than Plate Scales
+    additiveWeightConfig: {
+      minWeightOffset: -1.2,
+      baseContribMult: 0.143,
+    },
+    // Style-specific defense configurations
+    defenseConfig: {
+      'Risar Berserker': {
+        baseDefense: { blunt: 30.88, pierce: 23.35, slash: 26.28 },
+        densityCoeffs: {
+          blunt: { a: 0.9421, b: 0.0579 },
+          pierce: { a: 0.9302, b: 0.0698 },
+          slash: { a: 0.9407, b: 0.0593 },
+        },
+      },
+      'Kallardian Norse': {
+        baseDefense: { blunt: 28.33, pierce: 26.85, slash: 23.8 },
+        densityCoeffs: {
+          blunt: { a: 0.9512, b: 0.0488 },
+          pierce: { a: 0.9531, b: 0.0469 },
+          slash: { a: 0.9496, b: 0.0504 },
+        },
+      },
+      'Khurite Splinted': {
+        baseDefense: { blunt: 32.89, pierce: 27.19, slash: 26.04 },
+        densityCoeffs: {
+          blunt: { a: 0.9000, b: 0.1000 },
+          pierce: { a: 0.8893, b: 0.1107 },
+          slash: { a: 0.8894, b: 0.1106 },
+        },
+      },
+      'Ranger Armor': {
+        baseDefense: { blunt: 26.7, pierce: 24.18, slash: 29.12 },
+        densityCoeffs: {
+          blunt: { a: 0.9382, b: 0.0618 },
+          pierce: { a: 0.9380, b: 0.0620 },
+          slash: { a: 0.9505, b: 0.0495 },
+        },
+      },
+    },
+  },
+  'Pansar Scales': {
+    weight: 0.0169,
+    weightMultiplier: 1.0,
+    usageMultiplier: 1.21, // Fallback
+    // Style-specific usage multipliers with density scaling
+    usageMultiplierConfig: {
+      'Risar Berserker': { a: 1.209, b: 0.014 },
+      'Kallardian Norse': { a: 1.194, b: 0.015 },
+      'Khurite Splinted': { a: 1.200, b: 0.013 },
+      'Ranger Armor': { a: 1.211, b: 0.008 },
+    },
+    durability: 1.10, // Fallback value
+    // Style-specific durability configurations
+    durabilityConfig: {
+      'Risar Berserker': { baseMin: 243.125, baseDensityContrib: 243.9125, padContrib: 111.0 },
+      'Kallardian Norse': { baseMin: 242.75, baseDensityContrib: 192.7, padContrib: 101.75 },
+      'Khurite Splinted': { baseMin: 244.0625, baseDensityContrib: 485.85, padContrib: 83.25 },
+      'Ranger Armor': { baseMin: 248.22, baseDensityContrib: 234.0375, padContrib: 106.375 },
+    },
+    // Weight additive model: Pansar Scales is heavier than Plate Scales
+    additiveWeightConfig: {
+      minWeightOffset: 0.3,
+      baseContribMult: 1.214,
+    },
+    // Style-specific defense configurations
+    defenseConfig: {
+      'Risar Berserker': {
+        baseDefense: { blunt: 45.02, pierce: 34.3, slash: 35.94 },
+        densityCoeffs: {
+          blunt: { a: 0.8271, b: 0.1729 },
+          pierce: { a: 0.8168, b: 0.1832 },
+          slash: { a: 0.8425, b: 0.1575 },
+        },
+      },
+      'Kallardian Norse': {
+        baseDefense: { blunt: 40.62, pierce: 36.37, slash: 32.2 },
+        densityCoeffs: {
+          blunt: { a: 0.8529, b: 0.1471 },
+          pierce: { a: 0.8671, b: 0.1329 },
+          slash: { a: 0.8646, b: 0.1354 },
+        },
+      },
+      'Khurite Splinted': {
+        baseDefense: { blunt: 53.79, pierce: 43.37, slash: 40.32 },
+        densityCoeffs: {
+          blunt: { a: 0.7330, b: 0.2670 },
+          pierce: { a: 0.7330, b: 0.2670 },
+          slash: { a: 0.7411, b: 0.2589 },
+        },
+      },
+      'Ranger Armor': {
+        baseDefense: { blunt: 40.22, pierce: 34.65, slash: 38.36 },
+        densityCoeffs: {
+          blunt: { a: 0.8215, b: 0.1785 },
+          pierce: { a: 0.8331, b: 0.1669 },
+          slash: { a: 0.8639, b: 0.1361 },
+        },
+      },
+    },
+  },
 };
 
 /**

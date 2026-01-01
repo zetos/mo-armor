@@ -107,6 +107,35 @@ const SHARED_PADDING_CONFIG: Partial<
       padContribRatio: 0.4286,
     },
   },
+  Ironwool: {
+    materialMultiplier: 0.8571,
+    durabilityMults: { minMult: 0.996, padMult: 0.996 },
+    // Defense contribution at 100% padding density
+    // Derived from: D(0/100) - baseContrib(0)
+    // blunt: 38.55 - 32.50 = 6.05
+    // pierce: 33.85 - 30.75 = 3.10
+    // slash: 31.54 - 27.10 = 4.44
+    defense: { blunt: 6.05, pierce: 3.10, slash: 4.44 },
+    // Defense density scaling coefficients
+    // At padding 0: contribution = a * defense
+    // At padding 100: contribution = (a + b) * defense = 1 * defense
+    // From D(0/0): padding contrib = D(0/0) - baseContrib(0) = 30.19 - 32.50 = -2.31
+    // a * 6.05 = -2.31 => a = -0.3818, b = 1.3818
+    // pierce: (29.05 - 30.75) / 3.10 = -0.5484, b = 1.5484
+    // slash: (26.02 - 27.10) / 4.44 = -0.2432, b = 1.2432
+    defenseDensityCoeffs: {
+      blunt: { a: -0.3818, b: 1.3818 },
+      pierce: { a: -0.5484, b: 1.5484 },
+      slash: { a: -0.2432, b: 1.2432 },
+    },
+    // Weight additive model
+    // padContribRatio = 0.6/1.4 ≈ 0.4286
+    additiveWeightConfig: {
+      minWeightOffset: 0.1,
+      padContrib: 0.6,
+      padContribRatio: 0.4286,
+    },
+  },
 };
 
 /**
@@ -136,6 +165,10 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
       weight: 0.00443,
       weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
     },
+    Ironwool: {
+      weight: 0.00443,
+      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
+    },
   },
   'Kallardian Norse': {
     Ironfur: { weight: 0.0093, weightDensityCoeffs: { a: 0.628, b: 0.372 } },
@@ -148,6 +181,10 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
       weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
     },
     Bloodsilk: {
+      weight: 0.00443,
+      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
+    },
+    Ironwool: {
       weight: 0.00443,
       weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
     },
@@ -166,6 +203,10 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
       weight: 0.00443,
       weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
     },
+    Ironwool: {
+      weight: 0.00443,
+      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
+    },
   },
   'Ranger Armor': {
     Ironfur: { weight: 0.0093, weightDensityCoeffs: { a: 0.628, b: 0.372 } },
@@ -178,6 +219,10 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
       weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
     },
     Bloodsilk: {
+      weight: 0.00443,
+      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
+    },
+    Ironwool: {
       weight: 0.00443,
       weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
     },
@@ -221,24 +266,28 @@ export const paddingMaterials: Record<
     Ironsilk: buildPaddingConfig('Ironsilk', 'Risar Berserker')!,
     'Guard Fur': buildPaddingConfig('Guard Fur', 'Risar Berserker')!,
     Bloodsilk: buildPaddingConfig('Bloodsilk', 'Risar Berserker')!,
+    Ironwool: buildPaddingConfig('Ironwool', 'Risar Berserker')!,
   },
   'Kallardian Norse': {
     Ironfur: buildPaddingConfig('Ironfur', 'Kallardian Norse')!,
     Ironsilk: buildPaddingConfig('Ironsilk', 'Kallardian Norse')!,
     'Guard Fur': buildPaddingConfig('Guard Fur', 'Kallardian Norse')!,
     Bloodsilk: buildPaddingConfig('Bloodsilk', 'Kallardian Norse')!,
+    Ironwool: buildPaddingConfig('Ironwool', 'Kallardian Norse')!,
   },
   'Khurite Splinted': {
     Ironfur: buildPaddingConfig('Ironfur', 'Khurite Splinted')!,
     Ironsilk: buildPaddingConfig('Ironsilk', 'Khurite Splinted')!,
     'Guard Fur': buildPaddingConfig('Guard Fur', 'Khurite Splinted')!,
     Bloodsilk: buildPaddingConfig('Bloodsilk', 'Khurite Splinted')!,
+    Ironwool: buildPaddingConfig('Ironwool', 'Khurite Splinted')!,
   },
   'Ranger Armor': {
     Ironfur: buildPaddingConfig('Ironfur', 'Ranger Armor')!,
     Ironsilk: buildPaddingConfig('Ironsilk', 'Ranger Armor')!,
     'Guard Fur': buildPaddingConfig('Guard Fur', 'Ranger Armor')!,
     Bloodsilk: buildPaddingConfig('Bloodsilk', 'Ranger Armor')!,
+    Ironwool: buildPaddingConfig('Ironwool', 'Ranger Armor')!,
   },
 };
 
