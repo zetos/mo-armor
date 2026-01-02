@@ -85,11 +85,25 @@ Configuration distributed across:
 ```
 
 ### Durability
+**STYLE-SPECIFIC MODEL** (±1.0 accuracy with style-specific multipliers):
+
 ```typescript
 durability = ((baseMin × padMinMult) + (baseDensityContrib × bd/100)
               + (padContrib × padPadMult × pd/100))
              × pieceMultiplier × baseMaterialMult
+
+where:
+- baseMin, baseDensityContrib, padContrib = from armorStyles.ts or baseMaterials.ts durabilityConfig
+- padMinMult, padPadMult = from paddingMaterials.ts durabilityMults (style-specific)
+- pieceMultiplier = helm=0.8, torso=1.0, arms=0.6, legs=1.0
 ```
+
+**Key insight**: Padding materials have **style-specific** `minMult` values that vary slightly across armor styles, while `padMult` is consistent across styles. This discovery reduced durability error from ±16.0 to ±1.0.
+
+Configuration distributed across:
+- armorStyles.ts: durabilityCoeffs { baseMin, baseDensityContrib, padContrib } for Plate Scales
+- baseMaterials.ts: durabilityConfig per style for other base materials
+- paddingMaterials.ts: durabilityMults { minMult, padMult } + styleMinMult per style
 
 ### Material Usage
 ```typescript
@@ -134,7 +148,7 @@ Current tolerances (reflect known formula accuracy):
 - **Weight**: ±0.01 kg (100% accuracy with additive model)
 - **Piece Weight**: ±0.01 kg (100% accuracy with per-piece additive model)
 - **Defense**: ±0.01 (100% accuracy with Plate Scales + Ironsilk/Ironfur)
-- **Durability**: ±16.0 (formula approximation)
+- **Durability**: ±1.0 (100% accuracy with style-specific durability multipliers)
 - **Material Usage**: ±2 units (rounding)
 
 ## Sample Data
@@ -169,9 +183,10 @@ type DensityCoeffs = { a: number; b: number };
 - Each base material has **style-specific base defense** and **density scaling coefficients**
 - Plate Scales uses the armor style's base values; other materials have their own
 - Padding materials can have **negative defense** (e.g., Ironsilk reduces blunt)
+- Padding materials have **style-specific durability minMult** values
 - Total defense is floored at 0 (no negative values)
 - Piece multipliers: helm=0.8, torso=1.0, arms=0.6, legs=1.0
-- Formula accuracy: defense (100%), weight (100%), piece weight (100%) at ±0.01; durability ±16.0
+- Formula accuracy: defense (100%), weight (100%), piece weight (100%), durability (100%) at ±1.0 or better
 
 ## Samples Needed for Better Precision
 

@@ -10,9 +10,12 @@ const TOLERANCE = 0.01;
 // Piece weights now use per-piece additive model, achieving ±0.01 accuracy
 // Formula: pieceWeight = pieceMin + pieceBase*(bd/100) + piecePad*padRatio*(pd/100)
 const PIECE_WEIGHT_TOLERANCE = 0.01;
-// Durability tolerance - larger variance due to formula approximation
-// Note: Some samples show up to ~15.5 difference
-const DURABILITY_TOLERANCE = 16.0;
+// Durability tolerance - significantly improved with style-specific durability multipliers
+// Max error reduced from ~15.5 to ~0.57 through:
+// 1. Style-specific minMult values for each padding material
+// 2. Corrected padMult values for Guard Fur (0.9568), Bloodsilk (0.9676), Ironwool (0.9838)
+// 3. Fixed baseMin values for Placoid Scales (Risar Berserker) and Pansar Scales (Kallardian Norse)
+const DURABILITY_TOLERANCE = 1.0;
 // Defense tolerance - with style-specific base defense and density coefficients
 // Phase 1 & 2 complete: Only Plate Scales + (Ironsilk OR Ironfur) samples with critical densities
 // Sample counts: Risar Berserker (10), Kallardian Norse (20), Khurite Splinted (12), Ranger Armor (12)

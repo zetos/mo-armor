@@ -70,10 +70,11 @@ console.log(armorStats);
 - Ironsilk (reduces blunt defense, increases pierce/slash)
 - Guard Fur
 - Bloodsilk
+- Ironwool
 
 ## How It Works
 
-The calculator uses reverse-engineered formulas derived from 44 in-game samples:
+The calculator uses reverse-engineered formulas derived from 174 in-game samples:
 
 ### Defense Calculation
 ```
@@ -97,14 +98,17 @@ pieceDurability = ((baseMin × padMinMult) +
                   × pieceMultiplier × baseMaterialDuraMult
 ```
 
+**Key insight**: Each padding material has **style-specific** `minMult` values that vary slightly across armor styles, while `padMult` is consistent. This allows for ±1.0 accuracy.
+
 ## Accuracy
 
 The calculator achieves the following accuracy against game data:
 
-- **Defense**: ±0.8 (very accurate)
+- **Defense**: ±0.01 (100% accurate with style-specific coefficients)
+- **Weight**: ±0.01 kg (100% accurate with additive model)
+- **Piece Weight**: ±0.01 kg (100% accurate with per-piece additive model)
+- **Durability**: ±1.0 (100% accurate with style-specific durability multipliers)
 - **Material Usage**: ±2 units (rounding variance)
-- **Weight**: ±5.0 kg (formula refinement needed for some edge cases)
-- **Durability**: ±16.0 (formula approximation, some samples show higher variance)
 
 See [AGENTS.md](./AGENTS.md) for detailed formula documentation.
 
@@ -122,11 +126,11 @@ armor/
 │       └── paddingMaterials.ts # Padding material properties
 ├── test/
 │   └── calculate.test.ts     # Comprehensive test suite
-├── samples/                  # Game data samples (44 samples)
-│   ├── kallardianNorse.ts   # 17 samples
-│   ├── risarBerserker.ts    # 14 samples
-│   ├── khuriteSplinted.ts   # 10 samples
-│   └── rangerArmor.ts       # 8 samples
+├── samples/                  # Game data samples (174 samples)
+│   ├── kallardianNorse.ts   # Kallardian Norse samples
+│   ├── risarBerserker.ts    # Risar Berserker samples
+│   ├── khuriteSplinted.ts   # Khurite Splinted samples
+│   └── rangerArmor.ts       # Ranger Armor samples
 └── scripts/
     └── parseSample.ts        # Utility to parse raw game data
 ```

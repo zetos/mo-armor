@@ -278,9 +278,10 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     },
     durability: 0.50, // Fallback value
     // Style-specific durability configurations
+    // Risar Berserker baseMin corrected from 110.35 to 113.45 based on 0/0 sample analysis
     durabilityConfig: {
-      'Risar Berserker': { baseMin: 110.35, baseDensityContrib: 75.335, padContrib: 111.0 },
-      'Kallardian Norse': { baseMin: 109.75, baseDensityContrib: 59.475, padContrib: 101.75 },
+      'Risar Berserker': { baseMin: 113.45, baseDensityContrib: 75.335, padContrib: 111.0 },
+      'Kallardian Norse': { baseMin: 110.35, baseDensityContrib: 59.475, padContrib: 101.75 },
       'Khurite Splinted': { baseMin: 104.15, baseDensityContrib: 150.06, padContrib: 83.25 },
       'Ranger Armor': { baseMin: 113.425, baseDensityContrib: 72.1425, padContrib: 106.375 },
     },
@@ -338,9 +339,10 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     },
     durability: 1.10, // Fallback value
     // Style-specific durability configurations
+    // Kallardian Norse baseMin corrected from 242.75 to 243.44 based on 0/0 sample analysis
     durabilityConfig: {
       'Risar Berserker': { baseMin: 243.125, baseDensityContrib: 243.9125, padContrib: 111.0 },
-      'Kallardian Norse': { baseMin: 242.75, baseDensityContrib: 192.7, padContrib: 101.75 },
+      'Kallardian Norse': { baseMin: 243.44, baseDensityContrib: 192.7, padContrib: 101.75 },
       'Khurite Splinted': { baseMin: 244.0625, baseDensityContrib: 485.85, padContrib: 83.25 },
       'Ranger Armor': { baseMin: 248.22, baseDensityContrib: 234.0375, padContrib: 106.375 },
     },

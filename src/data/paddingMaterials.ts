@@ -13,13 +13,17 @@ import type {
  * SHARED PADDING CONFIGURATIONS
  *
  * Defense values, density coefficients, and weight contributions are UNIVERSAL across all armor styles.
+ * Durability multipliers have both shared (padMult) and style-specific (minMult) components.
+ * The padMult is consistent across styles, while minMult varies slightly per style.
  * Only per-piece weight properties vary per style.
  */
 interface SharedPaddingConfig {
   /** Material usage multiplier relative to Ironfur */
   materialMultiplier: number;
-  /** Durability multipliers */
+  /** Base durability multipliers (padMult is shared, minMult is fallback if style-specific not available) */
   durabilityMults: DurabilityMults;
+  /** Style-specific minMult values for more accurate durability calculations */
+  styleMinMult?: Partial<Record<ArmorStyle, number>>;
   /** Defense contribution at 100% padding density */
   defense: DefenseStats;
   /** Defense density scaling coefficients */
@@ -37,7 +41,9 @@ const SHARED_PADDING_CONFIG: Partial<
 > = {
   Ironfur: {
     materialMultiplier: 1.0,
+    // Ironfur is the baseline - all multipliers are 1.0
     durabilityMults: { minMult: 1.0, padMult: 1.0 },
+    // Style-specific minMult (all ~1.0 for Ironfur, no override needed)
     defense: { blunt: 10.67, pierce: 6.5, slash: 6.6 },
     // Simple linear scaling: contribution = defense × (density/100)
     defenseDensityCoeffs: {
@@ -55,7 +61,15 @@ const SHARED_PADDING_CONFIG: Partial<
   },
   Ironsilk: {
     materialMultiplier: 1.33,
-    durabilityMults: { minMult: 0.955, padMult: 0.8108 },
+    // padMult is consistent across styles, minMult varies slightly
+    durabilityMults: { minMult: 0.9566, padMult: 0.8108 },
+    // Style-specific minMult values derived from 0/0 samples
+    styleMinMult: {
+      'Risar Berserker': 0.9526,
+      'Kallardian Norse': 0.9566,
+      'Khurite Splinted': 0.9644,
+      'Ranger Armor': 0.9554,
+    },
     // Note: Ironsilk REDUCES blunt defense but increases pierce/slash
     defense: { blunt: -0.93, pierce: 10.1, slash: 7.8 },
     // Unusual blunt scaling due to negative base defense value
@@ -74,7 +88,15 @@ const SHARED_PADDING_CONFIG: Partial<
   },
   'Guard Fur': {
     materialMultiplier: 0.995,
-    durabilityMults: { minMult: 0.989, padMult: 0.989 },
+    // padMult corrected from 0.989 to 0.9568 based on sample analysis
+    durabilityMults: { minMult: 0.9902, padMult: 0.9568 },
+    // Style-specific minMult values derived from 0/0 samples
+    styleMinMult: {
+      'Risar Berserker': 0.9892,
+      'Kallardian Norse': 0.9901,
+      'Khurite Splinted': 0.9919,
+      'Ranger Armor': 0.9898,
+    },
     defense: { blunt: 5.39, pierce: 5.3, slash: 5.64 },
     // Negative intercepts mean Guard Fur reduces defense at low densities
     defenseDensityCoeffs: {
@@ -92,7 +114,15 @@ const SHARED_PADDING_CONFIG: Partial<
   },
   Bloodsilk: {
     materialMultiplier: 1.485,
-    durabilityMults: { minMult: 0.992, padMult: 0.992 },
+    // padMult corrected from 0.992 to 0.9676 based on sample analysis
+    durabilityMults: { minMult: 0.9926, padMult: 0.9676 },
+    // Style-specific minMult values derived from 0/0 samples
+    styleMinMult: {
+      'Risar Berserker': 0.9919,
+      'Kallardian Norse': 0.9926,
+      'Khurite Splinted': 0.9939,
+      'Ranger Armor': 0.9923,
+    },
     defense: { blunt: 0.57, pierce: 11.5, slash: 9.48 },
     defenseDensityCoeffs: {
       blunt: { a: -8.8596, b: 9.8596 },
@@ -109,7 +139,15 @@ const SHARED_PADDING_CONFIG: Partial<
   },
   Ironwool: {
     materialMultiplier: 0.8571,
-    durabilityMults: { minMult: 0.996, padMult: 0.996 },
+    // padMult corrected from 0.996 to 0.9838 based on sample analysis
+    durabilityMults: { minMult: 0.9963, padMult: 0.9838 },
+    // Style-specific minMult values derived from 0/0 samples
+    styleMinMult: {
+      'Risar Berserker': 0.9959,
+      'Kallardian Norse': 0.9963,
+      'Khurite Splinted': 0.9969,
+      'Ranger Armor': 0.9961,
+    },
     // Defense contribution at 100% padding density
     // Derived from: D(0/100) - baseContrib(0)
     // blunt: 38.55 - 32.50 = 6.05
@@ -230,7 +268,7 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
 };
 
 /**
- * Builds the full padding material config by combining shared config with style-specific weight.
+ * Builds the full padding material config by combining shared config with style-specific weight and durability.
  */
 function buildPaddingConfig(
   material: SupportMaterial,
@@ -243,11 +281,18 @@ function buildPaddingConfig(
     return null;
   }
 
+  // Use style-specific minMult if available, otherwise fallback to shared value
+  const minMult = sharedConfig.styleMinMult?.[style] ?? sharedConfig.durabilityMults.minMult;
+  const durabilityMults: DurabilityMults = {
+    minMult,
+    padMult: sharedConfig.durabilityMults.padMult,
+  };
+
   return {
     materialMultiplier: sharedConfig.materialMultiplier,
     weight: styleWeight.weight,
     weightDensityCoeffs: styleWeight.weightDensityCoeffs,
-    durabilityMults: sharedConfig.durabilityMults,
+    durabilityMults,
     defense: sharedConfig.defense,
     defenseDensityCoeffs: sharedConfig.defenseDensityCoeffs,
   };
