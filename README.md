@@ -53,19 +53,21 @@ console.log(armorStats);
 
 ### Supported Armor Styles
 
-- **Kallardian Norse** - Medium armor, balanced stats
-- **Risar Berserker** - Heavy armor, high protection
-- **Khurite Splinted** - Heaviest armor, maximum defense
-- **Ranger Armor** - Light armor, mobility-focused
+- **Kallardian Norse** - Soft armor, best at pierce
+- **Risar Berserker** - Soft armor, best at blunt defense
+- **Khurite Splinted** - Padded armor, Least weight efficient (18.32 defense/kg), but higher defense
+- **Ranger Armor** - Soft armor, best at slashing
 
 ### Supported Materials
 
 **Base Materials:**
+
 - Plate Scales, Arthropod Carapace, Horned Scales
 - Ironfur, Ironsilk, Ironwool, Bloodsilk
 - Leptoid Scales, Keeled Scales, Pansar Scales, Placoid Scales
 
 **Padding Materials:**
+
 - Ironfur (baseline)
 - Ironsilk (reduces blunt defense, increases pierce/slash)
 - Guard Fur
@@ -77,24 +79,27 @@ console.log(armorStats);
 The calculator uses reverse-engineered formulas derived from 174 in-game samples:
 
 ### Defense Calculation
+
 ```
-defense[type] = (baseDefense[type] + materialOffset[type]) × baseScale(baseDensity) 
+defense[type] = (baseDefense[type] + materialOffset[type]) × baseScale(baseDensity)
                 + paddingDefense[type] × padScale(paddingDensity)
 ```
 
 Where `scale(density) = a + b × (density/100)` with per-armor-style coefficients.
 
 ### Weight Calculation
+
 ```
-pieceWeight = (baseUsage × baseWeight × baseScale + 
+pieceWeight = (baseUsage × baseWeight × baseScale +
                paddingUsage × paddingWeight × padScale) × pieceMultiplier
 ```
 
 ### Durability Calculation
+
 ```
-pieceDurability = ((baseMin × padMinMult) + 
+pieceDurability = ((baseMin × padMinMult) +
                    (baseDensityContrib × baseDensity/100) +
-                   (padContrib × padPadMult × paddingDensity/100)) 
+                   (padContrib × padPadMult × paddingDensity/100))
                   × pieceMultiplier × baseMaterialDuraMult
 ```
 
@@ -162,6 +167,7 @@ See [AGENTS.md](./AGENTS.md) for detailed instructions on adding new armor style
 This is a proof-of-concept project for reverse-engineering MO2's armor system. Contributions are welcome!
 
 To add new samples:
+
 1. Collect in-game data using the format in `sample.txt`
 2. Run `bun scripts/parseSample.ts sample.txt`
 3. Add the parsed data to the appropriate sample file
@@ -175,3 +181,4 @@ This project is for educational and research purposes. Mortal Online 2 is proper
 
 - Built with [Bun](https://bun.sh) - Fast all-in-one JavaScript runtime
 - Data collected from Mortal Online 2 by Star Vault AB
+- Sample data retrieved using [Mortal Data Workbench](https://mortaldata.com/workbench) - API service for Mortal Online 2
