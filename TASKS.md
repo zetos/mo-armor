@@ -349,51 +349,51 @@ Ironwool has been fully configured and validated with 8 new samples across 2 arm
 
 ---
 
-## Phase 10: Code Refactoring & Cleanup ⏳
+## Phase 10: Code Refactoring & Cleanup ✅
 
-**Status:** ⏳ Not Started  
+**Status:** ✅ Complete
 **Priority:** Low (code quality improvement)
 
-This phase focuses on improving code quality and removing technical debt accumulated during the material expansion phases.
+This phase focused on improving code quality and removing technical debt accumulated during the material expansion phases.
 
-### 10.1 Consolidate Padding Weight Config
+### 10.1 Consolidate Padding Weight Config ✅
 **Goal:** Move universal padding weight properties from `STYLE_WEIGHT_CONFIGS` to `SHARED_PADDING_CONFIG`.
 
-**Background:** Guard Fur and Bloodsilk have identical `weight` and `weightDensityCoeffs` values across all armor styles. Only Ironfur and Ironsilk have style-specific variations.
+**Background:** Guard Fur, Bloodsilk, and Ironwool have identical `weight` and `weightDensityCoeffs` values across all armor styles. Only Ironfur and Ironsilk have style-specific variations.
 
-- [ ] Identify which padding materials have universal vs style-specific weight configs
-- [ ] Add optional `weight` and `weightDensityCoeffs` fields to `SharedPaddingConfig`
-- [ ] Update `buildPaddingConfig()` to use shared values as fallback when style-specific not defined
-- [ ] Remove redundant entries from `STYLE_WEIGHT_CONFIGS` for Guard Fur and Bloodsilk
-- [ ] Verify all tests still pass at ±0.01 tolerance
+- [x] Identify which padding materials have universal vs style-specific weight configs
+- [x] Add optional `weight` and `weightDensityCoeffs` fields to `SharedPaddingConfig`
+- [x] Update `buildPaddingConfig()` to use shared values as fallback when style-specific not defined
+- [x] Remove redundant entries from `STYLE_WEIGHT_CONFIGS` for Guard Fur, Bloodsilk, and Ironwool
+- [x] Verify all tests still pass at ±0.01 tolerance
 
-### 10.2 Remove Legacy Weight Calculation Fallback
+### 10.2 Remove Legacy Weight Calculation Fallback ✅
 **Goal:** Remove the deprecated weight calculation code path in `calculate.ts`.
 
-**Background:** The `calculatePieceWeight()` function and its fallback path (lines 234-254, 331-338) are no longer needed since all materials now use the additive weight model.
+**Background:** The `calculatePieceWeight()` function and its fallback path are no longer needed since all materials now use the additive weight model.
 
-- [ ] Verify all base materials have `additiveWeightConfig` defined
-- [ ] Verify all padding materials have `additiveWeightConfig` with `padContribRatio` defined
-- [ ] Remove `calculatePieceWeight()` function from `calculate.ts`
-- [ ] Remove the fallback else branch in the weight calculation section
-- [ ] Remove unused imports and variables (`effectiveBaseWeightCoeffs`, `oldWeightCalc`, etc.)
-- [ ] Clean up `PaddingMaterialConfig` type if `weight` and `weightDensityCoeffs` are no longer needed
-- [ ] Verify all tests still pass
+- [x] Verify all base materials have `additiveWeightConfig` defined
+- [x] Verify all padding materials have `additiveWeightConfig` with `padContribRatio` defined
+- [x] Remove `calculatePieceWeight()` function from `calculate.ts`
+- [x] Remove the fallback else branch in the weight calculation section
+- [x] Remove unused imports and variables (`effectiveBaseWeightCoeffs`, `oldWeightCalc`, etc.)
+- [x] Clean up `PaddingMaterialConfig` type if `weight` and `weightDensityCoeffs` are no longer needed
+- [x] Verify all tests still pass
 
-### 10.3 Simplify Material Config Types
+### 10.3 Simplify Material Config Types ✅
 **Goal:** Clean up type definitions after removing legacy code.
 
-- [ ] Review `PaddingMaterialConfig` type - consider if `weight` and `weightDensityCoeffs` can be removed
-- [ ] Review `BaseMaterialConfig` type - consider if legacy fields can be removed
-- [ ] Update documentation comments to reflect current architecture
-- [ ] Verify type safety is maintained
+- [x] Review `PaddingMaterialConfig` type - removed `weight`, `weightDensityCoeffs`, and `weightDensityCoeffsPerBase`
+- [x] Review `BaseMaterialConfig` type - removed `weightMultiplier` and `weightConfig`
+- [x] Update documentation comments to reflect current architecture
+- [x] Verify type safety is maintained
 
-### 10.4 Run Full Test Suite
+### 10.4 Run Full Test Suite ✅
 **Goal:** Ensure refactoring doesn't break anything.
 
-- [ ] Run `bun test` and verify all tests pass
-- [ ] Run `bunx tsc --noEmit` for type checking
-- [ ] Verify no regressions in accuracy
+- [x] Run `bun test` and verify all tests pass (4699 tests passing)
+- [x] Run `bunx tsc --noEmit` for type checking
+- [x] Verify no regressions in accuracy
 
 ---
 
@@ -420,18 +420,18 @@ This phase focuses on improving code quality and removing technical debt accumul
 
 ## Progress Tracking
 
-**Overall Progress:** 38/45 tasks complete (84%)
+**Overall Progress:** 42/45 tasks complete (93%)
 
-**Phase 1 (Horned Scales):** 5/5 sections ✅  
-**Phase 2 (Arthropod Carapace):** 5/5 sections ✅  
-**Phase 3 (Guard Fur):** 5/5 sections ✅  
-**Phase 4 (Bloodsilk):** 5/5 sections ✅  
-**Phase 5 (Keeled Scales):** 4/4 sections ✅ (all 4 armor styles)  
-**Phase 6 (Leptoid Scales):** 4/4 sections ✅ (all 4 armor styles)  
-**Phase 7 (Placoid Scales):** 3/3 sections ✅ (all 4 armor styles)  
-**Phase 8 (Pansar Scales):** 3/3 sections ✅ (all 4 armor styles)  
-**Phase 9 (Ironwool):** 3/3 sections ✅  
-**Phase 10 (Code Refactoring):** 0/4 sections
+**Phase 1 (Horned Scales):** 5/5 sections ✅
+**Phase 2 (Arthropod Carapace):** 5/5 sections ✅
+**Phase 3 (Guard Fur):** 5/5 sections ✅
+**Phase 4 (Bloodsilk):** 5/5 sections ✅
+**Phase 5 (Keeled Scales):** 4/4 sections ✅ (all 4 armor styles)
+**Phase 6 (Leptoid Scales):** 4/4 sections ✅ (all 4 armor styles)
+**Phase 7 (Placoid Scales):** 3/3 sections ✅ (all 4 armor styles)
+**Phase 8 (Pansar Scales):** 3/3 sections ✅ (all 4 armor styles)
+**Phase 9 (Ironwool):** 3/3 sections ✅
+**Phase 10 (Code Refactoring):** 4/4 sections ✅
 
 ## Current Statistics
 

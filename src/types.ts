@@ -243,11 +243,8 @@ export type BaseMaterialWeightConfig = {
 
 export type BaseMaterialConfig = {
   weight: number;
-  weightMultiplier: number;
-  /** Style-specific weight density coefficients. If provided, overrides the armor style's base coefficients. */
-  weightConfig?: Partial<Record<ArmorStyle, StyleSpecificWeightConfig>>;
   /** Weight configuration for additive weight model */
-  additiveWeightConfig?: BaseMaterialWeightConfig;
+  additiveWeightConfig: BaseMaterialWeightConfig;
   usageMultiplier: number;
   /** Style-specific usage multipliers with density scaling. If provided, overrides the base usageMultiplier for that style. */
   usageMultiplierConfig?: Partial<
@@ -275,14 +272,11 @@ export type PaddingMaterialWeightConfig = {
 
 /**
  * Padding material configuration per armor style.
- * Each material + style combination defines usage, weight, durability, and defense properties.
+ * Each material + style combination defines usage, durability, and defense properties.
+ * Weight values are retrieved from shared config (SHARED_PADDING_CONFIG) or style-specific config.
  */
 export type PaddingMaterialConfig = {
   materialMultiplier: number;
-  weight: number;
-  weightDensityCoeffs: DensityCoeffs;
-  /** Base-material-specific weight density coefficients. If provided, overrides weightDensityCoeffs for specific base materials. */
-  weightDensityCoeffsPerBase?: Partial<Record<BaseMaterial, DensityCoeffs>>;
   durabilityMults: DurabilityMults;
   defense: DefenseStats;
   defenseDensityCoeffs: DefenseDensityCoeffs;

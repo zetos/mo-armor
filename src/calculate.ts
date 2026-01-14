@@ -85,28 +85,6 @@ function calculatePaddingUsage(
 }
 
 /**
- * Calculates weight for a piece.
- * Formula: (baseUsage * baseMaterialWeight * baseMaterialWeightMultiplier * densityScaleBaseWeight(baseDensity, baseWeightDensityCoeffs) +
- *           paddingUsage * paddingMaterialWeight * densityScalePadWeight(paddingDensity, paddingWeightDensityCoeffs)) * pieceMultiplier
- */
-function calculatePieceWeight(
-  baseUsage: number,
-  paddingUsage: number,
-  baseMaterialWeight: number,
-  baseMaterialWeightMultiplier: number,
-  paddingMaterialWeight: number,
-  baseWeightDensityCoeffs: { a: number; b: number },
-  paddingWeightDensityCoeffs: { a: number; b: number },
-  baseDensity: number,
-  paddingDensity: number,
-  pieceMultiplier: number
-): number {
-  const baseContrib = baseUsage * baseMaterialWeight * baseMaterialWeightMultiplier * linearScale(baseDensity, baseWeightDensityCoeffs);
-  const padContrib = paddingUsage * paddingMaterialWeight * linearScale(paddingDensity, paddingWeightDensityCoeffs);
-  return (baseContrib + padContrib) * pieceMultiplier;
-}
-
-/**
  * Calculates durability for a piece using the additive model.
  * Formula: ((baseMin * padMinMult) + (baseDensityContrib * bd/100) + (padContrib * padPadMult * pd/100)) * pieceMultiplier * baseMaterialDuraMult
  *
@@ -231,28 +209,6 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       padding: paddingUsage,
     };
 
-     // Weight calculation - OLD: deprecated, kept as fallback
-     // Use material-specific weight density coefficients if configured, otherwise use style's base coefficients
-     const effectiveBaseWeightCoeffs = baseMaterialConfig.resolvedWeightConfig?.densityCoeffs 
-       ?? styleConfig.baseWeightDensityCoeffs;
-     
-      const oldWeightCalc = calculatePieceWeight(
-        baseUsage,
-        paddingUsage,
-        baseMaterialConfig.weight,
-        baseMaterialConfig.weightMultiplier,
-        paddingMaterialConfig.weight,
-        effectiveBaseWeightCoeffs,
-        paddingMaterialConfig.weightDensityCoeffs,
-        baseDensity,
-        paddingDensity,
-        styleConfig.pieceWeightMultipliers[piece]
-      );
-      
-      // Store the unrounded old calculation for now.
-      // We'll round after any proportional scaling to avoid compounding rounding error.
-      pieceWeight[piece] = oldWeightCalc;
-
      // Durability calculation - uses additive model with density and material coefficients
      pieceDurability[piece] = calculatePieceDurability(
        durabilityCoeffs,
@@ -323,20 +279,18 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
       // - Subtract padding adjustment (for non-Ironfur paddings)
       // - Add base material adjustment (for non-Plate Scales bases)
       // - Scale baseContrib by baseMult (for different base materials)
-      const rawWeight = (pc.minWeight - piecePaddingAdjust + pieceBaseAdjust) 
-        + pc.baseContrib * baseContribMult * (baseDensity / 100) 
+      const rawWeight = (pc.minWeight - piecePaddingAdjust + pieceBaseAdjust)
+        + pc.baseContrib * baseContribMult * (baseDensity / 100)
         + pc.padContrib * padContribRatio * (paddingDensity / 100);
       pieceWeight[piece] = round2(rawWeight);
     }
   } else {
-    // Fallback to old calculation (should not happen with properly configured materials)
-    const oldSum = PIECE_KEYS.reduce((sum, piece) => sum + pieceWeight[piece], 0);
-    setWeight = round2(oldSum);
-    for (const piece of PIECE_KEYS) {
-      pieceWeight[piece] = round2(pieceWeight[piece]);
-    }
+    throw new Error(
+      `Missing weight configuration for base material "${base}" or padding material "${padding}". ` +
+      'Ensure both materials have additiveWeightConfig defined.'
+    );
   }
-  
+
   const setDura = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceDurability[piece], 0));
 
    // Defense calculation - uses material-specific or style base defense and density coefficients

@@ -15,7 +15,7 @@ import type {
  * Defense values, density coefficients, and weight contributions are UNIVERSAL across all armor styles.
  * Durability multipliers have both shared (padMult) and style-specific (minMult) components.
  * The padMult is consistent across styles, while minMult varies slightly per style.
- * Only per-piece weight properties vary per style.
+ * Only per-piece weight properties vary per style (for materials with style-specific weights).
  */
 interface SharedPaddingConfig {
   /** Material usage multiplier relative to Ironfur */
@@ -30,6 +30,10 @@ interface SharedPaddingConfig {
   defenseDensityCoeffs: DefenseDensityCoeffs;
   /** Weight configuration for additive weight model */
   additiveWeightConfig: PaddingMaterialWeightConfig;
+  /** Optional universal weight per unit (if identical across all armor styles) */
+  weight?: number;
+  /** Optional universal weight density coefficients (if identical across all armor styles) */
+  weightDensityCoeffs?: DensityCoeffs;
 }
 
 /**
@@ -111,6 +115,9 @@ const SHARED_PADDING_CONFIG: Partial<
       padContrib: 1.2,
       padContribRatio: 0.8571,
     },
+    // Universal weight values (identical across all 4 armor styles)
+    weight: 0.00868,
+    weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
   },
   Bloodsilk: {
     materialMultiplier: 1.485,
@@ -136,6 +143,9 @@ const SHARED_PADDING_CONFIG: Partial<
       padContrib: 0.6,
       padContribRatio: 0.4286,
     },
+    // Universal weight values (identical across all 4 armor styles)
+    weight: 0.00443,
+    weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
   },
   Ironwool: {
     materialMultiplier: 0.8571,
@@ -173,6 +183,9 @@ const SHARED_PADDING_CONFIG: Partial<
       padContrib: 0.6,
       padContribRatio: 0.4286,
     },
+    // Universal weight values (identical across all 4 armor styles)
+    weight: 0.00443,
+    weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
   },
 };
 
@@ -195,36 +208,12 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
       weight: 0.00443,
       weightDensityCoeffs: { a: 0.8406, b: 0.1594 },
     },
-    'Guard Fur': {
-      weight: 0.00868,
-      weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
-    },
-    Bloodsilk: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
-    },
-    Ironwool: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
-    },
   },
   'Kallardian Norse': {
     Ironfur: { weight: 0.0093, weightDensityCoeffs: { a: 0.628, b: 0.372 } },
     Ironsilk: {
       weight: 0.00418,
       weightDensityCoeffs: { a: 0.8303, b: 0.1697 },
-    },
-    'Guard Fur': {
-      weight: 0.00868,
-      weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
-    },
-    Bloodsilk: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
-    },
-    Ironwool: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
     },
   },
   'Khurite Splinted': {
@@ -233,36 +222,12 @@ const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
       weight: 0.00488,
       weightDensityCoeffs: { a: 0.8722, b: 0.1278 },
     },
-    'Guard Fur': {
-      weight: 0.00868,
-      weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
-    },
-    Bloodsilk: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
-    },
-    Ironwool: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
-    },
   },
   'Ranger Armor': {
     Ironfur: { weight: 0.0093, weightDensityCoeffs: { a: 0.628, b: 0.372 } },
     Ironsilk: {
       weight: 0.00442,
       weightDensityCoeffs: { a: 0.8406, b: 0.1594 },
-    },
-    'Guard Fur': {
-      weight: 0.00868,
-      weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
-    },
-    Bloodsilk: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
-    },
-    Ironwool: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
     },
   },
 };
@@ -277,7 +242,7 @@ function buildPaddingConfig(
   const sharedConfig = SHARED_PADDING_CONFIG[material];
   const styleWeight = STYLE_WEIGHT_CONFIGS[style]?.[material];
 
-  if (!sharedConfig || !styleWeight) {
+  if (!sharedConfig) {
     return null;
   }
 
@@ -290,8 +255,6 @@ function buildPaddingConfig(
 
   return {
     materialMultiplier: sharedConfig.materialMultiplier,
-    weight: styleWeight.weight,
-    weightDensityCoeffs: styleWeight.weightDensityCoeffs,
     durabilityMults,
     defense: sharedConfig.defense,
     defenseDensityCoeffs: sharedConfig.defenseDensityCoeffs,

@@ -1,10 +1,8 @@
-import type { BaseMaterial, BaseMaterialConfig, ArmorStyle, DefenseStats, StyleSpecificDefenseConfig, StyleSpecificDurabilityConfig, StyleSpecificUsageMultiplierConfig, StyleSpecificWeightConfig } from '../types';
+import type { BaseMaterial, BaseMaterialConfig, ArmorStyle, DefenseStats, StyleSpecificDefenseConfig, StyleSpecificDurabilityConfig, StyleSpecificUsageMultiplierConfig } from '../types';
 
 export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = {
   'Plate Scales': {
     weight: 0.01431,
-    // Baseline weight multiplier (Plate Scales is the baseline)
-    weightMultiplier: 1.0,
     usageMultiplier: 1.0, // Baseline - armorStyles are calibrated with Plate Scales
     durability: 1.0, // Baseline for durability
     // Plate Scales uses each armor style's base defense and density coefficients
@@ -17,8 +15,6 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   },
   'Arthropod Carapace': {
     weight: 0.01131,  // Derived from 100%/0% analysis: baseContrib / (baseUsage * pieceMult)
-    // Weight multiplier to match Plate Scales baseline  
-    weightMultiplier: 1.0,  // Baked into weight value
     usageMultiplier: 1.96, // Fallback (Kallardian Norse at 100%)
     // Style-specific usage multipliers with density scaling (mult = a + b * density/100)
     // Derived from 0% and 100% density samples
@@ -83,10 +79,8 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     },
   },
    'Horned Scales': {
-     weight: 0.0153,
-     // Derived from Kallardian Norse samples: ~0.98
-     weightMultiplier: 0.98,
-     usageMultiplier: 0.82, // Fallback (adjusted to minimize errors)
+      weight: 0.0153,
+      usageMultiplier: 0.82, // Fallback (adjusted to minimize errors)
      // Style-specific usage multipliers (fixed values, no density scaling)
      // Derived from optimizing against sample data for each style
      usageMultiplierConfig: {
@@ -147,7 +141,6 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
     },
   'Keeled Scales': {
     weight: 0.0109,
-    weightMultiplier: 1.0,
     usageMultiplier: 0.65, // Fallback
     // Style-specific usage multipliers with density scaling
     usageMultiplierConfig: {
@@ -207,7 +200,6 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   },
   'Leptoid Scales': {
     weight: 0.0055,
-    weightMultiplier: 1.0,
     usageMultiplier: 0.36, // Fallback
     // Style-specific usage multipliers with density scaling
     usageMultiplierConfig: {
@@ -267,7 +259,6 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   },
   'Placoid Scales': {
     weight: 0.0055,
-    weightMultiplier: 1.0,
     usageMultiplier: 0.36, // Fallback
     // Style-specific usage multipliers with density scaling
     usageMultiplierConfig: {
@@ -328,7 +319,6 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
   },
   'Pansar Scales': {
     weight: 0.0169,
-    weightMultiplier: 1.0,
     usageMultiplier: 1.21, // Fallback
     // Style-specific usage multipliers with density scaling
     usageMultiplierConfig: {
@@ -397,13 +387,12 @@ export const baseMaterials: Partial<Record<BaseMaterial, BaseMaterialConfig>> = 
  * @returns Base material config with resolved configurations
  */
 export function getBaseMaterial(
-  material: BaseMaterial, 
+  material: BaseMaterial,
   armorStyle: ArmorStyle
-): BaseMaterialConfig & { 
+): BaseMaterialConfig & {
   resolvedDefenseConfig: StyleSpecificDefenseConfig | null;
   resolvedDurabilityConfig: StyleSpecificDurabilityConfig | null;
   resolvedUsageMultiplierConfig: StyleSpecificUsageMultiplierConfig | null;
-  resolvedWeightConfig: StyleSpecificWeightConfig | null;
 } {
   const config = baseMaterials[material];
   if (!config) {
@@ -411,28 +400,23 @@ export function getBaseMaterial(
       `Base material "${material}" is not configured. Please add sample data to derive its properties.`
     );
   }
-  
+
   // Resolve style-specific defense config
   // If null, caller should use armor style's base defense and density coefficients
   const resolvedDefenseConfig = config.defenseConfig[armorStyle] ?? null;
-  
+
   // Resolve style-specific durability config
   // If null, caller should use base durability multiplier
   const resolvedDurabilityConfig = config.durabilityConfig?.[armorStyle] ?? null;
-  
+
   // Resolve style-specific usage multiplier config
   // If not configured, return null (caller will use base usage multiplier)
   const resolvedUsageMultiplierConfig = config.usageMultiplierConfig?.[armorStyle] ?? null;
-  
-  // Resolve style-specific weight config
-  // If not configured, return null (caller will use armor style's base weight coefficients)
-  const resolvedWeightConfig = config.weightConfig?.[armorStyle] ?? null;
-  
-  return { 
-    ...config, 
+
+  return {
+    ...config,
     resolvedDefenseConfig,
     resolvedDurabilityConfig,
     resolvedUsageMultiplierConfig,
-    resolvedWeightConfig
   };
 }
