@@ -187,14 +187,14 @@ materials can override both base defense and density scaling for each style.
 
 Set weight is a calibrated additive model:
 
-$$
+```math
 \begin{aligned}
 W_{\mathrm{set}} = R_2\Bigl(&W_{\min}(s)
   + O_{\min}(q) + O_{\min}(m) \\
   &+ C_b(s)M_b(m)x
   + C_p(q)y\Bigr).
 \end{aligned}
-$$
+```
 
 Where:
 
@@ -221,7 +221,7 @@ $$
 
 Then the weight of piece $i$ is:
 
-$$
+```math
 \begin{aligned}
 w_i = R_2\Bigl(&w_{\min}(s,i)
   - \bigl(0.5-O_{\min}(q)\bigr)r(s,i) \\
@@ -229,7 +229,7 @@ w_i = R_2\Bigl(&w_{\min}(s,i)
   + C_b(s,i)M_b(m)x \\
   &+ C_p(s,i)R_p(q)y\Bigr).
 \end{aligned}
-$$
+```
 
 $R_p(q)$ is the padding material's per-piece contribution ratio. The
 constant $0.5$ is the calibrated Ironfur minimum-weight offset.
@@ -246,13 +246,13 @@ multiplier $M_{\min}(s,q)$ and a padding multiplier $M_p(q)$.
 
 Durability for piece $i$ is:
 
-$$
+```math
 \begin{aligned}
 H_i = R_2\Bigl(\bigl[&A_{\min}(s,m)M_{\min}(s,q)
   + A_b(s,m)x \\
   &+ A_p(s,m)M_p(q)y\bigr]K_i\Bigr).
 \end{aligned}
-$$
+```
 
 The fixed piece multipliers are:
 
