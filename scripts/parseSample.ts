@@ -1,6 +1,8 @@
 import type {
   ArmorStyle,
   BaseMaterial,
+  MaterialUsage,
+  PieceStats,
   SetStats,
   SupportMaterial,
 } from '../src/types';
@@ -51,6 +53,20 @@ function parseMaterialUsage(str: string): { base: number; padding: number } {
   };
 }
 
+function parsePieces<T>(
+  fields: string[],
+  start: number,
+  parse: (value: string) => T,
+): PieceStats<T> {
+  return {
+    helm: parse(getField(fields, start)),
+    rightArm: parse(getField(fields, start + 1)),
+    torso: parse(getField(fields, start + 2)),
+    leftArm: parse(getField(fields, start + 3)),
+    legs: parse(getField(fields, start + 4)),
+  };
+}
+
 function parseSampleLine(line: string): SetStats {
   const fields = line.split('|').filter((f) => f !== '');
 
@@ -69,28 +85,14 @@ function parseSampleLine(line: string): SetStats {
   if (!padding)
     throw new Error(`Unknown padding material ID: ${paddingMaterialId}`);
 
-  const pieceMaterialUsage = {
-    helm: parseMaterialUsage(getField(fields, 21)),
-    rightArm: parseMaterialUsage(getField(fields, 22)),
-    torso: parseMaterialUsage(getField(fields, 23)),
-    leftArm: parseMaterialUsage(getField(fields, 24)),
-    legs: parseMaterialUsage(getField(fields, 25)),
-  };
-
-  const setMaterialUsage = {
-    base:
-      pieceMaterialUsage.helm.base +
-      pieceMaterialUsage.torso.base +
-      pieceMaterialUsage.rightArm.base +
-      pieceMaterialUsage.leftArm.base +
-      pieceMaterialUsage.legs.base,
-    padding:
-      pieceMaterialUsage.helm.padding +
-      pieceMaterialUsage.torso.padding +
-      pieceMaterialUsage.rightArm.padding +
-      pieceMaterialUsage.leftArm.padding +
-      pieceMaterialUsage.legs.padding,
-  };
+  const pieceMaterialUsage = parsePieces(fields, 21, parseMaterialUsage);
+  const setMaterialUsage = Object.values(pieceMaterialUsage).reduce<MaterialUsage>(
+    (total, usage) => ({
+      base: total.base + usage.base,
+      padding: total.padding + usage.padding,
+    }),
+    { base: 0, padding: 0 },
+  );
 
   return {
     armorStyle,
@@ -104,21 +106,9 @@ function parseSampleLine(line: string): SetStats {
       blunt: parseFloat(getField(fields, 7)),
     },
     setWeight: parseFloat(getField(fields, 8)),
-    pieceWeight: {
-      helm: parseFloat(getField(fields, 9)),
-      rightArm: parseFloat(getField(fields, 10)),
-      torso: parseFloat(getField(fields, 11)),
-      leftArm: parseFloat(getField(fields, 12)),
-      legs: parseFloat(getField(fields, 13)),
-    },
+    pieceWeight: parsePieces(fields, 9, parseFloat),
     setDura: parseFloat(getField(fields, 14)),
-    pieceDurability: {
-      helm: parseFloat(getField(fields, 15)),
-      rightArm: parseFloat(getField(fields, 16)),
-      torso: parseFloat(getField(fields, 17)),
-      leftArm: parseFloat(getField(fields, 18)),
-      legs: parseFloat(getField(fields, 19)),
-    },
+    pieceDurability: parsePieces(fields, 15, parseFloat),
     setMaterialUsage,
     pieceMaterialUsage,
   };
@@ -132,53 +122,37 @@ interface SampleParams {
   supportDensity: number;
 }
 
+const PARAM_KEYS: Record<string, keyof SampleParams> = {
+  '--armorStyleId': 'armorStyleId',
+  '--armor-style-id': 'armorStyleId',
+  '--baseMatId': 'baseMatId',
+  '--base-mat-id': 'baseMatId',
+  '--supportMatId': 'supportMatId',
+  '--support-mat-id': 'supportMatId',
+  '--baseDensity': 'baseDensity',
+  '--base-density': 'baseDensity',
+  '--supportDensity': 'supportDensity',
+  '--support-density': 'supportDensity',
+};
+
 function parseArgs(): { mode: 'file' | 'api'; data: string | SampleParams } {
   const args = process.argv.slice(2);
 
-  // Check if first argument looks like a file (contains no numeric IDs)
-  if (args.length === 0 || (args[0] && args[0].match(/^[a-zA-Z]/))) {
+  if (!args[0]?.startsWith('--')) {
     return {
       mode: 'file',
       data: args[0] || 'sample.txt',
     };
   }
 
-  // Parse CLI parameters
-  const params: Partial<SampleParams> = {};
-
-  for (let i = 0; i < args.length; i += 2) {
-    const flag = args[i];
-    const value = args[i + 1];
-
-    if (!value) {
-      throw new Error(`Missing value for flag: ${flag}`);
-    }
-
-    switch (flag) {
-      case '--armorStyleId':
-      case '--armor-style-id':
-        params.armorStyleId = parseInt(value);
-        break;
-      case '--baseMatId':
-      case '--base-mat-id':
-        params.baseMatId = parseInt(value);
-        break;
-      case '--supportMatId':
-      case '--support-mat-id':
-        params.supportMatId = parseInt(value);
-        break;
-      case '--baseDensity':
-      case '--base-density':
-        params.baseDensity = parseInt(value);
-        break;
-      case '--supportDensity':
-      case '--support-density':
-        params.supportDensity = parseInt(value);
-        break;
-      default:
-        throw new Error(`Unknown flag: ${flag}`);
-    }
-  }
+  const params = args.reduce<Partial<SampleParams>>((parsed, flag, index) => {
+    if (index % 2 !== 0) return parsed;
+    const value = args[index + 1];
+    if (!value) throw new Error(`Missing value for flag: ${flag}`);
+    const key = PARAM_KEYS[flag];
+    if (!key) throw new Error(`Unknown flag: ${flag}`);
+    return { ...parsed, [key]: parseInt(value) };
+  }, {});
 
   const required: (keyof SampleParams)[] = [
     'armorStyleId',
@@ -219,15 +193,12 @@ async function fetchFromAPI(params: SampleParams): Promise<string> {
 }
 
 async function processContent(content: string) {
-  const lines = content
+  content
     .trim()
     .split('\n')
-    .filter((line) => line.trim() !== '');
-
-  for (const line of lines) {
-    const sample = parseSampleLine(line);
-    console.log(JSON.stringify(sample, null, 2));
-  }
+    .filter((line) => line.trim() !== '')
+    .map(parseSampleLine)
+    .forEach((sample) => console.log(JSON.stringify(sample, null, 2)));
 }
 
 async function main() {

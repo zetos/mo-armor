@@ -1,15 +1,14 @@
 import type {
   ArmorStyle,
-  PieceStats,
-  DefenseStats,
   ArmorStyleConfig,
-  DefenseDensityCoeffs,
-  PieceWeightCoeffs,
 } from '../types';
 
-export type { DefenseDensityCoeffs };
+type ActiveArmorStyleConfig = Omit<
+  ArmorStyleConfig,
+  'pieceWeightMultipliers' | 'baseWeightDensityCoeffs'
+>;
 
-export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
+export const armorStyles: Record<ArmorStyle, ActiveArmorStyleConfig> = {
   'Risar Berserker': {
     // Note: baseMaterialUsage is calibrated for Plate Scales (usageMultiplier = 1.0)
     baseMaterialUsage: {
@@ -28,17 +27,6 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 48,
       legs: 126,
     },
-    // Derived from Plate Scales 100/100 sample (weightMultiplier = 1.0)
-    // actual / (baseW + padW) where baseW = 35*0.01431, padW = 48*0.0093
-    pieceWeightMultipliers: {
-      helm: 1.0876,
-      torso: 1.0458,
-      rightArm: 1.1719,
-      leftArm: 1.1719,
-      legs: 1.0447,
-    },
-    // Derived from Kallardian Norse: baseScale(0) = 0.62
-    baseWeightDensityCoeffs: { a: 0.62, b: 0.38 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 221.75)
     durabilityCoeffs: {
@@ -91,15 +79,6 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 52,
       legs: 122,
     },
-    pieceWeightMultipliers: {
-      helm: 1.0,
-      torso: 1.0,
-      rightArm: 1.0,
-      leftArm: 1.0,
-      legs: 1.0,
-    },
-    // Derived from 0/100 samples: baseScale(0) = 0.62
-    baseWeightDensityCoeffs: { a: 0.62, b: 0.38 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 0/0, 100/0, 0/100, 100/100 Ironfur samples
     durabilityCoeffs: {
@@ -150,15 +129,6 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 48,
       legs: 126,
     },
-    pieceWeightMultipliers: {
-      helm: 1.193,
-      torso: 1.159,
-      rightArm: 1.294,
-      leftArm: 1.294,
-      legs: 1.158,
-    },
-    // Derived from 100/100 vs 0/100 Ironfur samples: baseScale(0) = 0.5249
-    baseWeightDensityCoeffs: { a: 0.5249, b: 0.4751 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 221.0)
     durabilityCoeffs: {
@@ -209,15 +179,6 @@ export const armorStyles: Record<ArmorStyle, ArmorStyleConfig> = {
       leftArm: 56,
       legs: 130,
     },
-    pieceWeightMultipliers: {
-      helm: 1.061,
-      torso: 1.121,
-      rightArm: 1.066,
-      leftArm: 1.066,
-      legs: 0.987,
-    },
-    // Derived from 100/100 vs 0/100 Ironfur samples: baseScale(0) = 0.5901
-    baseWeightDensityCoeffs: { a: 0.5901, b: 0.4099 },
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 226.01)
     durabilityCoeffs: {

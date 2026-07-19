@@ -4,7 +4,6 @@ import type {
   PaddingMaterialConfig,
   DefenseStats,
   DefenseDensityCoeffs,
-  DensityCoeffs,
   DurabilityMults,
   PaddingMaterialWeightConfig,
 } from '../types';
@@ -12,10 +11,8 @@ import type {
 /**
  * SHARED PADDING CONFIGURATIONS
  *
- * Defense values, density coefficients, and weight contributions are UNIVERSAL across all armor styles.
+ * Defense values, density coefficients, and weight contributions are universal across armor styles.
  * Durability multipliers have both shared (padMult) and style-specific (minMult) components.
- * The padMult is consistent across styles, while minMult varies slightly per style.
- * Only per-piece weight properties vary per style (for materials with style-specific weights).
  */
 interface SharedPaddingConfig {
   /** Material usage multiplier relative to Ironfur */
@@ -28,13 +25,12 @@ interface SharedPaddingConfig {
   defense: DefenseStats;
   /** Defense density scaling coefficients */
   defenseDensityCoeffs: DefenseDensityCoeffs;
-  /** Weight configuration for additive weight model */
   additiveWeightConfig: PaddingMaterialWeightConfig;
-  /** Optional universal weight per unit (if identical across all armor styles) */
-  weight?: number;
-  /** Optional universal weight density coefficients (if identical across all armor styles) */
-  weightDensityCoeffs?: DensityCoeffs;
 }
+
+type ResolvedPaddingMaterialConfig = PaddingMaterialConfig & {
+  additiveWeightConfig: PaddingMaterialWeightConfig;
+};
 
 /**
  * Shared configurations for each padding material.
@@ -115,9 +111,6 @@ const SHARED_PADDING_CONFIG: Partial<
       padContrib: 1.2,
       padContribRatio: 0.8571,
     },
-    // Universal weight values (identical across all 4 armor styles)
-    weight: 0.00868,
-    weightDensityCoeffs: { a: 0.6816, b: 0.3184 },
   },
   Bloodsilk: {
     materialMultiplier: 1.485,
@@ -143,9 +136,6 @@ const SHARED_PADDING_CONFIG: Partial<
       padContrib: 0.6,
       padContribRatio: 0.4286,
     },
-    // Universal weight values (identical across all 4 armor styles)
-    weight: 0.00443,
-    weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
   },
   Ironwool: {
     materialMultiplier: 0.8571,
@@ -183,147 +173,28 @@ const SHARED_PADDING_CONFIG: Partial<
       padContrib: 0.6,
       padContribRatio: 0.4286,
     },
-    // Universal weight values (identical across all 4 armor styles)
-    weight: 0.00443,
-    weightDensityCoeffs: { a: 0.7909, b: 0.2091 },
-  },
-};
-
-/**
- * STYLE-SPECIFIC WEIGHT CONFIGURATIONS
- *
- * Weight properties vary per armor style due to different piece configurations.
- */
-interface StyleWeightConfig {
-  weight: number;
-  weightDensityCoeffs: DensityCoeffs;
-}
-
-type StyleWeightConfigs = Partial<Record<SupportMaterial, StyleWeightConfig>>;
-
-const STYLE_WEIGHT_CONFIGS: Record<ArmorStyle, StyleWeightConfigs> = {
-  'Risar Berserker': {
-    Ironfur: { weight: 0.0093, weightDensityCoeffs: { a: 0.628, b: 0.372 } },
-    Ironsilk: {
-      weight: 0.00443,
-      weightDensityCoeffs: { a: 0.8406, b: 0.1594 },
-    },
-  },
-  'Kallardian Norse': {
-    Ironfur: { weight: 0.0093, weightDensityCoeffs: { a: 0.628, b: 0.372 } },
-    Ironsilk: {
-      weight: 0.00418,
-      weightDensityCoeffs: { a: 0.8303, b: 0.1697 },
-    },
-  },
-  'Khurite Splinted': {
-    Ironfur: { weight: 0.0095, weightDensityCoeffs: { a: 0.72, b: 0.28 } },
-    Ironsilk: {
-      weight: 0.00488,
-      weightDensityCoeffs: { a: 0.8722, b: 0.1278 },
-    },
-  },
-  'Ranger Armor': {
-    Ironfur: { weight: 0.0093, weightDensityCoeffs: { a: 0.628, b: 0.372 } },
-    Ironsilk: {
-      weight: 0.00442,
-      weightDensityCoeffs: { a: 0.8406, b: 0.1594 },
-    },
-  },
-};
-
-/**
- * Builds the full padding material config by combining shared config with style-specific weight and durability.
- */
-function buildPaddingConfig(
-  material: SupportMaterial,
-  style: ArmorStyle
-): PaddingMaterialConfig | null {
-  const sharedConfig = SHARED_PADDING_CONFIG[material];
-  const styleWeight = STYLE_WEIGHT_CONFIGS[style]?.[material];
-
-  if (!sharedConfig) {
-    return null;
-  }
-
-  // Use style-specific minMult if available, otherwise fallback to shared value
-  const minMult = sharedConfig.styleMinMult?.[style] ?? sharedConfig.durabilityMults.minMult;
-  const durabilityMults: DurabilityMults = {
-    minMult,
-    padMult: sharedConfig.durabilityMults.padMult,
-  };
-
-  return {
-    materialMultiplier: sharedConfig.materialMultiplier,
-    durabilityMults,
-    defense: sharedConfig.defense,
-    defenseDensityCoeffs: sharedConfig.defenseDensityCoeffs,
-  };
-}
-
-/**
- * Pre-built padding materials configuration.
- * This maintains backward compatibility with the existing structure.
- */
-export const paddingMaterials: Record<
-  ArmorStyle,
-  Partial<Record<SupportMaterial, PaddingMaterialConfig>>
-> = {
-  'Risar Berserker': {
-    Ironfur: buildPaddingConfig('Ironfur', 'Risar Berserker')!,
-    Ironsilk: buildPaddingConfig('Ironsilk', 'Risar Berserker')!,
-    'Guard Fur': buildPaddingConfig('Guard Fur', 'Risar Berserker')!,
-    Bloodsilk: buildPaddingConfig('Bloodsilk', 'Risar Berserker')!,
-    Ironwool: buildPaddingConfig('Ironwool', 'Risar Berserker')!,
-  },
-  'Kallardian Norse': {
-    Ironfur: buildPaddingConfig('Ironfur', 'Kallardian Norse')!,
-    Ironsilk: buildPaddingConfig('Ironsilk', 'Kallardian Norse')!,
-    'Guard Fur': buildPaddingConfig('Guard Fur', 'Kallardian Norse')!,
-    Bloodsilk: buildPaddingConfig('Bloodsilk', 'Kallardian Norse')!,
-    Ironwool: buildPaddingConfig('Ironwool', 'Kallardian Norse')!,
-  },
-  'Khurite Splinted': {
-    Ironfur: buildPaddingConfig('Ironfur', 'Khurite Splinted')!,
-    Ironsilk: buildPaddingConfig('Ironsilk', 'Khurite Splinted')!,
-    'Guard Fur': buildPaddingConfig('Guard Fur', 'Khurite Splinted')!,
-    Bloodsilk: buildPaddingConfig('Bloodsilk', 'Khurite Splinted')!,
-    Ironwool: buildPaddingConfig('Ironwool', 'Khurite Splinted')!,
-  },
-  'Ranger Armor': {
-    Ironfur: buildPaddingConfig('Ironfur', 'Ranger Armor')!,
-    Ironsilk: buildPaddingConfig('Ironsilk', 'Ranger Armor')!,
-    'Guard Fur': buildPaddingConfig('Guard Fur', 'Ranger Armor')!,
-    Bloodsilk: buildPaddingConfig('Bloodsilk', 'Ranger Armor')!,
-    Ironwool: buildPaddingConfig('Ironwool', 'Ranger Armor')!,
   },
 };
 
 export function getPaddingMaterial(
   armorStyle: ArmorStyle,
   material: SupportMaterial
-): PaddingMaterialConfig {
-  const styleMaterials = paddingMaterials[armorStyle];
-  if (!styleMaterials) {
-    throw new Error(
-      `Armor style "${armorStyle}" is not configured for padding materials.`
-    );
-  }
-
-  const config = styleMaterials[material];
+): ResolvedPaddingMaterialConfig {
+  const config = SHARED_PADDING_CONFIG[material];
   if (!config) {
     throw new Error(
       `Padding material "${material}" is not configured for armor style "${armorStyle}". Please add sample data to derive its properties.`
     );
   }
-  return config;
-}
 
-/**
- * Get shared padding configuration (for analysis/debugging).
- */
-export function getSharedPaddingConfig(
-  material: SupportMaterial
-): SharedPaddingConfig | undefined {
-  return SHARED_PADDING_CONFIG[material];
+  return {
+    materialMultiplier: config.materialMultiplier,
+    durabilityMults: {
+      minMult: config.styleMinMult?.[armorStyle] ?? config.durabilityMults.minMult,
+      padMult: config.durabilityMults.padMult,
+    },
+    defense: config.defense,
+    defenseDensityCoeffs: config.defenseDensityCoeffs,
+    additiveWeightConfig: config.additiveWeightConfig,
+  };
 }

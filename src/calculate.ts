@@ -1,313 +1,175 @@
 import type {
   ArmorStyle,
   BaseMaterial,
-  SupportMaterial,
-  SetStats,
   CalculateSetStatusInput,
-  PieceStats,
-  MaterialUsage,
-  DefenseStats,
-  PieceKey,
   DefenseDensityCoeffs,
+  DefenseStats,
+  DurabilityCoeffs,
+  DurabilityMults,
+  MaterialUsage,
+  PieceStats,
+  SetStats,
+  SupportMaterial,
 } from './types';
-import { PIECE_KEYS } from './types';
+import { mapPieceStats, PIECE_KEYS } from './types';
 import { armorStyles } from './data/armorStyles';
 import { getBaseMaterial } from './data/baseMaterials';
-import { getPaddingMaterial, getSharedPaddingConfig } from './data/paddingMaterials';
+import { getPaddingMaterial } from './data/paddingMaterials';
 
-/**
- * Durability multipliers for each piece relative to torso (torso = 1.0)
- */
 const DURABILITY_PIECE_MULTIPLIERS: PieceStats<number> = {
   helm: 0.8,
-  torso: 1.0,
+  torso: 1,
   rightArm: 0.6,
   leftArm: 0.6,
-  legs: 1.0,
+  legs: 1,
 };
 
+const PADDING_USAGE_DENSITY_COEFFS = { a: 1 / 3, b: 2 / 3 };
 
-
-/**
- * Rounds a number to 2 decimal places
- */
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-/**
- * Calculates linear density scaling.
- * Formula: a + b * (density / 100)
- * 
- * Common use cases:
- * - At density 100: a + b = 1.0 (full scale)
- * - At density 0: scale = a (intercept)
- * 
- * @param density - Density value (0-100)
- * @param coeffs - Linear coefficients {a, b}
- * @returns Scaled value
- */
-function linearScale(density: number, coeffs: { a: number; b: number }): number {
-  return coeffs.a + coeffs.b * (density / 100);
-}
-
-/**
- * Padding usage density scale coefficients.
- * At density 100 -> 1.0, at density 50 -> 0.667, at density 0 -> 0.333
- */
-const PADDING_USAGE_DENSITY_COEFFS = { a: 1 / 3, b: 2 / 3 };
-
-
-
-/**
- * Calculates base material usage for a piece
- * Formula: round(styleBaseUsage * materialUsageMult * densityScale)
- */
-function calculateBaseUsage(
-  styleBaseUsage: number,
-  materialUsageMultiplier: number,
-  baseDensity: number,
-  densityCoeffs: { a: number; b: number }
+function linearScale(
+  density: number,
+  { a, b }: { a: number; b: number },
 ): number {
-  return Math.round(styleBaseUsage * materialUsageMultiplier * linearScale(baseDensity, densityCoeffs));
+  return a + b * (density / 100);
 }
 
-/**
- * Calculates padding material usage for a piece
- * Formula: round(basePadding * materialMult * densityScale)
- */
-function calculatePaddingUsage(
-  basePaddingUsage: number,
-  materialMultiplier: number,
-  paddingDensity: number
-): number {
-  return Math.round(basePaddingUsage * materialMultiplier * linearScale(paddingDensity, PADDING_USAGE_DENSITY_COEFFS));
-}
-
-/**
- * Calculates durability for a piece using the additive model.
- * Formula: ((baseMin * padMinMult) + (baseDensityContrib * bd/100) + (padContrib * padPadMult * pd/100)) * pieceMultiplier * baseMaterialDuraMult
- *
- * Note: baseMaterialDuraMult is relative to Plate Scales (which has mult=1.0).
- * Other base materials like Arthropod Carapace have higher durability.
- */
 function calculatePieceDurability(
-  durabilityCoeffs: { baseMin: number; baseDensityContrib: number; padContrib: number },
+  durability: DurabilityCoeffs,
   pieceMultiplier: number,
-  baseMaterialDurabilityMult: number,
-  paddingDurabilityMults: { minMult: number; padMult: number },
+  padding: DurabilityMults,
   baseDensity: number,
-  paddingDensity: number
+  paddingDensity: number,
 ): number {
-  const torsoDura =
-    durabilityCoeffs.baseMin * paddingDurabilityMults.minMult +
-    durabilityCoeffs.baseDensityContrib * (baseDensity / 100) +
-    durabilityCoeffs.padContrib * paddingDurabilityMults.padMult * (paddingDensity / 100);
-  const totalDura = torsoDura * pieceMultiplier * baseMaterialDurabilityMult;
-  return round2(totalDura);
+  return round2(
+    (durability.baseMin * padding.minMult +
+      durability.baseDensityContrib * (baseDensity / 100) +
+      durability.padContrib * padding.padMult * (paddingDensity / 100)) *
+      pieceMultiplier,
+  );
 }
 
-/**
- * Calculates defense for the armor set.
- * Formula per damage type:
- *   defense = materialBaseDefense * materialDensityScale(baseDensity) + paddingDefense * padScale(paddingDensity)
- *
- * Where materialDensityScale uses material-specific (or style-specific) linear coefficients.
- * Each material can have its own base defense and density scaling per armor style.
- * Padding contribution is floored at 0 (no negative defense).
- */
 function calculateDefense(
-   materialBaseDefense: DefenseStats,
-   materialDensityCoeffs: DefenseDensityCoeffs,
-   paddingDefense: DefenseStats,
-   paddingDensityCoeffs: DefenseDensityCoeffs,
-   baseDensity: number,
-   paddingDensity: number
+  materialDefense: DefenseStats,
+  materialDensity: DefenseDensityCoeffs,
+  paddingDefense: DefenseStats,
+  paddingDensityCoeffs: DefenseDensityCoeffs,
+  baseDensity: number,
+  paddingDensity: number,
 ): DefenseStats {
-  const types: (keyof DefenseStats)[] = ['blunt', 'pierce', 'slash'];
-  const result: DefenseStats = { blunt: 0, pierce: 0, slash: 0 };
+  const calculate = (type: keyof DefenseStats) =>
+    round2(
+      Math.max(
+        0,
+        materialDefense[type] * linearScale(baseDensity, materialDensity[type]) +
+          paddingDefense[type] *
+            linearScale(paddingDensity, paddingDensityCoeffs[type]),
+      ),
+    );
 
-   for (const type of types) {
-     const baseContrib = materialBaseDefense[type] * linearScale(baseDensity, materialDensityCoeffs[type]);
-     const padScale = linearScale(paddingDensity, paddingDensityCoeffs[type]);
-     // Padding can contribute negative values (e.g., Ironsilk reduces blunt defense)
-     const padContrib = paddingDefense[type] * padScale;
-     // Floor total defense at 0
-     result[type] = round2(Math.max(0, baseContrib + padContrib));
-   }
-
-  return result;
+  return {
+    blunt: calculate('blunt'),
+    pierce: calculate('pierce'),
+    slash: calculate('slash'),
+  };
 }
 
-/**
- * Main function to calculate armor set statistics
- */
-export function calculateSetStatus<B extends BaseMaterial, S extends SupportMaterial>({
+export function calculateSetStatus<
+  B extends BaseMaterial,
+  S extends SupportMaterial,
+>({
   armorStyle,
   base,
   padding,
   baseDensity = 100,
   paddingDensity = 100,
 }: CalculateSetStatusInput<B, S>): SetStats {
-  const styleConfig = armorStyles[armorStyle];
-  const baseMaterialConfig = getBaseMaterial(base, armorStyle);
-  const paddingMaterialConfig = getPaddingMaterial(armorStyle, padding);
-  
-  // Use style-specific durability coefficients if available, otherwise use style's base coefficients with material multiplier
-  const durabilityCoeffs = baseMaterialConfig.resolvedDurabilityConfig ?? {
-    baseMin: styleConfig.durabilityCoeffs.baseMin * baseMaterialConfig.durability,
-    baseDensityContrib: styleConfig.durabilityCoeffs.baseDensityContrib * baseMaterialConfig.durability,
-    padContrib: styleConfig.durabilityCoeffs.padContrib,
-  };
-  
-  // Calculate effective usage multiplier with density scaling if configured
-  const usageMultiplier = baseMaterialConfig.resolvedUsageMultiplierConfig 
-    ? baseMaterialConfig.resolvedUsageMultiplierConfig.a + baseMaterialConfig.resolvedUsageMultiplierConfig.b * (baseDensity / 100)
-    : baseMaterialConfig.usageMultiplier;
+  const style = armorStyles[armorStyle];
+  const baseMaterial = getBaseMaterial(base);
+  const paddingMaterial = getPaddingMaterial(armorStyle, padding);
 
-  // Calculate piece-level material usage
-  const pieceMaterialUsage: PieceStats<MaterialUsage> = {
-    helm: { base: 0, padding: 0 },
-    torso: { base: 0, padding: 0 },
-    rightArm: { base: 0, padding: 0 },
-    leftArm: { base: 0, padding: 0 },
-    legs: { base: 0, padding: 0 },
+  const durability = baseMaterial.durabilityConfig?.[armorStyle] ?? {
+    baseMin: style.durabilityCoeffs.baseMin * baseMaterial.durability,
+    baseDensityContrib:
+      style.durabilityCoeffs.baseDensityContrib * baseMaterial.durability,
+    padContrib: style.durabilityCoeffs.padContrib,
   };
+  const usageConfig = baseMaterial.usageMultiplierConfig?.[armorStyle];
+  const usageMultiplier = usageConfig
+    ? linearScale(baseDensity, usageConfig)
+    : baseMaterial.usageMultiplier;
 
-  const pieceWeight: PieceStats<number> = {
-    helm: 0,
-    torso: 0,
-    rightArm: 0,
-    leftArm: 0,
-    legs: 0,
-  };
-
-  const pieceDurability: PieceStats<number> = {
-    helm: 0,
-    torso: 0,
-    rightArm: 0,
-    leftArm: 0,
-    legs: 0,
-  };
-
-  for (const piece of PIECE_KEYS) {
-    // Material usage - now both base and padding scale with density
-    const baseUsage = calculateBaseUsage(
-      styleConfig.baseMaterialUsage[piece],
-      usageMultiplier,
+  const pieceMaterialUsage = mapPieceStats((piece) => ({
+    base: Math.round(
+      style.baseMaterialUsage[piece] *
+        usageMultiplier *
+        linearScale(baseDensity, style.baseMaterialUsageDensityCoeffs),
+    ),
+    padding: Math.round(
+      style.paddingUsage[piece] *
+        paddingMaterial.materialMultiplier *
+        linearScale(paddingDensity, PADDING_USAGE_DENSITY_COEFFS),
+    ),
+  }));
+  const pieceDurability = mapPieceStats((piece) =>
+    calculatePieceDurability(
+      durability,
+      DURABILITY_PIECE_MULTIPLIERS[piece],
+      paddingMaterial.durabilityMults,
       baseDensity,
-      styleConfig.baseMaterialUsageDensityCoeffs
+      paddingDensity,
+    ),
+  );
+  const setMaterialUsage = PIECE_KEYS.reduce<MaterialUsage>(
+    (total, piece) => ({
+      base: total.base + pieceMaterialUsage[piece].base,
+      padding: total.padding + pieceMaterialUsage[piece].padding,
+    }),
+    { base: 0, padding: 0 },
+  );
+
+  const styleWeight = style.weightConfig;
+  const baseWeight = baseMaterial.additiveWeightConfig;
+  const paddingWeight = paddingMaterial.additiveWeightConfig;
+  const setWeight = round2(
+    styleWeight.baseMinWeight +
+      paddingWeight.minWeightOffset +
+      baseWeight.minWeightOffset +
+      styleWeight.baseContrib *
+        baseWeight.baseContribMult *
+        (baseDensity / 100) +
+      paddingWeight.padContrib * (paddingDensity / 100),
+  );
+
+  const pieceCoeffs = style.pieceWeightCoeffs;
+  const ironfurMinimum = PIECE_KEYS.reduce(
+    (sum, piece) => sum + pieceCoeffs[piece].minWeight,
+    0,
+  );
+  const paddingOffset = 0.5 - paddingWeight.minWeightOffset;
+  const pieceWeight = mapPieceStats((piece) => {
+    const coefficient = pieceCoeffs[piece];
+    const ratio = coefficient.minWeight / ironfurMinimum;
+    return round2(
+      coefficient.minWeight -
+        paddingOffset * ratio +
+        baseWeight.minWeightOffset * ratio +
+        coefficient.baseContrib *
+          baseWeight.baseContribMult *
+          (baseDensity / 100) +
+        coefficient.padContrib *
+          paddingWeight.padContribRatio *
+          (paddingDensity / 100),
     );
-    const paddingUsage = calculatePaddingUsage(
-      styleConfig.paddingUsage[piece],
-      paddingMaterialConfig.materialMultiplier,
-      paddingDensity
-    );
+  });
 
-    pieceMaterialUsage[piece] = {
-      base: baseUsage,
-      padding: paddingUsage,
-    };
-
-     // Durability calculation - uses additive model with density and material coefficients
-     pieceDurability[piece] = calculatePieceDurability(
-       durabilityCoeffs,
-       DURABILITY_PIECE_MULTIPLIERS[piece],
-       1.0, // Material multiplier already baked into durabilityCoeffs
-       paddingMaterialConfig.durabilityMults,
-       baseDensity,
-       paddingDensity
-     );
-  }
-
-  // Calculate set totals
-  const setMaterialUsage: MaterialUsage = {
-    base: PIECE_KEYS.reduce((sum, piece) => sum + pieceMaterialUsage[piece].base, 0),
-    padding: PIECE_KEYS.reduce((sum, piece) => sum + pieceMaterialUsage[piece].padding, 0),
+  const defense = baseMaterial.defenseConfig[armorStyle] ?? {
+    baseDefense: style.baseDefense,
+    densityCoeffs: style.baseDefenseDensityCoeffs,
   };
-
-  // Calculate set weight using additive model
-  // Formula: setWeight = minWeight + baseContrib*(bd/100) + padContrib*(pd/100)
-  // Where: minWeight = styleBaseMinWeight + paddingOffset + baseMaterialOffset
-  //        baseContrib = styleBaseContrib * baseMaterialMult
-  const styleWeightConfig = styleConfig.weightConfig;
-  const baseWeightConfig = baseMaterialConfig.additiveWeightConfig;
-  const paddingWeightConfig = getSharedPaddingConfig(padding)?.additiveWeightConfig;
-
-  let setWeight: number;
-
-  if (styleWeightConfig && baseWeightConfig && paddingWeightConfig) {
-    // Use new additive model for set weight
-    const minWeight = styleWeightConfig.baseMinWeight 
-      + paddingWeightConfig.minWeightOffset 
-      + baseWeightConfig.minWeightOffset;
-    const baseContrib = styleWeightConfig.baseContrib * baseWeightConfig.baseContribMult;
-    const padContrib = paddingWeightConfig.padContrib;
-
-    const targetWeight = minWeight + baseContrib * (baseDensity / 100) + padContrib * (paddingDensity / 100);
-    setWeight = round2(targetWeight);
-
-    // Use per-piece additive model for piece weights
-    // Formula: pieceWeight = (pieceMin + pieceMinAdjust) + pieceBase*baseMult*(bd/100) + piecePad*padRatio*(pd/100)
-    // Where pieceMinAdjust accounts for padding's and base material's minWeightOffset
-    const pieceCoeffs = styleConfig.pieceWeightCoeffs;
-    const padContribRatio = paddingWeightConfig.padContribRatio;
-    const paddingMinOffset = paddingWeightConfig.minWeightOffset;
-    const baseMinOffset = baseWeightConfig.minWeightOffset;
-    const baseContribMult = baseWeightConfig.baseContribMult;
-    
-    // Calculate the per-piece minWeight adjustment.
-    // The pieceCoeffs.minWeight is calibrated for Plate Scales + Ironfur at 0/0.
-    // pieceCoeffs are calibrated with Ironfur (paddingMinOffset=0.5) and Plate Scales (baseMinOffset=0).
-    // 
-    // For padding: We subtract (0.5 - paddingMinOffset) distributed proportionally.
-    // For base material: We add baseMinOffset distributed proportionally.
-    const ironfurTotalAt0_0 = PIECE_KEYS.reduce((sum, p) => sum + pieceCoeffs[p].minWeight, 0);
-    
-    // Total offset adjustment for padding (relative to Ironfur baseline of 0.5)
-    const paddingOffsetAdjustment = 0.5 - paddingMinOffset;
-    
-    for (const piece of PIECE_KEYS) {
-      const pc = pieceCoeffs[piece];
-      // Each piece's share of the offset adjustments
-      const pieceRatio = pc.minWeight / ironfurTotalAt0_0;
-      const piecePaddingAdjust = paddingOffsetAdjustment * pieceRatio;
-      const pieceBaseAdjust = baseMinOffset * pieceRatio;
-      
-      // Per-piece additive formula:
-      // - Start with pieceMin (calibrated for Plate Scales + Ironfur)
-      // - Subtract padding adjustment (for non-Ironfur paddings)
-      // - Add base material adjustment (for non-Plate Scales bases)
-      // - Scale baseContrib by baseMult (for different base materials)
-      const rawWeight = (pc.minWeight - piecePaddingAdjust + pieceBaseAdjust)
-        + pc.baseContrib * baseContribMult * (baseDensity / 100)
-        + pc.padContrib * padContribRatio * (paddingDensity / 100);
-      pieceWeight[piece] = round2(rawWeight);
-    }
-  } else {
-    throw new Error(
-      `Missing weight configuration for base material "${base}" or padding material "${padding}". ` +
-      'Ensure both materials have additiveWeightConfig defined.'
-    );
-  }
-
-  const setDura = round2(PIECE_KEYS.reduce((sum, piece) => sum + pieceDurability[piece], 0));
-
-   // Defense calculation - uses material-specific or style base defense and density coefficients
-   // If material has style-specific config, use it; otherwise use style's base values
-   const materialDefenseConfig = baseMaterialConfig.resolvedDefenseConfig ?? {
-     baseDefense: styleConfig.baseDefense,
-     densityCoeffs: styleConfig.baseDefenseDensityCoeffs,
-   };
-   
-   const setDefense = calculateDefense(
-     materialDefenseConfig.baseDefense,
-     materialDefenseConfig.densityCoeffs,
-     paddingMaterialConfig.defense,
-     paddingMaterialConfig.defenseDensityCoeffs,
-     baseDensity,
-     paddingDensity
-   );
 
   return {
     armorStyle,
@@ -316,9 +178,21 @@ export function calculateSetStatus<B extends BaseMaterial, S extends SupportMate
     baseDensity,
     paddingDensity,
     setWeight,
-    setDura,
+    setDura: round2(
+      PIECE_KEYS.reduce(
+        (sum, piece) => sum + pieceDurability[piece],
+        0,
+      ),
+    ),
     setMaterialUsage,
-    setDefense,
+    setDefense: calculateDefense(
+      defense.baseDefense,
+      defense.densityCoeffs,
+      paddingMaterial.defense,
+      paddingMaterial.defenseDensityCoeffs,
+      baseDensity,
+      paddingDensity,
+    ),
     pieceWeight,
     pieceDurability,
     pieceMaterialUsage,

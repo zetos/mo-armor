@@ -7,7 +7,13 @@
  * We can derive these coefficients from corner samples (0/0, 100/0, 0/100, 100/100).
  */
 
-import { PIECE_KEYS, type PieceKey } from '../src/types';
+import { mapPieceStats, PIECE_KEYS, type PieceStats } from '../src/types';
+
+type PieceCoefficients = {
+  minWeight: number;
+  baseContrib: number;
+  padContrib: number;
+};
 
 // Kallardian Norse samples at critical densities
 const cornerSamples = {
@@ -75,32 +81,32 @@ console.log('=== Piece Weight Additive Model Analysis ===\n');
 console.log('1. Deriving per-piece additive coefficients (Kallardian Norse + Ironfur):');
 console.log('--------------------------------------------------------------------------');
 
-const pieceCoeffs: Record<PieceKey, { minWeight: number; baseContrib: number; padContrib: number }> = {
-  helm: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  torso: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  rightArm: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  leftArm: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  legs: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-};
+function deriveCoefficients(
+  material: 'ironfur' | 'ironsilk',
+): PieceStats<PieceCoefficients> {
+  return mapPieceStats((piece) => {
+    const minWeight = cornerSamples['0/0'][material].pieceWeight[piece];
+    return {
+      minWeight,
+      baseContrib:
+        cornerSamples['100/0'][material].pieceWeight[piece] - minWeight,
+      padContrib:
+        cornerSamples['0/100'][material].pieceWeight[piece] - minWeight,
+    };
+  });
+}
 
-for (const piece of PIECE_KEYS) {
-  const w00 = cornerSamples['0/0'].ironfur.pieceWeight[piece];
-  const w100_0 = cornerSamples['100/0'].ironfur.pieceWeight[piece];
-  const w0_100 = cornerSamples['0/100'].ironfur.pieceWeight[piece];
+const pieceCoeffs = deriveCoefficients('ironfur');
+
+PIECE_KEYS.forEach((piece) => {
   const w100_100 = cornerSamples['100/100'].ironfur.pieceWeight[piece];
-  
-  const minWeight = w00;
-  const baseContrib = w100_0 - w00;
-  const padContrib = w0_100 - w00;
-  
-  pieceCoeffs[piece] = { minWeight, baseContrib, padContrib };
-  
+  const { minWeight, baseContrib, padContrib } = pieceCoeffs[piece];
   // Verify: W(100, 100) should equal minWeight + baseContrib + padContrib
   const predicted100_100 = minWeight + baseContrib + padContrib;
   const error = Math.round((predicted100_100 - w100_100) * 100) / 100;
-  
+
   console.log(`  ${piece.padEnd(8)}: min=${minWeight.toFixed(2)}, base=${baseContrib.toFixed(2)}, pad=${padContrib.toFixed(2)} | predict 100/100=${predicted100_100.toFixed(2)}, actual=${w100_100.toFixed(2)}, err=${error.toFixed(2)}`);
-}
+});
 
 // Sum of piece coefficients vs set coefficients
 console.log('\n2. Sum of piece coefficients vs set coefficients:');
@@ -118,52 +124,37 @@ console.log('\n3. Piece weight ratios (piece/set at each density):');
 console.log('-----------------------------------------------------');
 
 const densities = ['0/0', '100/0', '0/100', '100/100'] as const;
-for (const piece of PIECE_KEYS) {
+PIECE_KEYS.forEach((piece) => {
   const ratios = densities.map(d => {
     const pw = cornerSamples[d].ironfur.pieceWeight[piece];
     const sw = cornerSamples[d].ironfur.setWeight;
     return (pw / sw).toFixed(4);
   });
   console.log(`  ${piece.padEnd(8)}: 0/0=${ratios[0]}, 100/0=${ratios[1]}, 0/100=${ratios[2]}, 100/100=${ratios[3]}`);
-}
+});
 
 // Now let's check Ironsilk to see if the pattern holds
 console.log('\n4. Deriving per-piece additive coefficients (Kallardian Norse + Ironsilk):');
 console.log('---------------------------------------------------------------------------');
 
-const pieceCoeffsIronsilk: Record<PieceKey, { minWeight: number; baseContrib: number; padContrib: number }> = {
-  helm: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  torso: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  rightArm: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  leftArm: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-  legs: { minWeight: 0, baseContrib: 0, padContrib: 0 },
-};
+const pieceCoeffsIronsilk = deriveCoefficients('ironsilk');
 
-for (const piece of PIECE_KEYS) {
-  const w00 = cornerSamples['0/0'].ironsilk.pieceWeight[piece];
-  const w100_0 = cornerSamples['100/0'].ironsilk.pieceWeight[piece];
-  const w0_100 = cornerSamples['0/100'].ironsilk.pieceWeight[piece];
+PIECE_KEYS.forEach((piece) => {
   const w100_100 = cornerSamples['100/100'].ironsilk.pieceWeight[piece];
-  
-  const minWeight = w00;
-  const baseContrib = w100_0 - w00;
-  const padContrib = w0_100 - w00;
-  
-  pieceCoeffsIronsilk[piece] = { minWeight, baseContrib, padContrib };
-  
+  const { minWeight, baseContrib, padContrib } = pieceCoeffsIronsilk[piece];
   // Verify: W(100, 100) should equal minWeight + baseContrib + padContrib
   const predicted100_100 = minWeight + baseContrib + padContrib;
   const error = Math.round((predicted100_100 - w100_100) * 100) / 100;
-  
+
   console.log(`  ${piece.padEnd(8)}: min=${minWeight.toFixed(2)}, base=${baseContrib.toFixed(2)}, pad=${padContrib.toFixed(2)} | predict 100/100=${predicted100_100.toFixed(2)}, actual=${w100_100.toFixed(2)}, err=${error.toFixed(2)}`);
-}
+});
 
 // Compare Ironfur vs Ironsilk
 console.log('\n5. Comparing Ironfur vs Ironsilk coefficients:');
 console.log('-----------------------------------------------');
 console.log('  Looking for patterns...\n');
 
-for (const piece of PIECE_KEYS) {
+PIECE_KEYS.forEach((piece) => {
   const ir = pieceCoeffs[piece];
   const is = pieceCoeffsIronsilk[piece];
   
@@ -172,7 +163,7 @@ for (const piece of PIECE_KEYS) {
   const padRatio = ir.padContrib > 0 ? is.padContrib / ir.padContrib : 0;
   
   console.log(`  ${piece.padEnd(8)}: minDiff=${minDiff.toFixed(2)}, baseDiff=${baseDiff.toFixed(2)}, padRatio(silk/fur)=${padRatio.toFixed(3)}`);
-}
+});
 
 console.log('\n6. Testing piece weight formula with low-density samples:');
 console.log('-----------------------------------------------------------');
@@ -192,27 +183,29 @@ const lowDensitySamples = [
 ];
 
 const bd = 100;
-let totalErrors = 0;
-let withinTolerance = 0;
-let totalPieces = 0;
+const { totalErrors, withinTolerance, totalPieces } = lowDensitySamples.reduce(
+  (totals, sample) => {
+    console.log(`\n  pd=${sample.pd.toString().padStart(2)}:`);
+    return PIECE_KEYS.reduce((pieceTotals, piece) => {
+      const coeffs = pieceCoeffs[piece];
+      const raw = coeffs.minWeight + coeffs.baseContrib * (bd / 100) + coeffs.padContrib * (sample.pd / 100);
+      const predicted = Math.round(raw * 100) / 100;
+      const actual = sample.actual[piece];
+      const error = Math.round((predicted - actual) * 100) / 100;
+      const withinTolerance = Math.abs(error) <= 0.01;
 
-for (const sample of lowDensitySamples) {
-  console.log(`\n  pd=${sample.pd.toString().padStart(2)}:`);
-  for (const piece of PIECE_KEYS) {
-    const coeffs = pieceCoeffs[piece];
-    const raw = coeffs.minWeight + coeffs.baseContrib * (bd / 100) + coeffs.padContrib * (sample.pd / 100);
-    const predicted = Math.round(raw * 100) / 100;
-    const actual = sample.actual[piece];
-    const error = Math.round((predicted - actual) * 100) / 100;
-    const status = Math.abs(error) <= 0.01 ? '✓' : '✗';
-    
-    console.log(`    ${piece.padEnd(8)}: raw=${raw.toFixed(4)}, rounded=${predicted.toFixed(2)}, actual=${actual.toFixed(2)}, err=${error.toFixed(2)} ${status}`);
-    
-    totalPieces++;
-    if (Math.abs(error) <= 0.01) withinTolerance++;
-    totalErrors += Math.abs(error);
-  }
-}
+      console.log(`    ${piece.padEnd(8)}: raw=${raw.toFixed(4)}, rounded=${predicted.toFixed(2)}, actual=${actual.toFixed(2)}, err=${error.toFixed(2)} ${withinTolerance ? '✓' : '✗'}`);
+
+      return {
+        totalErrors: pieceTotals.totalErrors + Math.abs(error),
+        withinTolerance:
+          pieceTotals.withinTolerance + Number(withinTolerance),
+        totalPieces: pieceTotals.totalPieces + 1,
+      };
+    }, totals);
+  },
+  { totalErrors: 0, withinTolerance: 0, totalPieces: 0 },
+);
 
 console.log(`\n  Summary: ${withinTolerance}/${totalPieces} within ±0.01 tolerance (${(withinTolerance/totalPieces*100).toFixed(1)}%)`);
 console.log(`  Average error: ${(totalErrors/totalPieces).toFixed(3)}`);
@@ -221,12 +214,12 @@ console.log(`  Average error: ${(totalErrors/totalPieces).toFixed(3)}`);
 console.log('\n7. Investigating minWeight - is it padding-dependent?');
 console.log('-------------------------------------------------------');
 
-for (const piece of PIECE_KEYS) {
+PIECE_KEYS.forEach((piece) => {
   const furMin = pieceCoeffs[piece].minWeight;
   const silkMin = pieceCoeffsIronsilk[piece].minWeight;
   const diff = furMin - silkMin;
   console.log(`  ${piece.padEnd(8)}: fur=${furMin.toFixed(2)}, silk=${silkMin.toFixed(2)}, diff=${diff.toFixed(2)}`);
-}
+});
 
 // The minWeight difference is 0.5 for the set (Ironfur has +0.5 padding offset)
 // Let's see if it's proportionally distributed
