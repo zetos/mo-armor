@@ -1,31 +1,12 @@
-export type ArmorStyle =
-  | 'Ranger Armor'
-  | 'Risar Berserker'
-  | 'Kallardian Norse'
-  | 'Khurite Splinted';
+import type {
+  ArmorMaterialName,
+  ArmorStyleName,
+  PaddingMaterialName,
+} from './catalog/armor';
 
-export type BaseMaterial =
-  | 'Ironfur'
-  | 'Ironsilk'
-  | 'Ironwool'
-  | 'Bloodsilk'
-  | 'Leptoid Scales'
-  | 'Horned Scales'
-  | 'Keeled Scales'
-  | 'Plate Scales'
-  | 'Placoid Scales'
-  | 'Pansar Scales'
-  | 'Arthropod Carapace'
-  | 'Ganoid Scales';
-
-export type SupportMaterial =
-  | 'Ironfur'
-  | 'Ironsilk'
-  | 'Ironwool'
-  | 'Bloodsilk'
-  | 'Guard Fur'
-  | 'Quality Leather'
-  | 'Raw Hide';
+export type ArmorStyle = ArmorStyleName;
+export type BaseMaterial = ArmorMaterialName;
+export type SupportMaterial = PaddingMaterialName;
 
 export type MaterialUsage = {
   base: number;

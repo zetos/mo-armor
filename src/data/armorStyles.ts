@@ -8,7 +8,7 @@ type ActiveArmorStyleConfig = Omit<
   'pieceWeightMultipliers' | 'baseWeightDensityCoeffs'
 >;
 
-export const armorStyles: Record<ArmorStyle, ActiveArmorStyleConfig> = {
+export const armorStyles: Partial<Record<ArmorStyle, ActiveArmorStyleConfig>> = {
   'Risar Berserker': {
     // Note: baseMaterialUsage is calibrated for Plate Scales (usageMultiplier = 1.0)
     baseMaterialUsage: {
@@ -213,3 +213,14 @@ export const armorStyles: Record<ArmorStyle, ActiveArmorStyleConfig> = {
     },
   },
 };
+
+export function getArmorStyle(armorStyle: ArmorStyle): ActiveArmorStyleConfig {
+  const config = armorStyles[armorStyle];
+  if (!config) {
+    throw new Error(
+      `Armor style "${armorStyle}" is not configured. Please add sample data to derive its properties.`,
+    );
+  }
+
+  return config;
+}

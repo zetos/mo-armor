@@ -127,4 +127,30 @@ describe('calculateSetStatus', () => {
       });
     });
   });
+
+  it('rejects a Core material outside the armor family', () => {
+    expect(() =>
+      calculateSetStatus({
+        armorStyle: 'Mercenary Plate',
+        base: 'Leptoid Scales',
+        padding: 'Ironfur',
+        baseDensity: 100,
+        paddingDensity: 100,
+      }),
+    ).toThrow(
+      'Base material "Leptoid Scales" is not compatible with armor style "Mercenary Plate".',
+    );
+  });
+
+  it('describes known armor styles that still need calibration', () => {
+    expect(() =>
+      calculateSetStatus({
+        armorStyle: 'Mercenary Plate',
+        base: 'Plate Scales',
+        padding: 'Ironfur',
+        baseDensity: 100,
+        paddingDensity: 100,
+      }),
+    ).toThrow('Armor style "Mercenary Plate" is not configured.');
+  });
 });

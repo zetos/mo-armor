@@ -112,10 +112,12 @@ densities, so callers are responsible for supplying values in that range.
 - Bloodsilk
 - Guard Fur
 
-`Ganoid Scales`, base variants of the fiber materials, `Quality Leather`, and
-`Raw Hide` exist in the public type unions but are not configured. Passing one
-of them in an unsupported role throws a descriptive error until enough sample
-data is available to calibrate it.
+The public types cover every style and material observed in the MortalData
+Armor workbench. Entries not listed above are known but not configured;
+passing one in a supported role throws a descriptive error until enough sample
+data is available to calibrate it. Invalid style/Core family combinations are
+rejected separately. MortalData material ID 110 uses the canonical name
+`Rawhide`.
 
 ## Calculation Model
 
@@ -335,13 +337,16 @@ for the assertions and [`samples/`](./samples/) for the source data.
 |   |-- index.ts                  # Public exports
 |   |-- calculate.ts              # Calculation and rounding order
 |   |-- types.ts                  # Public TypeScript types and piece keys
+|   |-- catalog/armor.ts          # MortalData IDs, roles, and compatibility
 |   `-- data/
 |       |-- armorStyles.ts        # Style and per-piece coefficients
 |       |-- baseMaterials.ts      # Base-material coefficients
 |       `-- paddingMaterials.ts   # Padding-material coefficients
 |-- samples/                      # 174 in-game regression samples
 |-- test/
-|   `-- calculate.test.ts         # Sample-driven regression tests
+|   |-- calculate.test.ts         # Sample-driven regression tests
+|   |-- catalog.test.ts           # Catalog and compatibility checks
+|   `-- parseSample.test.ts       # Parser and CLI validation
 `-- scripts/
     |-- parseSample.ts            # Convert raw/API data into sample objects
     `-- analyzeRounding.ts        # Inspect piece-weight rounding behavior
@@ -365,6 +370,10 @@ bunx tsc --noEmit
 # Parse sample input
 bun scripts/parseSample.ts sample.txt
 
+# Fetch a validated five-point sample matrix as JSON
+bun scripts/parseSample.ts --armorStyleId 309 --baseMatId 108 \
+  --supportMatId 84 --density-matrix standard --json
+
 # Analyze weight rounding
 bun scripts/analyzeRounding.ts
 ```
@@ -378,8 +387,9 @@ expressions can behave differently at the configured tolerances.
 
 Contributions with additional in-game samples are welcome:
 
-1. Collect data in the format accepted by `scripts/parseSample.ts`.
-2. Run `bun scripts/parseSample.ts sample.txt`.
+1. Select a style/Core/padding combination from `src/catalog/armor.ts`.
+2. Fetch a standard matrix with `scripts/parseSample.ts --density-matrix
+   standard --json`, or parse an existing response file.
 3. Add the parsed result to the appropriate file in `samples/`.
 4. Calibrate the relevant configuration if the sample introduces a new
    material or exposes a coefficient mismatch.

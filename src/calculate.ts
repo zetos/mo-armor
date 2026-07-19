@@ -12,7 +12,12 @@ import type {
   SupportMaterial,
 } from './types';
 import { mapPieceStats, PIECE_KEYS } from './types';
-import { armorStyles } from './data/armorStyles';
+import {
+  getArmorMaterialByName,
+  getArmorStyleByName,
+  isCoreCompatible,
+} from './catalog/armor';
+import { getArmorStyle } from './data/armorStyles';
 import { getBaseMaterial } from './data/baseMaterials';
 import { getPaddingMaterial } from './data/paddingMaterials';
 
@@ -87,7 +92,20 @@ export function calculateSetStatus<
   baseDensity = 100,
   paddingDensity = 100,
 }: CalculateSetStatusInput<B, S>): SetStats {
-  const style = armorStyles[armorStyle];
+  const catalogStyle = getArmorStyleByName(armorStyle);
+  const catalogBase = getArmorMaterialByName(base);
+  const catalogPadding = getArmorMaterialByName(padding);
+  if (!catalogStyle) throw new Error(`Unknown armor style "${armorStyle}".`);
+  if (!catalogBase) throw new Error(`Unknown base material "${base}".`);
+  if (!catalogPadding?.padding) {
+    throw new Error(`Unknown padding material "${padding}".`);
+  }
+  if (!isCoreCompatible(catalogStyle, catalogBase)) {
+    throw new Error(
+      `Base material "${base}" is not compatible with armor style "${armorStyle}".`,
+    );
+  }
+  const style = getArmorStyle(armorStyle);
   const baseMaterial = getBaseMaterial(base);
   const paddingMaterial = getPaddingMaterial(armorStyle, padding);
 
