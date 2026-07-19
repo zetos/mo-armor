@@ -3,19 +3,15 @@
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun src/index.ts",
     "test": "bun test",
     "parse-sample": "bun scripts/parseSample.ts",
-    "fetch-sample": "bun scripts/parseSample.ts",
-    "sample-risar": "bun scripts/parseSample.ts --armorStyleId 310",
-    "sample-kallardian": "bun scripts/parseSample.ts --armorStyleId 307",
-    "sample-khurite": "bun scripts/parseSample.ts --armorStyleId 313",
-    "sample-ranger": "bun scripts/parseSample.ts --armorStyleId 383"
+    "analyze-rounding": "bun scripts/analyzeRounding.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": ">=5"
   }
 }
