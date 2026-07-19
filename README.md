@@ -143,12 +143,13 @@ The implementation is in [`src/calculate.ts`](./src/calculate.ts).
 | $q$ | Selected padding material |
 | $i$ | Armor piece: helm, torso, right arm, left arm, or legs |
 | $t$ | Damage type: blunt, pierce, or slash |
+| $R_0(z)$ | Round $z$ to the nearest integer |
 | $R_2(z)$ | Round $z$ to two decimal places |
 
 Many properties use the same linear density scale:
 
 $$
-L(d; a,b)=a+b\frac{d}{100}
+L(d; a,b) = a + b\frac{d}{100}
 $$
 
 The coefficients $a$ and $b$ depend on the property, style, material, and in
@@ -160,18 +161,21 @@ For each damage type $t$, defense combines a scaled base-material contribution
 with a scaled padding contribution:
 
 $$
-D_t = R_2\left(
-\max\left(0,
-B_{s,m,t}L(d_b; a^{B}_{s,m,t},b^{B}_{s,m,t})
-+P_{q,t}L(d_p; a^{P}_{q,t},b^{P}_{q,t})
-\right)
-\right)
+\begin{aligned}
+D_{\mathrm{base}}(t)
+  &= B(s,m,t)L\bigl(d_b; a_B(s,m,t), b_B(s,m,t)\bigr), \\
+D_{\mathrm{padding}}(t)
+  &= P(q,t)L\bigl(d_p; a_P(q,t), b_P(q,t)\bigr), \\
+D_t
+  &= R_2\Bigl(\max\bigl(0,
+     D_{\mathrm{base}}(t) + D_{\mathrm{padding}}(t)\bigr)\Bigr).
+\end{aligned}
 $$
 
 Where:
 
-- $B_{s,m,t}$ is the base defense for the style and base-material combination;
-- $P_{q,t}$ is the padding material's defense contribution;
+- $B(s,m,t)$ is the base defense for the style and base-material combination;
+- $P(q,t)$ is the padding material's defense contribution;
 - the two pairs of density coefficients independently scale base and padding;
 - the combined value is floored at zero and then rounded, so a padding material
   may have a negative contribution without producing negative final defense.
@@ -184,23 +188,22 @@ materials can override both base defense and density scaling for each style.
 Set weight is a calibrated additive model:
 
 $$
-W_{\mathrm{set}}=R_2\left(
-W^{\min}_{s}
-+O^{\min}_{q}
-+O^{\min}_{m}
-+C^{b}_{s}M^{b}_{m}x
-+C^{p}_{q}y
-\right)
+\begin{aligned}
+W_{\mathrm{set}} = R_2\Bigl(&W_{\min}(s)
+  + O_{\min}(q) + O_{\min}(m) \\
+  &+ C_b(s)M_b(m)x
+  + C_p(q)y\Bigr).
+\end{aligned}
 $$
 
 Where:
 
-- $W^{\min}_{s}$ is the style's minimum set weight;
-- $O^{\min}_{q}$ and $O^{\min}_{m}$ are padding and base-material minimum
+- $W_{\min}(s)$ is the style's minimum set weight;
+- $O_{\min}(q)$ and $O_{\min}(m)$ are padding and base-material minimum
   weight offsets;
-- $C^{b}_{s}$ is the style's base-density contribution;
-- $M^{b}_{m}$ adjusts that contribution for the base material;
-- $C^{p}_{q}$ is the padding-density contribution.
+- $C_b(s)$ is the style's base-density contribution;
+- $M_b(m)$ adjusts that contribution for the base material;
+- $C_p(q)$ is the padding-density contribution.
 
 Weight is not calculated from material usage. The game samples fit this
 independent additive model more accurately.
@@ -211,24 +214,24 @@ Each piece also has its own independently calibrated additive model. First,
 the style establishes a baseline minimum-weight total:
 
 $$
-I_s=\sum_i w^{\min}_{s,i},
+I(s) = \sum_i w_{\min}(s,i),
 \qquad
-r_{s,i}=\frac{w^{\min}_{s,i}}{I_s}
+r(s,i) = \frac{w_{\min}(s,i)}{I(s)}.
 $$
 
 Then the weight of piece $i$ is:
 
 $$
-w_i=R_2\left(
-w^{\min}_{s,i}
--\left(0.5-O^{\min}_{q}\right)r_{s,i}
-+O^{\min}_{m}r_{s,i}
-+C^{b}_{s,i}M^{b}_{m}x
-+C^{p}_{s,i}R^{p}_{q}y
-\right)
+\begin{aligned}
+w_i = R_2\Bigl(&w_{\min}(s,i)
+  - \bigl(0.5-O_{\min}(q)\bigr)r(s,i) \\
+  &+ O_{\min}(m)r(s,i)
+  + C_b(s,i)M_b(m)x \\
+  &+ C_p(s,i)R_p(q)y\Bigr).
+\end{aligned}
 $$
 
-$R^{p}_{q}$ is the padding material's per-piece contribution ratio. The
+$R_p(q)$ is the padding material's per-piece contribution ratio. The
 constant $0.5$ is the calibrated Ironfur minimum-weight offset.
 
 The set-weight and piece-weight formulas are separate calibrations. Do not
@@ -238,19 +241,17 @@ because their coefficients and rounding points differ.
 ### Durability
 
 The style and base material select three durability coefficients:
-$A^{\min}_{s,m}$, $A^{b}_{s,m}$, and $A^{p}_{s,m}$. Padding supplies a minimum
-multiplier $M^{\min}_{s,q}$ and a padding multiplier $M^{p}_{q}$.
+$A_{\min}(s,m)$, $A_b(s,m)$, and $A_p(s,m)$. Padding supplies a minimum
+multiplier $M_{\min}(s,q)$ and a padding multiplier $M_p(q)$.
 
 Durability for piece $i$ is:
 
 $$
-H_i=R_2\left[
-\left(
-A^{\min}_{s,m}M^{\min}_{s,q}
-+A^{b}_{s,m}x
-+A^{p}_{s,m}M^{p}_{q}y
-\right)K_i
-\right]
+\begin{aligned}
+H_i = R_2\Bigl(\bigl[&A_{\min}(s,m)M_{\min}(s,q)
+  + A_b(s,m)x \\
+  &+ A_p(s,m)M_p(q)y\bigr]K_i\Bigr).
+\end{aligned}
 $$
 
 The fixed piece multipliers are:
@@ -267,7 +268,7 @@ Total set durability sums the already-rounded piece values and rounds once
 more:
 
 $$
-H_{\mathrm{set}}=R_2\left(\sum_i H_i\right)
+H_{\mathrm{set}} = R_2\left(\sum_i H_i\right).
 $$
 
 Padding minimum multipliers are style-specific where sample data is available;
@@ -278,36 +279,34 @@ padding-density multipliers are shared across styles.
 Base material usage for piece $i$ is:
 
 $$
-U^{b}_i=\operatorname{round}\left[
-N^{b}_{s,i}
-M^{u}_{s,m}(d_b)
-L(d_b;a^{u}_{s},b^{u}_{s})
-\right]
+U_b(i) = R_0\Bigl(
+N_b(s,i)M_u(s,m,d_b)L\bigl(d_b; a_u(s),b_u(s)\bigr)
+\Bigr).
 $$
 
-Where $N^{b}_{s,i}$ is the style's baseline usage and
-$M^{u}_{s,m}(d_b)$ is either a fixed material multiplier or another calibrated
+Where $N_b(s,i)$ is the style's baseline usage and
+$M_u(s,m,d_b)$ is either a fixed material multiplier or another calibrated
 linear scale:
 
 $$
-M^{u}_{s,m}(d_b)=a^{m}_{s,m}+b^{m}_{s,m}\frac{d_b}{100}
+M_u(s,m,d_b) = a_m(s,m) + b_m(s,m)\frac{d_b}{100}.
 $$
 
 Padding usage uses a shared density scale:
 
 $$
-U^{p}_i=\operatorname{round}\left[
-N^{p}_{s,i}M^{u}_{q}
+U_p(i) = R_0\Biggl(
+N_p(s,i)M_u(q)
 \left(\frac{1}{3}+\frac{2}{3}\frac{d_p}{100}\right)
-\right]
+\Biggr).
 $$
 
 Material totals sum the independently rounded piece values:
 
 $$
-U^{b}_{\mathrm{set}}=\sum_i U^{b}_i,
+U_b(\mathrm{set}) = \sum_i U_b(i),
 \qquad
-U^{p}_{\mathrm{set}}=\sum_i U^{p}_i
+U_p(\mathrm{set}) = \sum_i U_p(i).
 $$
 
 This rounding order matters. Rounding only after summing the unrounded piece
