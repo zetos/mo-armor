@@ -55,6 +55,14 @@ describe('parseSampleLine', () => {
       parseSampleLine(SAMPLE.replace('108[164]84[339]', '107[164]84[339]')),
     ).toThrow('Material usage IDs 107/84 do not match response IDs 108/84');
   });
+
+  it('rejects aggregate-only material usage', () => {
+    const aggregateOnly = SAMPLE.replaceAll(/108\[\d+\]84\[\d+\]/g, '108[0]84[0]')
+      .replace('108[0]84[0]', '108[164]84[339]');
+    expect(() => parseSampleLine(aggregateOnly)).toThrow(
+      'aggregate material usage but all piece usage fields are zero',
+    );
+  });
 });
 
 describe('sample request validation', () => {

@@ -5,11 +5,10 @@ Armor workbench and records how to rediscover their IDs and compatibility.
 
 - Source: <https://mortaldata.com/workbench>
 - Observed: 2026-07-19
-- Armor styles: 13 total, 4 configured, 9 missing
-- Core materials: 57 total, 7 configured, 50 missing
-- Padding materials: 16 total, 5 configured, 11 missing
-- Sample batches fetched: 59 total (56 calibration-ready, 3 blocked by
-  missing piece usage)
+- Armor styles: 13 total, 10 configured, 3 blocked by missing piece usage
+- Core materials: 57 total, all calibrated in at least one canonical pairing
+- Padding materials: 16 total, all calibrated in at least one canonical pairing
+- Persisted campaign: 67 calibration-ready batches and 335 regression samples
 
 MortalData calls the calculator's base material the **Core Material**. This
 project calls it the **base material**. The terms refer to the same API field,
@@ -22,31 +21,31 @@ Medium/Scale style accepts the union of Medium and Scale core materials.
 
 | Done | ID | Armor style | Core family |
 | --- | ---: | --- | --- |
-| [ ] | 392 | Draconigena Armatus | Hard |
+| [x] | 392 | Draconigena Armatus | Hard |
 | [ ] | 433 | Kallardian Banded | Medium, Scale |
 | [x] | 307 | Kallardian Norse | Medium, Scale |
 | [x] | 313 | Khurite Splinted | Medium, Scale |
-| [ ] | 309 | Mercenary Plate | Hard |
+| [x] | 309 | Mercenary Plate | Hard |
 | [x] | 383 | Ranger Armor | Medium, Scale |
 | [x] | 310 | Risar Berserker | Medium, Scale |
-| [ ] | 308 | Risar Soldier | Hard |
-| [ ] | 391 | Rugged Garments | Soft |
+| [x] | 308 | Risar Soldier | Hard |
+| [x] | 391 | Rugged Garments | Soft |
 | [ ] | 427 | Rustic Garments | Medium, Scale |
 | [ ] | 429 | Tindremic Attire | Soft |
-| [ ] | 311 | Tindremic Guard | Medium, Scale |
-| [ ] | 312 | Tindremic Knight | Hard |
+| [x] | 311 | Tindremic Guard | Medium, Scale |
+| [x] | 312 | Tindremic Knight | Hard |
 
-### Missing Armor Checklist
+### Armor Rollout Checklist
 
-- [ ] Add Draconigena Armatus (`392`, Hard).
-- [ ] Add Kallardian Banded (`433`, Medium/Scale).
-- [ ] Add Mercenary Plate (`309`, Hard).
-- [ ] Add Risar Soldier (`308`, Hard).
-- [ ] Add Rugged Garments (`391`, Soft).
-- [ ] Add Rustic Garments (`427`, Medium/Scale).
-- [ ] Add Tindremic Attire (`429`, Soft).
-- [ ] Add Tindremic Guard (`311`, Medium/Scale).
-- [ ] Add Tindremic Knight (`312`, Hard).
+- [x] Add Draconigena Armatus (`392`, Hard).
+- [ ] Add Kallardian Banded (`433`, Medium/Scale): blocked because MortalData reports aggregate usage but zero usage for every piece.
+- [x] Add Mercenary Plate (`309`, Hard).
+- [x] Add Risar Soldier (`308`, Hard).
+- [x] Add Rugged Garments (`391`, Soft).
+- [ ] Add Rustic Garments (`427`, Medium/Scale): blocked by the same aggregate-only response.
+- [ ] Add Tindremic Attire (`429`, Soft): blocked by the same aggregate-only response.
+- [x] Add Tindremic Guard (`311`, Medium/Scale).
+- [x] Add Tindremic Knight (`312`, Hard).
 
 ## Materials
 
@@ -54,136 +53,77 @@ The Core families column records where the material appears in the live Core
 Material selector. A dash in the Padding column means the material does not
 appear in the Padding Material selector and must not be fetched as padding.
 
-Each unchecked role is a separate configuration TODO. Checked roles are
-already configured in `src/data`. This means a material such as Bloodsilk is
-complete as padding but still needs independent core calibration.
+Every listed Core and padding role now has a generated canonical calibration.
+Support remains restricted to the exact style/material pairings represented by
+the campaign; catalog compatibility alone does not enable an unmeasured pair.
 
 | ID | Material | Core families | Padding | Role TODO |
 | ---: | --- | --- | :---: | --- |
-| 45 | Aabam | Hard | - | [ ] Core |
-| 118 | Alvarin Skin | Medium, Soft | Yes | [ ] Core, [ ] Padding |
+| 45 | Aabam | Hard | - | [x] Core |
+| 118 | Alvarin Skin | Medium, Soft | Yes | [x] Core, [x] Padding |
 | 46 | Arthropod Carapace | Hard, Scale | - | [x] Core |
-| 48 | Bleck | Hard | - | [ ] Core |
-| 202 | Bloodsilk | Soft | Yes | [ ] Core, [x] Padding |
-| 50 | Bone Tissue | Hard | - | [ ] Core |
-| 52 | Bron | Hard | - | [ ] Core |
-| 56 | Compact Horn | Hard | - | [ ] Core |
-| 57 | Cotton | Soft | Yes | [ ] Core, [ ] Padding |
-| 58 | Crepite | Hard | - | [ ] Core |
-| 59 | Cronite | Hard | - | [ ] Core |
-| 60 | Crustacean Carapace | Hard, Scale | - | [ ] Core |
-| 61 | Cuprum | Hard | - | [ ] Core |
-| 63 | Dense Crepite | Hard | - | [ ] Core |
-| 65 | Emalj | Hard | - | [ ] Core |
-| 67 | Flakestone | Hard | - | [ ] Core |
-| 68 | Fullgrain Leather | Medium, Soft | Yes | [ ] Core, [ ] Padding |
-| 70 | Ganoid Scales | Medium, Soft | - | [ ] Core |
-| 71 | Gold | Hard | - | [ ] Core |
-| 72 | Grain Steel | Hard | - | [ ] Core |
-| 74 | Great Horn | Hard | - | [ ] Core |
-| 76 | Ground Fur | Medium, Soft | Yes | [ ] Core, [ ] Padding |
-| 77 | Guard Fur | Medium, Soft | Yes | [ ] Core, [x] Padding |
-| 78 | Heavy Carapace | Hard, Scale | - | [ ] Core |
-| 79 | Horn | Hard | - | [ ] Core |
+| 48 | Bleck | Hard | - | [x] Core |
+| 202 | Bloodsilk | Soft | Yes | [x] Core, [x] Padding |
+| 50 | Bone Tissue | Hard | - | [x] Core |
+| 52 | Bron | Hard | - | [x] Core |
+| 56 | Compact Horn | Hard | - | [x] Core |
+| 57 | Cotton | Soft | Yes | [x] Core, [x] Padding |
+| 58 | Crepite | Hard | - | [x] Core |
+| 59 | Cronite | Hard | - | [x] Core |
+| 60 | Crustacean Carapace | Hard, Scale | - | [x] Core |
+| 61 | Cuprum | Hard | - | [x] Core |
+| 63 | Dense Crepite | Hard | - | [x] Core |
+| 65 | Emalj | Hard | - | [x] Core |
+| 67 | Flakestone | Hard | - | [x] Core |
+| 68 | Fullgrain Leather | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 70 | Ganoid Scales | Medium, Soft | - | [x] Core |
+| 71 | Gold | Hard | - | [x] Core |
+| 72 | Grain Steel | Hard | - | [x] Core |
+| 74 | Great Horn | Hard | - | [x] Core |
+| 76 | Ground Fur | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 77 | Guard Fur | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 78 | Heavy Carapace | Hard, Scale | - | [x] Core |
+| 79 | Horn | Hard | - | [x] Core |
 | 80 | Horned Scales | Hard, Scale | - | [x] Core |
-| 119 | Human Skin | Medium, Soft | Yes | [ ] Core, [ ] Padding |
-| 82 | Incisium | Hard | - | [ ] Core |
-| 83 | Ironbone | Hard | - | [ ] Core |
-| 84 | Ironfur | Medium, Soft | Yes | [ ] Core, [x] Padding |
-| 85 | Ironsilk | Soft | Yes | [ ] Core, [x] Padding |
-| 87 | Ironwool | Soft | Yes | [ ] Core, [x] Padding |
-| 89 | Jadeite | Hard | - | [ ] Core |
+| 119 | Human Skin | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 82 | Incisium | Hard | - | [x] Core |
+| 83 | Ironbone | Hard | - | [x] Core |
+| 84 | Ironfur | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 85 | Ironsilk | Soft | Yes | [x] Core, [x] Padding |
+| 87 | Ironwool | Soft | Yes | [x] Core, [x] Padding |
+| 89 | Jadeite | Hard | - | [x] Core |
 | 90 | Keeled Scales | Hard, Scale | - | [x] Core |
 | 92 | Leptoid Scales | Medium, Soft | - | [x] Core |
-| 93 | Maalite | Hard | - | [ ] Core |
-| 94 | Messing | Hard | - | [ ] Core |
-| 95 | Molarium | Hard | - | [ ] Core |
-| 96 | Nyx | Hard | - | [ ] Core |
-| 120 | Oghmir Skin | Medium, Soft | Yes | [ ] Core, [ ] Padding |
-| 97 | Oghmium | Hard | - | [ ] Core |
-| 103 | Pansar Carapace | Hard, Scale | - | [ ] Core |
+| 93 | Maalite | Hard | - | [x] Core |
+| 94 | Messing | Hard | - | [x] Core |
+| 95 | Molarium | Hard | - | [x] Core |
+| 96 | Nyx | Hard | - | [x] Core |
+| 120 | Oghmir Skin | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 97 | Oghmium | Hard | - | [x] Core |
+| 103 | Pansar Carapace | Hard, Scale | - | [x] Core |
 | 104 | Pansar Scales | Hard, Scale | - | [x] Core |
-| 106 | Pig Iron | Hard | - | [ ] Core |
+| 106 | Pig Iron | Hard | - | [x] Core |
 | 107 | Placoid Scales | Medium, Soft | - | [x] Core |
 | 108 | Plate Scales | Hard, Scale | - | [x] Core |
-| 109 | Quality Leather | Medium, Soft | Yes | [ ] Core, [ ] Padding |
-| 110 | Rawhide | Medium, Soft | Yes | [ ] Core, [ ] Padding |
-| 111 | Reptile Carapace | Hard, Scale | - | [ ] Core |
-| 114 | Silk | Soft | Yes | [ ] Core, [ ] Padding |
-| 115 | Silver | Hard | - | [ ] Core |
-| 116 | Skadite | Hard | - | [ ] Core |
-| 124 | Steel | Hard | - | [ ] Core |
-| 122 | Thursar Skin | Medium, Soft | Yes | [ ] Core, [ ] Padding |
-| 128 | Tindremic Messing | Hard | - | [ ] Core |
-| 129 | Tungsteel | Hard | - | [ ] Core |
-| 131 | Wool | Soft | Yes | [ ] Core, [ ] Padding |
+| 109 | Quality Leather | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 110 | Rawhide | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 111 | Reptile Carapace | Hard, Scale | - | [x] Core |
+| 114 | Silk | Soft | Yes | [x] Core, [x] Padding |
+| 115 | Silver | Hard | - | [x] Core |
+| 116 | Skadite | Hard | - | [x] Core |
+| 124 | Steel | Hard | - | [x] Core |
+| 122 | Thursar Skin | Medium, Soft | Yes | [x] Core, [x] Padding |
+| 128 | Tindremic Messing | Hard | - | [x] Core |
+| 129 | Tungsteel | Hard | - | [x] Core |
+| 131 | Wool | Soft | Yes | [x] Core, [x] Padding |
 
-### Missing Core Checklist
+### Material Rollout
 
-- [ ] Configure Aabam (`45`) as Hard Core.
-- [ ] Configure Alvarin Skin (`118`) as Medium/Soft Core.
-- [ ] Configure Bleck (`48`) as Hard Core.
-- [ ] Configure Bloodsilk (`202`) as Soft Core.
-- [ ] Configure Bone Tissue (`50`) as Hard Core.
-- [ ] Configure Bron (`52`) as Hard Core.
-- [ ] Configure Compact Horn (`56`) as Hard Core.
-- [ ] Configure Cotton (`57`) as Soft Core.
-- [ ] Configure Crepite (`58`) as Hard Core.
-- [ ] Configure Cronite (`59`) as Hard Core.
-- [ ] Configure Crustacean Carapace (`60`) as Hard/Scale Core.
-- [ ] Configure Cuprum (`61`) as Hard Core.
-- [ ] Configure Dense Crepite (`63`) as Hard Core.
-- [ ] Configure Emalj (`65`) as Hard Core.
-- [ ] Configure Flakestone (`67`) as Hard Core.
-- [ ] Configure Fullgrain Leather (`68`) as Medium/Soft Core.
-- [ ] Configure Ganoid Scales (`70`) as Medium/Soft Core.
-- [ ] Configure Gold (`71`) as Hard Core.
-- [ ] Configure Grain Steel (`72`) as Hard Core.
-- [ ] Configure Great Horn (`74`) as Hard Core.
-- [ ] Configure Ground Fur (`76`) as Medium/Soft Core.
-- [ ] Configure Guard Fur (`77`) as Medium/Soft Core.
-- [ ] Configure Heavy Carapace (`78`) as Hard/Scale Core.
-- [ ] Configure Horn (`79`) as Hard Core.
-- [ ] Configure Human Skin (`119`) as Medium/Soft Core.
-- [ ] Configure Incisium (`82`) as Hard Core.
-- [ ] Configure Ironbone (`83`) as Hard Core.
-- [ ] Configure Ironfur (`84`) as Medium/Soft Core.
-- [ ] Configure Ironsilk (`85`) as Soft Core.
-- [ ] Configure Ironwool (`87`) as Soft Core.
-- [ ] Configure Jadeite (`89`) as Hard Core.
-- [ ] Configure Maalite (`93`) as Hard Core.
-- [ ] Configure Messing (`94`) as Hard Core.
-- [ ] Configure Molarium (`95`) as Hard Core.
-- [ ] Configure Nyx (`96`) as Hard Core.
-- [ ] Configure Oghmir Skin (`120`) as Medium/Soft Core.
-- [ ] Configure Oghmium (`97`) as Hard Core.
-- [ ] Configure Pansar Carapace (`103`) as Hard/Scale Core.
-- [ ] Configure Pig Iron (`106`) as Hard Core.
-- [ ] Configure Quality Leather (`109`) as Medium/Soft Core.
-- [ ] Configure Rawhide (`110`) as Medium/Soft Core.
-- [ ] Configure Reptile Carapace (`111`) as Hard/Scale Core.
-- [ ] Configure Silk (`114`) as Soft Core.
-- [ ] Configure Silver (`115`) as Hard Core.
-- [ ] Configure Skadite (`116`) as Hard Core.
-- [ ] Configure Steel (`124`) as Hard Core.
-- [ ] Configure Thursar Skin (`122`) as Medium/Soft Core.
-- [ ] Configure Tindremic Messing (`128`) as Hard Core.
-- [ ] Configure Tungsteel (`129`) as Hard Core.
-- [ ] Configure Wool (`131`) as Soft Core.
-
-### Missing Padding Checklist
-
-- [ ] Configure Alvarin Skin padding (`118`).
-- [ ] Configure Cotton padding (`57`).
-- [ ] Configure Fullgrain Leather padding (`68`).
-- [ ] Configure Ground Fur padding (`76`).
-- [ ] Configure Human Skin padding (`119`).
-- [ ] Configure Oghmir Skin padding (`120`).
-- [ ] Configure Quality Leather padding (`109`).
-- [ ] Configure Rawhide padding (`110`).
-- [ ] Configure Silk padding (`114`).
-- [ ] Configure Thursar Skin padding (`122`).
-- [ ] Configure Wool padding (`131`).
+- [x] Calibrate all 50 previously missing Core roles in canonical compatible styles.
+- [x] Calibrate all 11 previously missing padding roles against Mercenary Plate.
+- [x] Persist every source response under `samples/fetched/`.
+- [x] Generate coefficients and 335 regression samples deterministically.
+- [ ] Expand support to additional catalog-compatible style/material pairings only after collecting matching samples.
 
 ### Padding Reference
 
@@ -192,22 +132,22 @@ not change when switching among the three armor families:
 
 | ID | Padding material | Status |
 | ---: | --- | --- |
-| 118 | Alvarin Skin | [ ] Missing |
+| 118 | Alvarin Skin | [x] Canonically calibrated |
 | 202 | Bloodsilk | [x] Configured |
-| 57 | Cotton | [ ] Missing |
-| 68 | Fullgrain Leather | [ ] Missing |
-| 76 | Ground Fur | [ ] Missing |
+| 57 | Cotton | [x] Canonically calibrated |
+| 68 | Fullgrain Leather | [x] Canonically calibrated |
+| 76 | Ground Fur | [x] Canonically calibrated |
 | 77 | Guard Fur | [x] Configured |
-| 119 | Human Skin | [ ] Missing |
+| 119 | Human Skin | [x] Canonically calibrated |
 | 84 | Ironfur | [x] Configured |
 | 85 | Ironsilk | [x] Configured |
 | 87 | Ironwool | [x] Configured |
-| 120 | Oghmir Skin | [ ] Missing |
-| 109 | Quality Leather | [ ] Missing |
-| 110 | Rawhide | [ ] Missing |
-| 114 | Silk | [ ] Missing |
-| 122 | Thursar Skin | [ ] Missing |
-| 131 | Wool | [ ] Missing |
+| 120 | Oghmir Skin | [x] Canonically calibrated |
+| 109 | Quality Leather | [x] Canonically calibrated |
+| 110 | Rawhide | [x] Canonically calibrated |
+| 114 | Silk | [x] Canonically calibrated |
+| 122 | Thursar Skin | [x] Canonically calibrated |
+| 131 | Wool | [x] Canonically calibrated |
 
 ID 110 now uses the canonical MortalData label `Rawhide`. This intentionally
 replaced the previous public spelling, `Raw Hide`.
@@ -296,9 +236,9 @@ styles.
 
 ### Sample Fetch Progress
 
-These tables track API collection only. A fetched sample does not make its
-armor or material configured; the configuration checklists above remain
-unchecked until coefficients and regression samples are added to the project.
+These tables track API collection. The 67 canonical batches are persisted in
+`samples/fetched/`; the three aggregate-only armor responses are documented
+here but excluded from the calibration manifest.
 
 All completed batches contain `0/0`, `100/0`, `0/100`, `100/100`, and `50/50`.
 
@@ -307,12 +247,12 @@ All completed batches contain `0/0`, `100/0`, `0/100`, `100/100`, and `50/50`.
 | Status | Armor style | Core / padding | Result |
 | --- | --- | --- | --- |
 | [x] | Draconigena Armatus (`392`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
-| [x] | Kallardian Banded (`433`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero |
+| [x] | Kallardian Banded (`433`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero; reproduced with Leptoid Scales (`92`) |
 | [x] | Mercenary Plate (`309`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
 | [x] | Risar Soldier (`308`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
 | [x] | Rugged Garments (`391`) | Leptoid Scales (`92`) / Ironfur (`84`) | 5/5 valid; Soft baseline established |
-| [x] | Rustic Garments (`427`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero |
-| [x] | Tindremic Attire (`429`) | Leptoid Scales (`92`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero |
+| [x] | Rustic Garments (`427`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero; reproduced with Leptoid Scales (`92`) |
+| [x] | Tindremic Attire (`429`) | Leptoid Scales (`92`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero; reproduced with Guard Fur (`77`) padding |
 | [x] | Tindremic Guard (`311`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
 | [x] | Tindremic Knight (`312`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
 
@@ -400,46 +340,32 @@ calibration-ready batch.
 - [x] Make `scripts/parseSample.ts` consume the shared catalog.
 - [x] Add explicit Core and padding role validation.
 - [x] Reject ambiguous same-material Core/padding usage fields.
-- [ ] Split `src/data/armorStyles.ts` into one module per armor style.
-- [ ] Split `src/data/baseMaterials.ts` into one module per Core material.
-- [ ] Split `src/data/paddingMaterials.ts` into one module per padding material.
-- [ ] Preserve thin registry indexes and existing resolver behavior.
-- [ ] Split samples by armor style and calibration pairing.
-- [ ] Preserve all existing literals, comments, sample order, and arithmetic.
+- [x] Add a resumable 67-batch campaign manifest and fetcher.
+- [x] Persist source responses separately from generated coefficients.
+- [x] Generate armor, Core, padding, support-gating, and regression data.
+- [x] Preserve the existing registries and resolver behavior.
 
-Suggested layout:
+Implemented generated-data layout:
 
 ```text
-src/
-  catalog/
-    armorStyles.ts
-    materials.ts
-  data/
-    armorStyles/
-      index.ts
-      <armor-style>.ts
-    baseMaterials/
-      index.ts
-      <material>.ts
-    paddingMaterials/
-      index.ts
-      <material>.ts
-samples/
-  <armor-style>/
-    index.ts
-    <core>-with-<padding>.ts
+scripts/armorCampaign.ts
+scripts/fetchArmorCampaign.ts
+scripts/calibrateArmorCampaign.ts
+samples/fetched/*.json
+samples/generatedCampaign.ts
+src/data/generatedCampaign.ts
 ```
 
 ### 2. Add Catalog Data
 
-- [ ] Add the 9 missing armor styles in Core-family batches.
+- [ ] Add the 9 missing armor styles in Core-family batches (6 complete, 3 blocked).
 - [x] Establish and document a valid baseline for Soft armor styles.
-- [ ] Add the 50 missing Core configurations in compatible-family batches.
-- [ ] Add the 11 missing padding configurations.
+- [x] Add the 50 missing Core configurations in canonical compatible-family batches.
+- [x] Add the 11 missing padding configurations.
 - [x] Add compatibility checks so invalid style/Core combinations fail with a
   descriptive error.
 - [ ] Add registry completeness and duplicate sample tests.
-- [ ] Add tests for intentionally unsupported or invalid combinations.
+- [x] Add tests for intentionally unsupported or invalid combinations.
 
 ### 3. Verify Every Batch
 

@@ -1,4 +1,5 @@
 import type { BaseMaterial, BaseMaterialConfig } from '../types';
+import { generatedBaseMaterials } from './generatedCampaign';
 
 type ActiveBaseMaterialConfig = Omit<BaseMaterialConfig, 'weight'>;
 
@@ -372,6 +373,7 @@ export const baseMaterials: Partial<Record<BaseMaterial, ActiveBaseMaterialConfi
       },
     },
   },
+  ...generatedBaseMaterials,
 };
 
 export function getBaseMaterial(material: BaseMaterial): ActiveBaseMaterialConfig {

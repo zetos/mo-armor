@@ -20,6 +20,13 @@ import {
 import { getArmorStyle } from './data/armorStyles';
 import { getBaseMaterial } from './data/baseMaterials';
 import { getPaddingMaterial } from './data/paddingMaterials';
+import {
+  generatedArmorStyles,
+  generatedBaseMaterials,
+  generatedPaddingMaterials,
+  generatedStyleCoreSupport,
+  generatedStylePaddingSupport,
+} from './data/generatedCampaign';
 
 const DURABILITY_PIECE_MULTIPLIERS: PieceStats<number> = {
   helm: 0.8,
@@ -28,8 +35,6 @@ const DURABILITY_PIECE_MULTIPLIERS: PieceStats<number> = {
   leftArm: 0.6,
   legs: 1,
 };
-
-const PADDING_USAGE_DENSITY_COEFFS = { a: 1 / 3, b: 2 / 3 };
 
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
@@ -105,6 +110,23 @@ export function calculateSetStatus<
       `Base material "${base}" is not compatible with armor style "${armorStyle}".`,
     );
   }
+  const supportKey = `${armorStyle}\u0000`;
+  if (
+    (armorStyle in generatedArmorStyles || base in generatedBaseMaterials) &&
+    !generatedStyleCoreSupport.has(`${supportKey}${base}`)
+  ) {
+    throw new Error(
+      `Base material "${base}" is catalog-compatible with armor style "${armorStyle}" but this pairing is not calibrated.`,
+    );
+  }
+  if (
+    (armorStyle in generatedArmorStyles || padding in generatedPaddingMaterials) &&
+    !generatedStylePaddingSupport.has(`${supportKey}${padding}`)
+  ) {
+    throw new Error(
+      `Padding material "${padding}" is catalog-compatible with armor style "${armorStyle}" but this pairing is not calibrated.`,
+    );
+  }
   const style = getArmorStyle(armorStyle);
   const baseMaterial = getBaseMaterial(base);
   const paddingMaterial = getPaddingMaterial(armorStyle, padding);
@@ -116,6 +138,8 @@ export function calculateSetStatus<
     padContrib: style.durabilityCoeffs.padContrib,
   };
   const usageConfig = baseMaterial.usageMultiplierConfig?.[armorStyle];
+  const pieceUsageConfig =
+    baseMaterial.pieceUsageMultiplierConfig?.[armorStyle];
   const usageMultiplier = usageConfig
     ? linearScale(baseDensity, usageConfig)
     : baseMaterial.usageMultiplier;
@@ -123,13 +147,20 @@ export function calculateSetStatus<
   const pieceMaterialUsage = mapPieceStats((piece) => ({
     base: Math.round(
       style.baseMaterialUsage[piece] *
-        usageMultiplier *
+        (pieceUsageConfig
+          ? linearScale(baseDensity, pieceUsageConfig[piece])
+          : usageMultiplier) *
         linearScale(baseDensity, style.baseMaterialUsageDensityCoeffs),
     ),
     padding: Math.round(
       style.paddingUsage[piece] *
-        paddingMaterial.materialMultiplier *
-        linearScale(paddingDensity, PADDING_USAGE_DENSITY_COEFFS),
+        (paddingMaterial.pieceMaterialMultiplierConfig
+          ? linearScale(
+              paddingDensity,
+              paddingMaterial.pieceMaterialMultiplierConfig[piece],
+            )
+          : paddingMaterial.materialMultiplier *
+            linearScale(paddingDensity, style.paddingUsageDensityCoeffs)),
     ),
   }));
   const pieceDurability = mapPieceStats((piece) =>
@@ -159,7 +190,9 @@ export function calculateSetStatus<
       styleWeight.baseContrib *
         baseWeight.baseContribMult *
         (baseDensity / 100) +
-      paddingWeight.padContrib * (paddingDensity / 100),
+      paddingWeight.padContrib *
+        style.paddingWeightMultiplier *
+        (paddingDensity / 100),
   );
 
   const pieceCoeffs = style.pieceWeightCoeffs;
@@ -171,12 +204,17 @@ export function calculateSetStatus<
   const pieceWeight = mapPieceStats((piece) => {
     const coefficient = pieceCoeffs[piece];
     const ratio = coefficient.minWeight / ironfurMinimum;
+    const pieceBaseMultiplier = baseWeight.pieceBaseContribMult;
+    const resolvedPieceBaseMultiplier =
+      typeof pieceBaseMultiplier === 'number'
+        ? pieceBaseMultiplier
+        : pieceBaseMultiplier?.[piece] ?? baseWeight.baseContribMult;
     return round2(
       coefficient.minWeight -
         paddingOffset * ratio +
         baseWeight.minWeightOffset * ratio +
         coefficient.baseContrib *
-          baseWeight.baseContribMult *
+          resolvedPieceBaseMultiplier *
           (baseDensity / 100) +
         coefficient.padContrib *
           paddingWeight.padContribRatio *
@@ -206,7 +244,10 @@ export function calculateSetStatus<
     setDefense: calculateDefense(
       defense.baseDefense,
       defense.densityCoeffs,
-      paddingMaterial.defense,
+      mapDefenseStats(
+        paddingMaterial.defense,
+        style.paddingDefenseMultiplier,
+      ),
       paddingMaterial.defenseDensityCoeffs,
       baseDensity,
       paddingDensity,
@@ -214,5 +255,16 @@ export function calculateSetStatus<
     pieceWeight,
     pieceDurability,
     pieceMaterialUsage,
+  };
+}
+
+function mapDefenseStats(
+  defense: DefenseStats,
+  multiplier: number,
+): DefenseStats {
+  return {
+    blunt: defense.blunt * multiplier,
+    pierce: defense.pierce * multiplier,
+    slash: defense.slash * multiplier,
   };
 }

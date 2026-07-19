@@ -142,15 +142,41 @@ describe('calculateSetStatus', () => {
     );
   });
 
-  it('describes known armor styles that still need calibration', () => {
+  it('describes catalog-compatible pairings that still need calibration', () => {
     expect(() =>
       calculateSetStatus({
-        armorStyle: 'Mercenary Plate',
+        armorStyle: 'Draconigena Armatus',
+        base: 'Aabam',
+        padding: 'Ironfur',
+        baseDensity: 100,
+        paddingDensity: 100,
+      }),
+    ).toThrow('catalog-compatible with armor style "Draconigena Armatus" but this pairing is not calibrated.');
+  });
+
+  it('rejects padding outside the staged calibration pairing', () => {
+    expect(() =>
+      calculateSetStatus({
+        armorStyle: 'Draconigena Armatus',
+        base: 'Plate Scales',
+        padding: 'Silk',
+        baseDensity: 100,
+        paddingDensity: 100,
+      }),
+    ).toThrow(
+      'Padding material "Silk" is catalog-compatible with armor style "Draconigena Armatus" but this pairing is not calibrated.',
+    );
+  });
+
+  it('keeps armor styles with unusable piece usage unsupported', () => {
+    expect(() =>
+      calculateSetStatus({
+        armorStyle: 'Kallardian Banded',
         base: 'Plate Scales',
         padding: 'Ironfur',
         baseDensity: 100,
         paddingDensity: 100,
       }),
-    ).toThrow('Armor style "Mercenary Plate" is not configured.');
+    ).toThrow('Armor style "Kallardian Banded" is not configured.');
   });
 });

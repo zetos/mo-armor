@@ -12,7 +12,7 @@ import type {
   SupportMaterial,
 } from '../src/types';
 
-const API_URL = 'https://mortaldata.com/php/workbench/ArmorCalc.php';
+export const API_URL = 'https://mortaldata.com/php/workbench/ArmorCalc.php';
 const REQUEST_TIMEOUT_MS = 15_000;
 const MAX_ATTEMPTS = 3;
 const CONCURRENCY = 3;
@@ -74,6 +74,7 @@ interface ApiOptions {
     supportDensity: number;
   }[];
   json: boolean;
+  outputPath?: string;
 }
 
 class FetchSampleError extends Error {
@@ -236,7 +237,7 @@ export function parseSampleLine(line: string, expected?: SampleParams): SetStats
   const armorStyle = getArmorStyleById(armorStyleId)!;
   const base = getArmorMaterialById(baseMaterialId)!;
   const padding = getArmorMaterialById(paddingMaterialId)!;
-  parseMaterialUsage(
+  const aggregateMaterialUsage = parseMaterialUsage(
     getField(fields, 20),
     baseMaterialId,
     paddingMaterialId,
@@ -244,6 +245,17 @@ export function parseSampleLine(line: string, expected?: SampleParams): SetStats
   const pieceMaterialUsage = parsePieces(fields, 21, (value) =>
     parseMaterialUsage(value, baseMaterialId, paddingMaterialId),
   );
+  const pieceUsageValues = Object.values(pieceMaterialUsage);
+  if (
+    (aggregateMaterialUsage.base > 0 &&
+      pieceUsageValues.every((usage) => usage.base === 0)) ||
+    (aggregateMaterialUsage.padding > 0 &&
+      pieceUsageValues.every((usage) => usage.padding === 0))
+  ) {
+    throw new Error(
+      'Response reports aggregate material usage but all piece usage fields are zero',
+    );
+  }
   const setMaterialUsage = Object.values(pieceMaterialUsage).reduce<MaterialUsage>(
     (total, usage) => ({
       base: total.base + usage.base,
@@ -443,6 +455,7 @@ export function parseArgs(args = process.argv.slice(2)): CliOptions {
     '--supportDensity': 'supportDensity',
     '--support-density': 'supportDensity',
     '--density-matrix': 'densityMatrix',
+    '--output': 'outputPath',
   };
   let json = false;
   for (let index = 0; index < args.length; index += 1) {
@@ -510,6 +523,7 @@ export function parseArgs(args = process.argv.slice(2)): CliOptions {
     supportMatId,
     densities,
     json,
+    outputPath: values.get('outputPath'),
   };
   options.densities.forEach(({ baseDensity, supportDensity }) =>
     validateSampleParams({
@@ -565,6 +579,9 @@ async function main(): Promise<void> {
     );
   }
   const batch = await fetchSampleBatch(requests);
+  if (options.outputPath) {
+    await Bun.write(options.outputPath, `${JSON.stringify(batch, null, 2)}\n`);
+  }
   console.log(
     options.json
       ? JSON.stringify(batch)

@@ -110,6 +110,9 @@ export type ArmorStyleConfig = {
   baseMaterialUsage: PieceStats<number>;
   baseMaterialUsageDensityCoeffs: DensityCoeffs;
   paddingUsage: PieceStats<number>;
+  paddingUsageDensityCoeffs: DensityCoeffs;
+  paddingDefenseMultiplier: number;
+  paddingWeightMultiplier: number;
   /** @deprecated Not used by the additive weight model. */
   pieceWeightMultipliers: PieceStats<number>;
   /** @deprecated Not used by the additive weight model. */
@@ -138,6 +141,7 @@ export type StyleSpecificWeightConfig = {
 export type BaseMaterialWeightConfig = {
   minWeightOffset: number;
   baseContribMult: number;
+  pieceBaseContribMult?: number | PieceStats<number>;
 };
 
 export type BaseMaterialConfig = {
@@ -147,6 +151,9 @@ export type BaseMaterialConfig = {
   usageMultiplier: number;
   usageMultiplierConfig?: Partial<
     Record<ArmorStyle, StyleSpecificUsageMultiplierConfig>
+  >;
+  pieceUsageMultiplierConfig?: Partial<
+    Record<ArmorStyle, PieceStats<StyleSpecificUsageMultiplierConfig>>
   >;
   durability: number;
   defenseConfig: Partial<Record<ArmorStyle, StyleSpecificDefenseConfig>>;
@@ -161,6 +168,7 @@ export type PaddingMaterialWeightConfig = {
 
 export type PaddingMaterialConfig = {
   materialMultiplier: number;
+  pieceMaterialMultiplierConfig?: PieceStats<DensityCoeffs>;
   durabilityMults: DurabilityMults;
   defense: DefenseStats;
   defenseDensityCoeffs: DefenseDensityCoeffs;

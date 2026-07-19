@@ -7,6 +7,7 @@ import type {
   DurabilityMults,
   PaddingMaterialWeightConfig,
 } from '../types';
+import { generatedPaddingMaterials } from './generatedCampaign';
 
 /**
  * SHARED PADDING CONFIGURATIONS
@@ -17,6 +18,7 @@ import type {
 interface SharedPaddingConfig {
   /** Material usage multiplier relative to Ironfur */
   materialMultiplier: number;
+  pieceMaterialMultiplierConfig?: PaddingMaterialConfig['pieceMaterialMultiplierConfig'];
   /** Base durability multipliers (padMult is shared, minMult is fallback if style-specific not available) */
   durabilityMults: DurabilityMults;
   /** Style-specific minMult values for more accurate durability calculations */
@@ -174,6 +176,7 @@ const SHARED_PADDING_CONFIG: Partial<
       padContribRatio: 0.4286,
     },
   },
+  ...generatedPaddingMaterials,
 };
 
 export function getPaddingMaterial(
@@ -189,6 +192,7 @@ export function getPaddingMaterial(
 
   return {
     materialMultiplier: config.materialMultiplier,
+    pieceMaterialMultiplierConfig: config.pieceMaterialMultiplierConfig,
     durabilityMults: {
       minMult: config.styleMinMult?.[armorStyle] ?? config.durabilityMults.minMult,
       padMult: config.durabilityMults.padMult,

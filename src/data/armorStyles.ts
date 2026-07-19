@@ -2,6 +2,7 @@ import type {
   ArmorStyle,
   ArmorStyleConfig,
 } from '../types';
+import { generatedArmorStyles } from './generatedCampaign';
 
 type ActiveArmorStyleConfig = Omit<
   ArmorStyleConfig,
@@ -27,6 +28,9 @@ export const armorStyles: Partial<Record<ArmorStyle, ActiveArmorStyleConfig>> = 
       leftArm: 48,
       legs: 126,
     },
+    paddingUsageDensityCoeffs: { a: 1 / 3, b: 2 / 3 },
+    paddingDefenseMultiplier: 1,
+    paddingWeightMultiplier: 1,
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 221.75)
     durabilityCoeffs: {
@@ -79,6 +83,9 @@ export const armorStyles: Partial<Record<ArmorStyle, ActiveArmorStyleConfig>> = 
       leftArm: 52,
       legs: 122,
     },
+    paddingUsageDensityCoeffs: { a: 1 / 3, b: 2 / 3 },
+    paddingDefenseMultiplier: 1,
+    paddingWeightMultiplier: 1,
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 0/0, 100/0, 0/100, 100/100 Ironfur samples
     durabilityCoeffs: {
@@ -129,6 +136,9 @@ export const armorStyles: Partial<Record<ArmorStyle, ActiveArmorStyleConfig>> = 
       leftArm: 48,
       legs: 126,
     },
+    paddingUsageDensityCoeffs: { a: 1 / 3, b: 2 / 3 },
+    paddingDefenseMultiplier: 1,
+    paddingWeightMultiplier: 1,
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 221.0)
     durabilityCoeffs: {
@@ -179,6 +189,9 @@ export const armorStyles: Partial<Record<ArmorStyle, ActiveArmorStyleConfig>> = 
       leftArm: 56,
       legs: 130,
     },
+    paddingUsageDensityCoeffs: { a: 1 / 3, b: 2 / 3 },
+    paddingDefenseMultiplier: 1,
+    paddingWeightMultiplier: 1,
     // Durability additive model: dura = baseMin*padMinMult + baseDensityContrib*bd/100 + padContrib*padPadMult*pd/100
     // Derived from 100/0, 0/100, 100/100 Ironfur samples (at0_0 derived = 226.01)
     durabilityCoeffs: {
@@ -212,6 +225,7 @@ export const armorStyles: Partial<Record<ArmorStyle, ActiveArmorStyleConfig>> = 
       legs: { minWeight: 1.53, baseContrib: 0.5, padContrib: 0.42 },
     },
   },
+  ...generatedArmorStyles,
 };
 
 export function getArmorStyle(armorStyle: ArmorStyle): ActiveArmorStyleConfig {

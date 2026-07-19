@@ -5,6 +5,8 @@
   "scripts": {
     "test": "bun test",
     "parse-sample": "bun scripts/parseSample.ts",
+    "fetch-armor-campaign": "bun scripts/fetchArmorCampaign.ts",
+    "calibrate-armor-campaign": "bun scripts/calibrateArmorCampaign.ts",
     "analyze-rounding": "bun scripts/analyzeRounding.ts"
   },
   "devDependencies": {
