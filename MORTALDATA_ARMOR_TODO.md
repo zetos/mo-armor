@@ -8,6 +8,8 @@ Armor workbench and records how to rediscover their IDs and compatibility.
 - Armor styles: 13 total, 4 configured, 9 missing
 - Core materials: 57 total, 7 configured, 50 missing
 - Padding materials: 16 total, 5 configured, 11 missing
+- Sample batches fetched: 59 total (56 calibration-ready, 3 blocked by
+  missing piece usage)
 
 MortalData calls the calculator's base material the **Core Material**. This
 project calls it the **base material**. The terms refer to the same API field,
@@ -292,6 +294,86 @@ Hard and Medium/Scale styles. Plate Scales is not offered by the UI for Soft
 styles, so choose and document a valid Soft baseline before calibrating those
 styles.
 
+### Sample Fetch Progress
+
+These tables track API collection only. A fetched sample does not make its
+armor or material configured; the configuration checklists above remain
+unchecked until coefficients and regression samples are added to the project.
+
+All completed batches contain `0/0`, `100/0`, `0/100`, `100/100`, and `50/50`.
+
+#### Missing Armor Baselines
+
+| Status | Armor style | Core / padding | Result |
+| --- | --- | --- | --- |
+| [x] | Draconigena Armatus (`392`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
+| [x] | Kallardian Banded (`433`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero |
+| [x] | Mercenary Plate (`309`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
+| [x] | Risar Soldier (`308`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Leptoid Scales (`92`) / Ironfur (`84`) | 5/5 valid; Soft baseline established |
+| [x] | Rustic Garments (`427`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero |
+| [x] | Tindremic Attire (`429`) | Leptoid Scales (`92`) / Ironfur (`84`) | 5/5 fetched; blocked: all piece usage fields are zero |
+| [x] | Tindremic Guard (`311`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
+| [x] | Tindremic Knight (`312`) | Plate Scales (`108`) / Ironfur (`84`) | 5/5 valid |
+
+#### Material Batches
+
+| Status | Armor style | Core / padding | Roles covered | Result |
+| --- | --- | --- | --- | --- |
+| [x] | Mercenary Plate (`309`) | Aabam (`45`) / Alvarin Skin (`118`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Bleck (`48`) / Cotton (`57`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Bone Tissue (`50`) / Fullgrain Leather (`68`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Bron (`52`) / Ground Fur (`76`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Compact Horn (`56`) / Human Skin (`119`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Crepite (`58`) / Oghmir Skin (`120`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Cronite (`59`) / Quality Leather (`109`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Crustacean Carapace (`60`) / Rawhide (`110`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Cuprum (`61`) / Silk (`114`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Dense Crepite (`63`) / Thursar Skin (`122`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Emalj (`65`) / Wool (`131`) | Core, padding | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Flakestone (`67`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Gold (`71`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Grain Steel (`72`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Great Horn (`74`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Heavy Carapace (`78`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Horn (`79`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Incisium (`82`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Ironbone (`83`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Jadeite (`89`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Maalite (`93`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Messing (`94`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Molarium (`95`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Nyx (`96`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Oghmium (`97`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Pansar Carapace (`103`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Pig Iron (`106`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Reptile Carapace (`111`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Silver (`115`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Skadite (`116`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Steel (`124`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Tindremic Messing (`128`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Mercenary Plate (`309`) | Tungsteel (`129`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Alvarin Skin (`118`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Fullgrain Leather (`68`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Ganoid Scales (`70`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Ground Fur (`76`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Guard Fur (`77`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Human Skin (`119`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Ironfur (`84`) / Guard Fur (`77`) | Core | 5/5 valid |
+| [x] | Ranger Armor (`383`) | Oghmir Skin (`120`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Bloodsilk (`202`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Cotton (`57`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Ironsilk (`85`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Ironwool (`87`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Quality Leather (`109`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Rawhide (`110`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Silk (`114`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Thursar Skin (`122`) / Ironfur (`84`) | Core | 5/5 valid |
+| [x] | Rugged Garments (`391`) | Wool (`131`) / Ironfur (`84`) | Core | 5/5 valid |
+
+All 50 missing Core roles and all 11 missing padding roles now have a
+calibration-ready batch.
+
 ### API and Parser Hazards
 
 - `ArmorCalc.php` currently returns data for some combinations that the UI
@@ -351,7 +433,7 @@ samples/
 ### 2. Add Catalog Data
 
 - [ ] Add the 9 missing armor styles in Core-family batches.
-- [ ] Establish and document a valid baseline for Soft armor styles.
+- [x] Establish and document a valid baseline for Soft armor styles.
 - [ ] Add the 50 missing Core configurations in compatible-family batches.
 - [ ] Add the 11 missing padding configurations.
 - [x] Add compatibility checks so invalid style/Core combinations fail with a
